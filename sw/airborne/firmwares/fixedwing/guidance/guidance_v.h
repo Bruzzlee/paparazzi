@@ -86,8 +86,8 @@ extern float agr_descent_nav_ratio;
 #endif
 
 /* "auto pitch" inner loop parameters */
-extern float v_ctl_auto_pitch_pgain;
-extern float v_ctl_auto_pitch_igain;
+//extern float v_ctl_auto_pitch_pgain;
+//extern float v_ctl_auto_pitch_igain;
 extern float v_ctl_auto_pitch_sum_err;
 
 extern pprz_t v_ctl_throttle_setpoint;
@@ -97,17 +97,52 @@ extern void v_ctl_init( void );
 extern void v_ctl_altitude_loop( void );
 extern void v_ctl_climb_loop ( void );
 
+extern uint8_t airspeed_mode;
+#ifndef AIRSPEED_MODE
+#define AIRSPEED_MODE 0
+#endif
+
 #ifdef USE_AIRSPEED
+extern float v_ctl_auto_airspeed_downtime;
 /* "airspeed" inner loop parameters */
 extern float v_ctl_auto_airspeed_setpoint;
 extern float v_ctl_auto_airspeed_controlled;
-extern float v_ctl_auto_airspeed_pgain;
-extern float v_ctl_auto_airspeed_igain;
 extern float v_ctl_auto_airspeed_sum_err;
 extern float v_ctl_auto_groundspeed_setpoint;
 extern float v_ctl_auto_groundspeed_pgain;
 extern float v_ctl_auto_groundspeed_igain;
 extern float v_ctl_auto_groundspeed_sum_err;
+
+//Vassillis
+extern float v_ctl_auto_airspeed_pgain_v;
+extern float v_ctl_auto_airspeed_igain_v;
+extern float v_ctl_auto_pitch_pgain_v;
+extern float v_ctl_auto_pitch_igain_v;
+//AirSpeed Pitch Climbrate
+extern float v_ctl_auto_airspeed_pgain_aspc;
+extern float v_ctl_auto_airspeed_igain_aspc;
+extern float v_ctl_auto_airspeed_prethrottle_aspc;
+extern float v_ctl_auto_pitch_pgain_aspc;
+extern float v_ctl_auto_pitch_igain_aspc;
+//AirSpeed Pitch Simple
+extern float v_ctl_auto_airspeed_pgain_asps;
+extern float v_ctl_auto_airspeed_igain_asps;
+extern float v_ctl_auto_airspeed_prethrottle_asps;
+extern float v_ctl_auto_pitch_pgain_asps;
+extern float v_ctl_auto_pitch_igain_asps;
+//AirSpeed Manual Power
+extern float v_ctl_auto_airspeed_throttlesetp_asmp;
+extern float v_ctl_auto_pitch_pgain_asmp;
+extern float v_ctl_auto_pitch_igain_asmp;
+//AirSpeed Pitch Acceleration
+extern float v_ctl_auto_airspeed_pgain_aspa;
+extern float v_ctl_auto_airspeed_igain_aspa;
+extern float v_ctl_auto_airspeed_prethrottle_aspa;
+extern float v_ctl_auto_pitch_pgain_aspa;
+extern float v_ctl_auto_pitch_igain_aspa;
+extern float v_ctl_airspeed_acc_filter_value;
+extern float v_ctl_accel_pgain;
+extern float v_ctl_altitude_max_accel;
 #endif
 
 /** Computes throttle_slewed from throttle_setpoint */

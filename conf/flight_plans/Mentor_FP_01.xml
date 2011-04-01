@@ -1,0 +1,66 @@
+<!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
+
+<flight_plan alt="550" ground_alt="460" lat0="47.515217" lon0="8.975493" max_dist_from_home="800" name="Basic" security_height="25">
+  <header>
+#include "subsystems/navigation/nav_line.h"
+#include "datalink.h"
+</header>
+  <waypoints>
+    <waypoint name="HOME" x="0" y="0"/>
+    <waypoint name="STDBY" x="43.4" y="154.8"/>
+    <waypoint name="1" x="-242.4" y="112.0"/>
+    <waypoint name="2" x="261.2" y="126.8"/>
+    <waypoint name="Ov1" x="-149.1" y="215.1"/>
+    <waypoint name="Ov2" x="238.6" y="207.6"/>
+    <waypoint name="8C" x="35.9" y="190.8"/>
+    <waypoint name="8T" x="-148.5" y="158.9"/>
+    <waypoint name="S1" x="-248.6" y="37.9"/>
+    <waypoint name="S2" x="287.4" y="331.6"/>
+    <waypoint name="CLIMB" x="-246.6" y="-94.3"/>
+  </waypoints>
+  <exceptions/>
+  <blocks>
+    <block name="Wait GPS">
+      <set value="1" var="kill_throttle"/>
+      <while cond="!GpsFixValid()"/>
+    </block>
+    <block name="Geo init">
+      <while cond="LessThan(NavBlockTime(), 10)"/>
+      <call fun="NavSetGroundReferenceHere()"/>
+    </block>
+    <block name="Holding point">
+      <set value="1" var="kill_throttle"/>
+      <attitude roll="0" throttle="0" vmode="throttle"/>
+    </block>
+    <block group="home" key="t" name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+      <exception cond="estimator_z > ground_alt+25" deroute="Standby"/>
+      <set value="0" var="kill_throttle"/>
+      <set value="0" var="estimator_flight_time"/>
+      <go from="HOME" pitch="15" throttle="1.0" vmode="throttle" wp="CLIMB"/>
+    </block>
+    <block group="home" key="<Control>a" name="Standby" strip_button="Standby" strip_icon="home.png">
+      <circle radius="nav_radius" wp="STDBY"/>
+    </block>
+    <block group="base_pattern" name="Oval 1-2" strip_button="Oval (wp 1-2)" strip_icon="oval.png">
+      <oval p1="Ov1" p2="Ov2" radius="nav_radius"/>
+    </block>
+    <block group="base_pattern" name="Line 1-2" strip_button="Line (wp 1-2)" strip_icon="line.png">
+      <call fun="nav_line_init()"/>
+      <call fun="nav_line(WP_1, WP_2, nav_radius)"/>
+    </block>
+    <block group="extra_pattern" key="F8" name="Figure 8 around wp 1" strip_button="Figure 8 (wp 1-2)" strip_icon="eight.png">
+      <eight center="8C" radius="nav_radius" turn_around="8T"/>
+    </block>
+    <block group="extra_pattern" name="Survey S1-S2" strip_button="Survey (wp S1-S2)" strip_icon="survey.png">
+      <survey_rectangle grid="150" wp1="S1" wp2="S2"/>
+    </block>
+    <block group="secextra_pattern" name="Route 1-2" strip_button="Path (1,2)" strip_icon="line.png">
+      <go approaching_time="0" from="1" hmode="route" wp="2"/>
+    </block>
+    <block group="secextra_pattern" name="Path 1,2,S1,S2,STDBY" strip_button="Path (1,2,S1,S2,STDBY)" strip_icon="path.png">
+      <path wpts="1,2 S1"/>
+      <path approaching_time="1" pitch="auto" throttle="0.4" wpts="S1, S2 STDBY"/>
+      <deroute block="Standby"/>
+    </block>
+  </blocks>
+</flight_plan>

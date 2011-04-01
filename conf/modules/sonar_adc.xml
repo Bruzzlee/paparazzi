@@ -1,0 +1,27 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+
+<!--
+     Airspeed ADC module
+     @configure ADC_AIRSPEED on which ADC the sensor is connected
+     @define AIRSPEED_SCALE/AIRSPEED_QUADRATIC_SCALE scale factor, quadratic is used if defined
+     @define AIRSPEED_BIAS offset on ADC
+     -->
+
+<module name="sonar_adc" dir="sonar">
+
+  <header>
+    <file name="sonar_adc.h"/>
+  </header>
+  <init fun="sonar_adc_init()"/>
+  <periodic fun="sonar_adc_update()" freq="10."/>
+
+  <makefile>
+    <file name="sonar_adc.c"/>
+  </makefile>
+  <makefile target="ap">
+    <define name="ADC_CHANNEL_SONAR" value="$(ADC_SONAR)"/>
+    <define name="USE_$(ADC_SONAR)"/>
+  </makefile>
+
+</module>
+

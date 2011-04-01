@@ -439,19 +439,12 @@
    <field name="altitude_offset" type="uint16"></field>
  </message>
 
-  <message name="GPS_LLA" id="59">
-    <field name="lat"        type="int32"  unit="cm" alt_unit="m"/>
-    <field name="lon"        type="int32"  unit="cm" alt_unit="m"/>
-    <field name="alt"        type="int32"  unit="cm" alt_unit="m"/>
-    <field name="course"     type="int16"  unit="decideg" alt_unit="deg"/>
-    <field name="speed"      type="uint16" unit="cm/s" alt_unit="m/s"/>
-    <field name="climb"      type="int16"  unit="cm/s" alt_unit="m/s"/>
-    <field name="week"       type="uint16" unit="weeks"/>
-    <field name="itow"       type="uint32" unit="ms"/>
-    <field name="mode"       type="uint8"  unit="byte_mask"/>
-    <field name="gps_nb_err" type="uint8"/>
-  </message>
- 
+ <message name="SONAR_ADC" id="59">
+   <field name="ADC" type="uint16"></field>
+   <field name="RAW" type="float" unit="m"> </field>
+   <field name="HIGH" type="float" unit="m"></field>
+ </message>
+
   <message name="H_CTL_A" id="60">
     <field name="roll_sum_err" type="float"/>
     <field name="ref_roll_angle" type="float" unit="rad" alt_unit="deg" alt_unit_coef="57.3"/>
@@ -498,14 +491,71 @@
   </message>
 
  <!-- 63 is free -->
- <!-- 64 is free -->
- <!-- 65 is free -->
- <!-- 66 is free -->
- <!-- 67 is free -->
- <!-- 68 is free -->
+
+	<message name="HIGHT_OVER_HOME" id="64">
+		<field name="start_hight" type="float" unit="m"/>
+		<field name="actual_hight" type="float" unit="m"/>
+		<field name="diff_hight" type="float" unit="m"/>
+		<field name="numOfCount" type="uint8" unit=""/>
+   	</message>
+	
+	<message name="ZHAWTEST" id="65">
+   		<field name="pBaroRaw" type="uint16"></field>
+   		<field name="pBaro" type="float"></field>
+   		<field name="tempRaw" type="uint16"></field>
+   		<field name="tempBaro" type="float"></field>
+ 	</message>
+	
+	<message name="ZHAWI2CTOOL" id="66">
+   		<field name="pBaroRaw" type="uint16"></field>
+   		<field name="pBaro" type="float"></field>
+		<field name="amsysHight" type="float"></field>
+   		<field name="tempBaroRaw" type="uint16"></field>
+   		<field name="tempBaro" type="float"></field>
+		<field name="Raw0" type="uint16"></field>
+	    <field name="Raw1" type="uint16"></field>
+   		<field name="Raw2" type="uint16"></field>
+		<field name="Raw3" type="uint16"></field>
+   		<field name="Raw4" type="uint16"></field>
+   		<field name="Raw5" type="uint16"></field>
+		<field name="Raw6" type="uint16"></field>
+   		<field name="Raw7" type="uint16"></field>
+		<field name="Raw8" type="uint16"></field>
+   		<field name="Raw9" type="uint16"></field>
+ 	</message>
+	
+	<message name="AMSYS_AIRSPEED" id="67">
+		<field name="asRaw" type="uint16"></field>
+		<field name="asPresureOffset" type="float" unit="Pa"></field>
+		<field name="asPresure" type="float" unit="Pa"></field>
+		<field name="asAirspeed" type="float" unit="m/s"></field>
+		<field name="asAirsFilt" type="float" unit="m/s"></field>
+		<field name="asTemp" type="float" unit="°C"></field>
+	</message>
+ 
+  <message name="AMSYS_BARO" id="68">
+   		<field name="pBaroRaw" type="uint16"></field>
+   		<field name="pBaro" type="float" unit="Pa"> </field>
+		<field name="pHomePressure" type="float" unit="Pa"></field>
+   		<!--field name="tempRaw" type="uint16"></field-->
+   		<field name="AltOffset" type="float" unit="m"></field>
+   		<field name="aktuell" type="float" unit="m"></field>
+   		<field name="Over_Ground" type="float" unit="m"></field>
+		<field name="tempBaro" type="float" unit="°C"></field>
+ 	</message>
+
+
  <!-- 69 is free -->
  <!-- 70 is free -->
- <!-- 71 is free -->
+	<message name="AS_GUIDANCE" id="71">
+		<field name="AS_Mode" type="uint8"></field>
+		<field name="AS_Setp_Ctr" type="float"></field>
+		<field name="AS_Error" type="float"></field>
+		<field name="GS_Error" type="float"></field>
+		<field name="nav_pitch" type="float"></field>
+		<field name="throttle_setp" type="float"></field>
+		<field name="f_throttle" type="float"></field>
+	</message>
  <!-- 72 is free -->
  <!-- 73 is free -->
  <!-- 74 is free -->
@@ -834,19 +884,19 @@
     <field name="est_r_d"       type="float" alt_unit="degres/s^2" alt_unit_coef="57.29578"/>
   </message>
 
-  <message name="IMU_GYRO_SCALED" id="131">
+  <message name="BOOZ2_GYRO" id="131">
     <field name="gp"    type="int32" alt_unit="deg/s" alt_unit_coef="0.0139882"/>
     <field name="gq"    type="int32" alt_unit="deg/s" alt_unit_coef="0.0139882"/>
     <field name="gr"    type="int32" alt_unit="deg/s" alt_unit_coef="0.0139882"/>
   </message>
 
-  <message name="IMU_ACCEL_SCALED" id="132">
+  <message name="BOOZ2_ACCEL" id="132">
     <field name="ax"    type="int32" alt_unit="m/s2" alt_unit_coef="0.0009766"/>
     <field name="ay"    type="int32" alt_unit="m/s2" alt_unit_coef="0.0009766"/>
     <field name="az"    type="int32" alt_unit="m/s2" alt_unit_coef="0.0009766"/>
   </message>
 
-  <message name="IMU_MAG_SCALED" id="133">
+  <message name="BOOZ2_MAG" id="133">
     <field name="mx"    type="int32" alt_unit="1" alt_unit_coef="0.0004883"/>
     <field name="my"    type="int32" alt_unit="1" alt_unit_coef="0.0004883"/>
     <field name="mz"    type="int32" alt_unit="1" alt_unit_coef="0.0004883"/>
@@ -1327,13 +1377,7 @@
     <field name="data_b"  type="uint32"/>
   </message>
 
-  <message name="BOOZ_AHRS_BIAS" id="178">
-    <field name="bp"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
-    <field name="bq"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
-    <field name="br"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
-  </message>
-    
-
+ <!--178 is free -->
  <!--179 is free -->
 
   <message name="FMS_TIME" id="180">
