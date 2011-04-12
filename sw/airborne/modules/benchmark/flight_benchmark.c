@@ -41,17 +41,17 @@ void flight_benchmark_init( void ) {
 
 void flight_benchmark_periodic( void ) {
 	float err_temp = 0;
-#ifdef BANCHMARK_AIRSPEED
+#ifdef BENCHMARK_AIRSPEED
 	err_temp = estimator_airspeed - v_ctl_auto_airspeed_setpoint;
 	SquareSumErr_airspeed += (err_temp * err_temp);
 #endif
 	
-#ifdef BANCHMARK_ALTITUDE
+#ifdef BENCHMARK_ALTITUDE
 	err_temp = estimator_z - v_ctl_altitude_setpoint;
 	SquareSumErr_altitude += (err_temp * err_temp);
 #endif
 	
-#ifdef BANCHMARK_POSITION
+#ifdef BENCHMARK_POSITION
 // 	err_temp = waypoints[target].x - estimator_x;
 	SquareSumErr_position += (nav_shift * nav_shift);
 #endif

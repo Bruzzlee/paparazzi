@@ -79,9 +79,9 @@
   </load> 
   
   <load name="flight_benchmark.xml">
-	<define name="BANCHMARK_AIRSPEED"/>    
-	<define name="BANCHMARK_ALTITUDE"/>    
-	<define name="BANCHMARK_POSITION"/>    
+	<define name="BENCHMARK_AIRSPEED"/>    
+	<define name="BENCHMARK_ALTITUDE"/>    
+	<define name="BENCHMARK_POSITION"/>    
   </load> 
 
 
