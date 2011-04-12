@@ -78,7 +78,11 @@
 	<define name="BARO_FILTER" value="0."/>
   </load> 
   
-  <!--load name="HightOverHome.xml"/-->
+  <load name="flight_benchmark.xml">
+	<define name="BANCHMARK_AIRSPEED"/>    
+	<define name="BANCHMARK_ALTITUDE"/>    
+	<define name="BANCHMARK_POSITION"/>    
+  </load> 
 
 
 

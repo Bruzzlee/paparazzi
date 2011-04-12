@@ -492,7 +492,7 @@
 
  <!-- 63 is free -->
 
-	<message name="HIGHT_OVER_HOME" id="64">
+<!--	<message name="HIGHT_OVER_HOME" id="64">
 		<field name="start_hight" type="float" unit="m"/>
 		<field name="actual_hight" type="float" unit="m"/>
 		<field name="diff_hight" type="float" unit="m"/>
@@ -504,24 +504,13 @@
    		<field name="pBaro" type="float"></field>
    		<field name="tempRaw" type="uint16"></field>
    		<field name="tempBaro" type="float"></field>
- 	</message>
+ 	</message>-->
 	
-	<message name="ZHAWI2CTOOL" id="66">
-   		<field name="pBaroRaw" type="uint16"></field>
-   		<field name="pBaro" type="float"></field>
-		<field name="amsysHight" type="float"></field>
-   		<field name="tempBaroRaw" type="uint16"></field>
-   		<field name="tempBaro" type="float"></field>
-		<field name="Raw0" type="uint16"></field>
-	    <field name="Raw1" type="uint16"></field>
-   		<field name="Raw2" type="uint16"></field>
-		<field name="Raw3" type="uint16"></field>
-   		<field name="Raw4" type="uint16"></field>
-   		<field name="Raw5" type="uint16"></field>
-		<field name="Raw6" type="uint16"></field>
-   		<field name="Raw7" type="uint16"></field>
-		<field name="Raw8" type="uint16"></field>
-   		<field name="Raw9" type="uint16"></field>
+	<message name="FLIGHT_BENCHMARK" id="66">
+		<field name="SE_As" type="float"></field>
+		<field name="SE_Alt" type="float"></field>
+		<field name="SE_Pos" type="float"></field>
+
  	</message>
 	
 	<message name="AMSYS_AIRSPEED" id="67">
