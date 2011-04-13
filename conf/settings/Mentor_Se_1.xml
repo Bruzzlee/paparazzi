@@ -34,7 +34,12 @@
     </dl_settings>
 
     <dl_settings NAME="MainCtl">
-	
+	<dl_settings NAME="Benchmark">
+		<dl_setting MAX="1" MIN="1" STEP="1" VAR="benchm_reset" shortname="bench_reset" module="modules/benchmark/flight_benchmark"/>
+		<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="ToleranceAispeed" shortname="AS_Tolerance" module="modules/benchmark/flight_benchmark" param="BENCHMARK_TOLERANCE_AIRSPEED"/>
+		<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="ToleranceAltitude" shortname="Alt_Tolerance" module="modules/benchmark/flight_benchmark" param="BENCHMARK_TOLERANCE_ALTITUDE"/>
+		<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="TolerancePosition" shortname="Pos_Tolerance" module="modules/benchmark/flight_benchmark" param="BENCHMARK_TOLERANCE_POSITION"/>
+	</dl_settings>
 	 <dl_settings NAME="Airspeed">
 		<dl_setting MAX="3" MIN="0" STEP="0.001" VAR="airspeed_scale" shortname="air_scale" module="modules/sensors/airspeed_amsys" param="AIRSPEED_SCALE"/>
 		<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="airspeed_filter" shortname="air_filter" module="modules/sensors/airspeed_amsys" param="AIRSPEED_FILTER"/>

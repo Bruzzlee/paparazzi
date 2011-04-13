@@ -31,7 +31,7 @@
       <define name="USE_AIRSPEED"/>
       <!--define name="MEASURE_AIRSPEED" /-->
 	  <!--define name="SONAR_SYNC_SEND"/-->
-      <define name="SENSOR_SYNC_SEND"/>
+      <!--define name="SENSOR_SYNC_SEND"/-->
 
 
       <subsystem name="radio_control" type="ppm"/>
@@ -82,7 +82,10 @@
   <load name="flight_benchmark.xml">
 	<define name="BENCHMARK_AIRSPEED"/>    
 	<define name="BENCHMARK_ALTITUDE"/>    
-	<define name="BENCHMARK_POSITION"/>    
+	<define name="BENCHMARK_POSITION"/>  
+	<define name="BENCHMARK_TOLERANCE_AIRSPEED" value="0.0"/> 
+	<define name="BENCHMARK_TOLERANCE_ALTITUDE" value="0.0"/> 
+	<define name="BENCHMARK_TOLERANCE_POSITION" value="0.0"/> 
   </load> 
 
   
