@@ -225,6 +225,7 @@ bool_t InitializeBungeeTakeoff(uint8_t BungeeWP)
 
 bool_t BungeeTakeoff(void)
 {
+
 	//Translate current position so Throttle point is (0,0)
 	float Currentx = estimator_x-throttlePx;
 	float Currenty = estimator_y-throttlePy;
@@ -235,11 +236,11 @@ bool_t BungeeTakeoff(void)
 	{
 	case Launch:
 		//Follow Launch Line
-		NavVerticalAutoThrottleMode(0);
-	  	NavVerticalAltitudeMode(BungeeAlt+Takeoff_Height, 0.);
-		nav_route_xy(initialx,initialy,throttlePx,throttlePy);
+		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
+	  	NavVerticalAltitudeMode(BungeeAlt+Takeoff_Height, 0.);	//Vorgabe der Sollhöhe
+		nav_route_xy(initialx,initialy,throttlePx,throttlePy);  //Vorgabe der Route durch Methodenaufruf
 
-		kill_throttle = 1;
+		kill_throttle = 1; //Motor ausgeschaltet
 
 		//recalculate lines if below min speed
 		if(estimator_hspeed_mod < Takeoff_MinSpeed)

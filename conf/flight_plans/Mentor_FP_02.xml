@@ -5,6 +5,7 @@
 #include "subsystems/navigation/nav_line.h"
 #include "datalink.h"
 #include "subsystems/navigation/OSAMNav.h"
+#include "subsystems/navigation/ZHAWNav.h"
 </header>
   <waypoints>
     <waypoint name="HOME" x="0" y="0"/>
@@ -21,7 +22,7 @@
     <waypoint alt="30.0" name="AF" x="177.4" y="45.1"/>
     <waypoint alt="0.0" name="TD" x="28.8" y="57.0"/>
     <waypoint name="_BASELEG" x="168.8" y="-13.8"/>
-    <waypoint name="Bungee" x="170" y="-15"/> <!-- Position of Bungeehook -->
+    <waypoint alt="460.0" name="TakeOffDirection" x="170" y="-15"/> <!-- Position of Bungeehook -->
   </waypoints>
   <exceptions/>
   <blocks>
@@ -48,8 +49,8 @@
 <!--*********************************Bungee Takeoff************************************-->
 
    <block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
-      <call fun="InitializeBungeeTakeoff(WP_Bungee)"/>	<!-- in OSAMNav.c-->
-      <call fun="BungeeTakeoff()"/>			<!-- in OSAMNav.c-->
+      <call fun="InitializeZHAWBungeeTakeoff(WP_TakeOffDirection)"/>	<!-- in ZHAWNav.c-->
+      <call fun="ZHAWBungeeTakeoff()"/>					<!-- in ZHAWNav.c-->
    </block>
  
 <!--***********************************************************************************-->
