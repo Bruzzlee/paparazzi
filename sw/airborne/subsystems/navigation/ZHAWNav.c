@@ -6,8 +6,8 @@
 /** Takeoff functions for bungee takeoff.
 Run initialize function when the plane is on the bungee, the bungee is fully extended and you are ready to
 launch the plane. After initialized, the plane will follow a line drawn by the position of the plane on initialization and the
-position of the bungee (given in the arguments). Once the plane crosses the throttle line, which is perpendicular to the line the plane is following,
-and intersects the position of the bungee (plus or minus a fixed distance (TakeOff_Distance in airframe file) from the bungee just in case the bungee doesn't release directly above the bungee) the prop will come on. The plane will then continue to follow the line until it has reached a specific
+position of the WP_TakeOffDirection (given in the arguments). Once the plane crosses the throttle line, which is perpendicular to the line the plane is following,
+and intersects the position of the ThrottlePoint (which has a fixed distance from the Initial Position (TakeOff_Distance in airframe file) from the bungee just in case the bungee doesn't release directly above the bungee) the prop will come on. The plane will then continue to follow the line until it has reached a specific
 height (defined in as Takeoff_Height in airframe file) above the bungee waypoint and speed (defined as Takeoff_Speed in the airframe file).
 
 <section name="Takeoff" prefix="Takeoff_">
@@ -98,6 +98,14 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t DirectionWP)
 	throttlePy = throttlePy+(waypoints[BungeeDirection].y);
 
 	return FALSE;
+}
+
+bool_t NavSetThrottleWaypoint(uint8_t _wp)
+{
+  waypoints[_wp].x= throttlePx;
+  waypoints[_wp].y= throttlePy;
+
+  return FALSE;
 }
 
 bool_t ZHAWBungeeTakeoff(void)

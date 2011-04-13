@@ -22,7 +22,8 @@
     <waypoint alt="30.0" name="AF" x="177.4" y="45.1"/>
     <waypoint alt="0.0" name="TD" x="28.8" y="57.0"/>
     <waypoint name="_BASELEG" x="168.8" y="-13.8"/>
-    <waypoint alt="460.0" name="TakeOffDirection" x="170" y="-15"/> <!-- Position of Bungeehook -->
+    <waypoint alt="460.0" name="TakeOffDirection" x="170" y="-15"/> <!-- Direction of TakeOff -->
+    <waypoint name="TP" x="30" y="30"/>
   </waypoints>
   <exceptions/>
   <blocks>
@@ -50,6 +51,7 @@
 
    <block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
       <call fun="InitializeZHAWBungeeTakeoff(WP_TakeOffDirection)"/>	<!-- in ZHAWNav.c-->
+      <call fun="NavSetThrottleWaypoint(WP_TP)"/>
       <call fun="ZHAWBungeeTakeoff()"/>					<!-- in ZHAWNav.c-->
    </block>
  

@@ -16,5 +16,7 @@ extern bool_t ZHAWBungeeTakeoff(void);
 extern bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, float radius);
 extern bool_t ZHAWSkidLanding(void);
 
+extern bool_t NavSetThrottleWaypoint(uint8_t _wp);
+
 
 #endif
