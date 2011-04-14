@@ -43,8 +43,7 @@
 
 /* mode */
 uint8_t v_ctl_mode;
-uint8_t airspeed_mode;
-
+uint8_t v_ctl_airspeed_mode;
 
 
 /* outer loop */
@@ -92,44 +91,47 @@ inline static void v_ctl_climb_auto_throttle_loop(void);
 //inline static void v_ctl_climb_auto_pitch_loop( void );
 //#endif
 
+#ifndef V_CTL_AIRSPEED_MODE
+#define V_CTL_AIRSPEED_MODE AS_MODE_STANDARD
+#endif
+
 #ifdef USE_AIRSPEED
 	float v_ctl_auto_airspeed_setpoint;
 	float v_ctl_auto_airspeed_controlled;
-	float v_ctl_auto_airspeed_downtime;
+	float v_ctl_auto_airspeed_deadband;
 
 	//Vassillis
-	float v_ctl_auto_airspeed_pgain_v;
-	float v_ctl_auto_airspeed_igain_v;
-	float v_ctl_auto_pitch_pgain_v;
-	float v_ctl_auto_pitch_igain_v;
+	float v_ctl_auto_airspeed_throttle_pgain_v;
+	float v_ctl_auto_airspeed_throttle_igain_v;
+	float v_ctl_auto_airspeed_pitch_pgain_v;
+	float v_ctl_auto_airspeed_pitch_igain_v;
 	//AirSpeed Pitch Climbrate
-	float v_ctl_auto_airspeed_pgain_aspc;
-	float v_ctl_auto_airspeed_igain_aspc;
+	float v_ctl_auto_airspeed_throttle_pgain_aspc;
+	float v_ctl_auto_airspeed_throttle_igain_aspc;
 	float v_ctl_auto_airspeed_prethrottle_aspc;
-	float v_ctl_auto_pitch_pgain_aspc;
-	float v_ctl_auto_pitch_igain_aspc;
+	float v_ctl_auto_airspeed_pitch_pgain_aspc;
+	float v_ctl_auto_airspeed_pitch_igain_aspc;
 	//AirSpeed Pitch Simple
-	float v_ctl_auto_airspeed_pgain_asps;
-	float v_ctl_auto_airspeed_igain_asps;
+	float v_ctl_auto_airspeed_throttle_pgain_asps;
+	float v_ctl_auto_airspeed_throttle_igain_asps;
 	float v_ctl_auto_airspeed_prethrottle_asps;
-	float v_ctl_auto_pitch_pgain_asps;
-	float v_ctl_auto_pitch_igain_asps;
+	float v_ctl_auto_airspeed_pitch_pgain_asps;
+	float v_ctl_auto_airspeed_pitch_igain_asps;
 	#define V_CTL_AUTO_ALT_MAX_SUM_ERR 100
 	//AirSpeed Manual Power
 	float v_ctl_auto_airspeed_throttlesetp_asmp;
-	float v_ctl_auto_pitch_pgain_asmp;
-	float v_ctl_auto_pitch_igain_asmp;
+	float v_ctl_auto_airspeed_pitch_pgain_asmp;
+	float v_ctl_auto_airspeed_pitch_igain_asmp;
 	//AirSpeed Pitch Acceleration
-	float v_ctl_auto_airspeed_pgain_aspa;
-	float v_ctl_auto_airspeed_igain_aspa;
+	float v_ctl_auto_airspeed_throttle_pgain_aspa;
+	float v_ctl_auto_airspeed_throttle_igain_aspa;
 	float v_ctl_auto_airspeed_prethrottle_aspa;
-	float v_ctl_auto_pitch_pgain_aspa;
-	float v_ctl_auto_pitch_igain_aspa;
+	float v_ctl_auto_airspeed_pitch_pgain_aspa;
+	float v_ctl_auto_airspeed_pitch_igain_aspa;
 	float v_ctl_airspeed_acc_filter_value;
 	float v_ctl_accel_pgain;
 	float v_ctl_altitude_max_accel;
 	float v_ctl_auto_acceleration_sum_err;
-
 
 	float v_ctl_auto_airspeed_sum_err;
 	float v_ctl_auto_climb_limit;
@@ -149,11 +151,12 @@ inline static void v_ctl_climb_auto_throttle_loop(void);
 	#endif
 	#define V_CTL_AUTO_AGR_CLIMB_GAIN 2.0 // altitude gain multiplier while in aggressive climb mode
 #endif
+	
+
 
 void v_ctl_init(void) {
 	/* mode */
 	v_ctl_mode = V_CTL_MODE_MANUAL;
-	airspeed_mode = AIRSPEED_MODE;
 
 	/* outer loop */
 	v_ctl_altitude_setpoint = 0.;
@@ -161,6 +164,8 @@ void v_ctl_init(void) {
 	v_ctl_altitude_pgain = V_CTL_ALTITUDE_PGAIN;
 	v_ctl_altitude_error = 0.;
 
+		v_ctl_airspeed_mode = V_CTL_AIRSPEED_MODE;
+	
 	/* inner loops */
 	v_ctl_climb_setpoint = 0.;
 	v_ctl_climb_mode = V_CTL_CLIMB_MODE_AUTO_THROTTLE;
@@ -185,41 +190,39 @@ void v_ctl_init(void) {
 	#ifdef USE_AIRSPEED
 		v_ctl_auto_airspeed_setpoint = V_CTL_AUTO_AIRSPEED_SETPOINT;
 		v_ctl_auto_airspeed_controlled = V_CTL_AUTO_AIRSPEED_SETPOINT;
-		v_ctl_auto_airspeed_downtime = V_CTL_AUTO_AIRSPEED_DOWNTIME;
+		v_ctl_auto_airspeed_deadband = V_CTL_AUTO_AIRSPEED_DEADBAND;
 		//Vassillis
-		v_ctl_auto_airspeed_pgain_v = V_CTL_AUTO_AIRSPEED_PGAIN_V;
-		v_ctl_auto_airspeed_igain_v = V_CTL_AUTO_AIRSPEED_IGAIN_V;
-		v_ctl_auto_pitch_pgain_v = V_CTL_AUTO_PITCH_PGAIN_V;
-		v_ctl_auto_pitch_igain_v = V_CTL_AUTO_PITCH_IGAIN_V;
+		v_ctl_auto_airspeed_throttle_pgain_v = V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_V;
+		v_ctl_auto_airspeed_throttle_igain_v = V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_V;
+		v_ctl_auto_airspeed_pitch_pgain_v = V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_V;
+		v_ctl_auto_airspeed_pitch_igain_v = V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_V;
 		//AirSpeed Pitch Climbrate
-		v_ctl_auto_airspeed_pgain_aspc = V_CTL_AUTO_AIRSPEED_PGAIN_ASPC;
-		v_ctl_auto_airspeed_igain_aspc = V_CTL_AUTO_AIRSPEED_IGAIN_ASPC;
+		v_ctl_auto_airspeed_throttle_pgain_aspc = V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_ASPC;
+		v_ctl_auto_airspeed_throttle_igain_aspc = V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_ASPC;
 		v_ctl_auto_airspeed_prethrottle_aspc = V_CTL_AUTO_AIRSPEED_PRETHROTTLE_ASPC;
-		v_ctl_auto_pitch_pgain_aspc = V_CTL_AUTO_PITCH_PGAIN_ASPC;
-		v_ctl_auto_pitch_igain_aspc = V_CTL_AUTO_PITCH_IGAIN_ASPC;
+		v_ctl_auto_airspeed_pitch_pgain_aspc = V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASPC;
+		v_ctl_auto_airspeed_pitch_igain_aspc = V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASPC;
 		//AirSpeed Pitch Simple
-		v_ctl_auto_airspeed_pgain_asps = V_CTL_AUTO_AIRSPEED_PGAIN_ASPS;
-		v_ctl_auto_airspeed_igain_asps = V_CTL_AUTO_AIRSPEED_IGAIN_ASPS;
+		v_ctl_auto_airspeed_throttle_pgain_asps = V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_ASPS;
+		v_ctl_auto_airspeed_throttle_igain_asps = V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_ASPS;
 		v_ctl_auto_airspeed_prethrottle_asps = V_CTL_AUTO_AIRSPEED_PRETHROTTLE_ASPS;
-		v_ctl_auto_pitch_pgain_asps = V_CTL_AUTO_PITCH_PGAIN_ASPS;
-		v_ctl_auto_pitch_igain_asps = V_CTL_AUTO_PITCH_IGAIN_ASPS;
+		v_ctl_auto_airspeed_pitch_pgain_asps = V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASPS;
+		v_ctl_auto_airspeed_pitch_igain_asps = V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASPS;
 		//AirSpeed Manual Power
 		v_ctl_auto_airspeed_throttlesetp_asmp = V_CTL_AUTO_AIRSPEED_THROTTLESETP_ASMP;
-		v_ctl_auto_pitch_pgain_asmp = V_CTL_AUTO_PITCH_PGAIN_ASMP;
-		v_ctl_auto_pitch_igain_asmp = V_CTL_AUTO_PITCH_IGAIN_ASMP;
+		v_ctl_auto_airspeed_pitch_pgain_asmp = V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASMP;
+		v_ctl_auto_airspeed_pitch_igain_asmp = V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASMP;
 		//AirSpeed Pitch Acceleration
-		v_ctl_auto_airspeed_pgain_aspa = V_CTL_AUTO_AIRSPEED_PGAIN_ASPA;
-		v_ctl_auto_airspeed_igain_aspa = V_CTL_AUTO_AIRSPEED_IGAIN_ASPA;
+		v_ctl_auto_airspeed_throttle_pgain_aspa = V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_ASPA;
+		v_ctl_auto_airspeed_throttle_igain_aspa = V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_ASPA;
 		v_ctl_auto_airspeed_prethrottle_aspa = V_CTL_AUTO_AIRSPEED_PRETHROTTLE_ASPA;
-		v_ctl_auto_pitch_pgain_aspa = V_CTL_AUTO_PITCH_PGAIN_ASPA;
-		v_ctl_auto_pitch_igain_aspa = V_CTL_AUTO_PITCH_IGAIN_ASPA;
-		v_ctl_airspeed_acc_filter_value = V_CTL_AIRSPEED_ACC_FILTER_VALUE;	
+		v_ctl_auto_airspeed_pitch_pgain_aspa = V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASPA;
+		v_ctl_auto_airspeed_pitch_igain_aspa = V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASPA;
+		v_ctl_airspeed_acc_filter_value = V_CTL_AIRSPEED_ACC_FILTER_VALUE;
 		v_ctl_accel_pgain = V_CTL_ACCEL_PGAIN;
 		v_ctl_altitude_max_accel = V_CTL_ALTITUDE_MAX_ACCEL;
 
-	
 		v_ctl_auto_airspeed_sum_err = 0.;
-	
 		v_ctl_auto_climb_limit = V_CTL_AUTO_CLIMB_LIMIT;
 
 		v_ctl_auto_groundspeed_setpoint = V_CTL_AUTO_GROUNDSPEED_SETPOINT;
@@ -275,9 +278,9 @@ void v_ctl_altitude_loop(void) {
 
 	v_ctl_altitude_error = estimator_z - v_ctl_altitude_setpoint;
 	
-	if (airspeed_mode==0 || airspeed_mode==1 || airspeed_mode==2) {
+	if (v_ctl_airspeed_mode==AS_MODE_STANDARD || v_ctl_airspeed_mode==AS_MODE_VASSILLIS || v_ctl_airspeed_mode==AS_MODE_ASP_CLIMBRATE) {
 		v_ctl_climb_setpoint = altitude_pgain_boost * v_ctl_altitude_pgain * v_ctl_altitude_error + v_ctl_altitude_pre_climb;
-	BoundAbs(v_ctl_climb_setpoint, V_CTL_ALTITUDE_MAX_CLIMB);
+		BoundAbs(v_ctl_climb_setpoint, V_CTL_ALTITUDE_MAX_CLIMB);
 	}
 	
 
@@ -298,87 +301,88 @@ void v_ctl_altitude_loop(void) {
 }
 
 void v_ctl_climb_loop(void) {
-	switch (v_ctl_climb_mode) {
-		case V_CTL_CLIMB_MODE_AUTO_THROTTLE:
-		default:
-		v_ctl_climb_auto_throttle_loop();
-		break;
+	
+	v_ctl_climb_auto_throttle_loop();
+	
+// 	switch (v_ctl_climb_mode) {
+// 		case V_CTL_CLIMB_MODE_AUTO_THROTTLE:
+// 		default:
+// 		v_ctl_climb_auto_throttle_loop();
+// 		break;
 //#ifdef V_CTL_AUTO_PITCH_PGAIN
 //		case V_CTL_CLIMB_MODE_AUTO_PITCH:
 //		v_ctl_climb_auto_pitch_loop();
 //		break;
 //#endif
-		}
-	}
+// 	}
+}
 
 /**
  * auto throttle inner loop
  * \brief
  */
 
-	inline static void v_ctl_climb_auto_throttle_loop(void) {
+inline static void v_ctl_climb_auto_throttle_loop(void) {
 
-	#ifndef USE_AIRSPEED
-		airspeed_mode = 0;
-	#endif
+#ifndef USE_AIRSPEED
+	v_ctl_airspeed_mode=AS_MODE_STANDARD;
+#endif
 	
-	if (airspeed_mode == 0) {
-		static float last_err;
-		float f_throttle = 0;
+if (v_ctl_airspeed_mode==AS_MODE_STANDARD) {
+	static float last_err;
+	float f_throttle = 0;
 
-		float err = estimator_z_dot - v_ctl_climb_setpoint;
-		float d_err = err - last_err;
-		last_err = err;
-		float controlled_throttle = v_ctl_auto_throttle_cruise_throttle + v_ctl_auto_throttle_climb_throttle_increment * v_ctl_climb_setpoint + v_ctl_auto_throttle_pgain * (err + v_ctl_auto_throttle_igain * v_ctl_auto_throttle_sum_err + v_ctl_auto_throttle_dgain * d_err);
+	float err = estimator_z_dot - v_ctl_climb_setpoint;
+	float d_err = err - last_err;
+	last_err = err;
+	float controlled_throttle = v_ctl_auto_throttle_cruise_throttle + v_ctl_auto_throttle_climb_throttle_increment * v_ctl_climb_setpoint + v_ctl_auto_throttle_pgain * (err + v_ctl_auto_throttle_igain * v_ctl_auto_throttle_sum_err + v_ctl_auto_throttle_dgain * d_err);
 
-		/* pitch pre-command */
-		float v_ctl_pitch_of_vz = (v_ctl_climb_setpoint + d_err * v_ctl_auto_throttle_pitch_of_vz_dgain) * v_ctl_auto_throttle_pitch_of_vz_pgain;
+	/* pitch pre-command */
+	float v_ctl_pitch_of_vz = (v_ctl_climb_setpoint + d_err * v_ctl_auto_throttle_pitch_of_vz_dgain) * v_ctl_auto_throttle_pitch_of_vz_pgain;
 
-		#if defined AGR_CLIMB
-			switch (v_ctl_auto_throttle_submode) {
-				case V_CTL_AUTO_THROTTLE_AGRESSIVE:
-					if (v_ctl_climb_setpoint > 0) { /* Climbing */
-						f_throttle = AGR_CLIMB_THROTTLE;
-						nav_pitch = AGR_CLIMB_PITCH;
-					}
-					else { /* Going down */
-						f_throttle = AGR_DESCENT_THROTTLE;
-						nav_pitch = AGR_DESCENT_PITCH;
-					}
-					break;
+#if defined AGR_CLIMB
+	switch (v_ctl_auto_throttle_submode) {
+		case V_CTL_AUTO_THROTTLE_AGRESSIVE:
+			if (v_ctl_climb_setpoint > 0) { /* Climbing */
+				f_throttle = AGR_CLIMB_THROTTLE;
+				nav_pitch = AGR_CLIMB_PITCH;
+			}
+			else { /* Going down */
+				f_throttle = AGR_DESCENT_THROTTLE;
+				nav_pitch = AGR_DESCENT_PITCH;
+			}
+			break;
 
-				case V_CTL_AUTO_THROTTLE_BLENDED: {
-					float ratio = (fabs(v_ctl_altitude_error) - AGR_BLEND_END) / (AGR_BLEND_START - AGR_BLEND_END);
-					f_throttle = (1-ratio) * controlled_throttle;
-					nav_pitch = (1-ratio) * v_ctl_pitch_of_vz;
-					v_ctl_auto_throttle_sum_err += (1-ratio) * err;
-					BoundAbs(v_ctl_auto_throttle_sum_err, V_CTL_AUTO_THROTTLE_MAX_SUM_ERR);
-					if (v_ctl_altitude_error < 0) {
-						f_throttle += ratio * AGR_CLIMB_THROTTLE;
-						nav_pitch += ratio * AGR_CLIMB_PITCH;
+			case V_CTL_AUTO_THROTTLE_BLENDED: {
+				float ratio = (fabs(v_ctl_altitude_error) - AGR_BLEND_END) / (AGR_BLEND_START - AGR_BLEND_END);
+				f_throttle = (1-ratio) * controlled_throttle;
+				nav_pitch = (1-ratio) * v_ctl_pitch_of_vz;
+				v_ctl_auto_throttle_sum_err += (1-ratio) * err;
+				BoundAbs(v_ctl_auto_throttle_sum_err, V_CTL_AUTO_THROTTLE_MAX_SUM_ERR);
+				if (v_ctl_altitude_error < 0) {
+					f_throttle += ratio * AGR_CLIMB_THROTTLE;
+					nav_pitch += ratio * AGR_CLIMB_PITCH;
 				} else {
 					f_throttle += ratio * AGR_DESCENT_THROTTLE;
 					nav_pitch += ratio * AGR_DESCENT_PITCH;
 				}
 				break;
-				}
+			}
 
-				case V_CTL_AUTO_THROTTLE_STANDARD:
-				default:
-		#endif
-		f_throttle = controlled_throttle;
-		v_ctl_auto_throttle_sum_err += err;
-		BoundAbs(v_ctl_auto_throttle_sum_err, V_CTL_AUTO_THROTTLE_MAX_SUM_ERR);
-		nav_pitch += v_ctl_pitch_of_vz;
-		#if defined AGR_CLIMB
-				break;
-			} /* switch submode */
-		#endif
-
+			case V_CTL_AUTO_THROTTLE_STANDARD:
+			default:
+#endif
+			f_throttle = controlled_throttle;
+			v_ctl_auto_throttle_sum_err += err;
+			BoundAbs(v_ctl_auto_throttle_sum_err, V_CTL_AUTO_THROTTLE_MAX_SUM_ERR);
+			nav_pitch += v_ctl_pitch_of_vz;
+#if defined AGR_CLIMB
+			break;
+		} /* switch submode */
+#endif
 		v_ctl_throttle_setpoint = TRIM_UPPRZ(f_throttle * MAX_PPRZ);
-
 	}
-	#if defined USE_AIRSPEED
+#if defined USE_AIRSPEED
 	else {
 
 		//***********AIRSPEED CONTROL***********************************
@@ -406,28 +410,27 @@ void v_ctl_climb_loop(void) {
 		float err = estimator_z_dot - v_ctl_climb_setpoint;
 		v_ctl_auto_pitch_sum_err += err;
 		BoundAbs(v_ctl_auto_pitch_sum_err, V_CTL_AUTO_PITCH_MAX_SUM_ERR);
-		switch (airspeed_mode) {
-			case 1: //Vasilis - v
-				v_ctl_pitch_of_vz = v_ctl_auto_pitch_pgain_v * (err + v_ctl_auto_pitch_igain_v * v_ctl_auto_pitch_sum_err);
+		switch (v_ctl_airspeed_mode) {
+			case AS_MODE_VASSILLIS: //Vasilis - v
+				v_ctl_pitch_of_vz = v_ctl_auto_airspeed_pitch_pgain_v * (err + v_ctl_auto_airspeed_pitch_igain_v * v_ctl_auto_pitch_sum_err);
 				break;
-			case 2: //AirSpeed Pitch Climbrate - ASPC
-				controlled_throttle = v_ctl_auto_airspeed_prethrottle_aspc + v_ctl_auto_airspeed_pgain_aspc * (err + v_ctl_auto_airspeed_igain_aspc * v_ctl_auto_pitch_sum_err);
+			case AS_MODE_ASP_CLIMBRATE: //AirSpeed Pitch Climbrate - ASPC
+				controlled_throttle = v_ctl_auto_airspeed_prethrottle_aspc + v_ctl_auto_airspeed_throttle_pgain_aspc * (err + v_ctl_auto_airspeed_throttle_igain_aspc * v_ctl_auto_pitch_sum_err);
 				//controlled_throttle = 0.6;
 				break;
-			case 3: //AirSpeed Pitch Simple - ASPS
+			case AS_MODE_ASP_SIMPLE: //AirSpeed Pitch Simple - ASPS
 				v_ctl_auto_alt_sum_err += v_ctl_altitude_error;
 				BoundAbs(v_ctl_auto_alt_sum_err, V_CTL_AUTO_ALT_MAX_SUM_ERR);
-				controlled_throttle = v_ctl_auto_airspeed_prethrottle_asps + v_ctl_auto_airspeed_pgain_asps * (v_ctl_altitude_error + v_ctl_auto_airspeed_igain_asps * v_ctl_auto_alt_sum_err);
+				controlled_throttle = v_ctl_auto_airspeed_prethrottle_asps + v_ctl_auto_airspeed_throttle_pgain_asps * (v_ctl_altitude_error + v_ctl_auto_airspeed_throttle_igain_asps * v_ctl_auto_alt_sum_err);
 				break;
-			case 4: //AirSpeed Manual Power - ASMP
+			case AS_MODE_ASP_MANUAL: //AirSpeed Manual Power - ASMP
 				controlled_throttle = v_ctl_auto_airspeed_throttlesetp_asmp;
 				break;
-			case 5: //AirSpeed Pitch Acceleration - ASPA
+			case AS_MODE_ASP_ACCEL: //AirSpeed Pitch Acceleration - ASPA
 				v_ctl_auto_alt_sum_err += v_ctl_altitude_error;
 				BoundAbs(v_ctl_auto_alt_sum_err, V_CTL_AUTO_ALT_MAX_SUM_ERR);
-				controlled_throttle = v_ctl_auto_airspeed_prethrottle_aspa + v_ctl_auto_airspeed_pgain_aspa * (v_ctl_altitude_error + v_ctl_auto_airspeed_igain_aspa * v_ctl_auto_alt_sum_err);
+				controlled_throttle = v_ctl_auto_airspeed_prethrottle_aspa + v_ctl_auto_airspeed_throttle_pgain_aspa * (v_ctl_altitude_error + v_ctl_auto_airspeed_throttle_igain_aspa * v_ctl_auto_alt_sum_err);
 				break;
-				
 		}
 
 		// Ground speed control loop (input: groundspeed error, output: airspeed controlled)
@@ -447,11 +450,11 @@ void v_ctl_climb_loop(void) {
 		
 		
 		// Airspeed downltime (Totzeit)
-		if (err_airspeed > v_ctl_auto_airspeed_downtime) {
-			err_airspeed = err_airspeed - v_ctl_auto_airspeed_downtime;
+		if (err_airspeed > v_ctl_auto_airspeed_deadband) {
+			err_airspeed = err_airspeed - v_ctl_auto_airspeed_deadband;
 		}
-		else if (err_airspeed < -v_ctl_auto_airspeed_downtime) {
-			err_airspeed = err_airspeed + v_ctl_auto_airspeed_downtime;
+		else if (err_airspeed < -v_ctl_auto_airspeed_deadband) {
+			err_airspeed = err_airspeed + v_ctl_auto_airspeed_deadband;
 		}
 		
 		
@@ -461,20 +464,20 @@ void v_ctl_climb_loop(void) {
 		
 
 
-		switch (airspeed_mode){
-			case 1: //Vasilis
-				controlled_throttle = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_airspeed_igain_v) * v_ctl_auto_airspeed_pgain_v;
+		switch (v_ctl_airspeed_mode){
+			case AS_MODE_VASSILLIS: //Vasilis
+				controlled_throttle = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_airspeed_throttle_igain_v) * v_ctl_auto_airspeed_throttle_pgain_v;
 				break;
-			case 2: //AirSpeed Pitch Climbrate - ASPC
-				v_ctl_pitch_of_vz = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_pitch_igain_aspc) * v_ctl_auto_pitch_pgain_aspc;
+			case AS_MODE_ASP_CLIMBRATE: //AirSpeed Pitch Climbrate - ASPC
+				v_ctl_pitch_of_vz = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_airspeed_pitch_igain_aspc) * v_ctl_auto_airspeed_pitch_pgain_aspc;
 				break;
-			case 3: //AirSpeed Pitch Simple - ASPS
-				v_ctl_pitch_of_vz = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_pitch_igain_asps) * v_ctl_auto_pitch_pgain_asps;
+			case AS_MODE_ASP_SIMPLE: //AirSpeed Pitch Simple - ASPS
+				v_ctl_pitch_of_vz = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_airspeed_pitch_igain_asps) * v_ctl_auto_airspeed_pitch_pgain_asps;
 				break;
-			case 4: //AirSpeed Manual Power - ASMP
-				v_ctl_pitch_of_vz = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_pitch_igain_asmp) * v_ctl_auto_pitch_pgain_asmp;
+			case AS_MODE_ASP_MANUAL: //AirSpeed Manual Power - ASMP
+				v_ctl_pitch_of_vz = (err_airspeed + v_ctl_auto_airspeed_sum_err * v_ctl_auto_airspeed_pitch_igain_asmp) * v_ctl_auto_airspeed_pitch_pgain_asmp;
 				break;
-			case 5: //AirSpeed Pitch Acceleration - ASPA				
+			case AS_MODE_ASP_ACCEL: //AirSpeed Pitch Acceleration - ASPA				
 			
 				
 				//Lowpass acceleration filtering
@@ -489,7 +492,7 @@ void v_ctl_climb_loop(void) {
 				v_ctl_auto_acceleration_sum_err += err_acceleration;
 				BoundAbs(v_ctl_auto_airspeed_sum_err, V_CTL_AUTO_ACCELERATION_MAX_SUM_ERR);
 				
-				v_ctl_pitch_of_vz = (err_acceleration + v_ctl_auto_acceleration_sum_err * v_ctl_auto_pitch_igain_aspa) * v_ctl_auto_pitch_pgain_aspa;
+				v_ctl_pitch_of_vz = (err_acceleration + v_ctl_auto_acceleration_sum_err * v_ctl_auto_airspeed_pitch_igain_aspa) * v_ctl_auto_airspeed_pitch_pgain_aspa;
 				break;
 		}
 		
@@ -500,9 +503,9 @@ void v_ctl_climb_loop(void) {
 		nav_pitch = v_ctl_pitch_of_vz;
 		v_ctl_throttle_setpoint = TRIM_UPPRZ(f_throttle * MAX_PPRZ);
 		Bound(nav_pitch, V_CTL_AUTO_PITCH_MIN_PITCH, V_CTL_AUTO_PITCH_MAX_PITCH);
-		RunOnceEvery(10, DOWNLINK_SEND_AS_GUIDANCE(DefaultChannel, &airspeed_mode, &v_ctl_auto_airspeed_sum_err, &err_airspeed, &err_groundspeed, &nav_pitch, &v_ctl_throttle_setpoint, &f_throttle));
+		RunOnceEvery(10, DOWNLINK_SEND_AS_GUIDANCE(DefaultChannel, &v_ctl_airspeed_mode, &v_ctl_auto_airspeed_sum_err, &err_airspeed, &err_groundspeed, &nav_pitch, &v_ctl_throttle_setpoint, &f_throttle));
 	}
-	#endif
+#endif
 	
 }
 

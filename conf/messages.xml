@@ -510,6 +510,9 @@
 		<field name="SE_As" type="float"></field>
 		<field name="SE_Alt" type="float"></field>
 		<field name="SE_Pos" type="float"></field>
+		<field name="Err_As" type="float"></field>
+		<field name="Err_Alt" type="float"></field>
+		<field name="Err_Pos" type="float"></field>
 
  	</message>
 	

@@ -13,8 +13,8 @@
 
 
     <dl_settings NAME="mode">
-      <dl_setting MAX="2" MIN="0" STEP="1" VAR="airspeed_mode" shortname="as_mode_0-2" module="guidance/guidance_v"/>
-	  <dl_setting MAX="5" MIN="3" STEP="1" VAR="airspeed_mode" shortname="as_mode_3-5" module="guidance/guidance_v"/>
+ <dl_setting MAX="5" MIN="0" STEP="1" VAR="v_ctl_airspeed_mode" values="STANDARD|VASSILLIS|ASP_CLIMBRATE|ASP_SIMPLE|ASP_MANUAL|ASP_ACCEL" shortname="as_mode" module="guidance/guidance_v"/>
+	<!--<dl_setting MAX="5" MIN="3" STEP="1" VAR="airspeed_mode" shortname="as_mode_3-5" module="guidance/guidance_v"/>-->
       <dl_setting MAX="2" MIN="0" STEP="1" VAR="pprz_mode" module="autopilot"/>
       <dl_setting MAX="1" MIN="0" STEP="1" VAR="alt_kalman_enabled" shortname="alt_kalman" module="estimator"/>
       <dl_setting MAX="0" MIN="0" STEP="1" VAR="estimator_flight_time" shortname="flight time"/>
@@ -36,6 +36,7 @@
     <dl_settings NAME="MainCtl">
 	<dl_settings NAME="Benchmark">
 		<dl_setting MAX="1" MIN="1" STEP="1" VAR="benchm_reset" shortname="bench_reset" module="modules/benchmark/flight_benchmark"/>
+		<dl_setting MAX="1" MIN="0" STEP="1" VAR="benchm_go" shortname="bench_go" module="modules/benchmark/flight_benchmark"/>
 		<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="ToleranceAispeed" shortname="AS_Tolerance" module="modules/benchmark/flight_benchmark" param="BENCHMARK_TOLERANCE_AIRSPEED"/>
 		<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="ToleranceAltitude" shortname="Alt_Tolerance" module="modules/benchmark/flight_benchmark" param="BENCHMARK_TOLERANCE_ALTITUDE"/>
 		<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="TolerancePosition" shortname="Pos_Tolerance" module="modules/benchmark/flight_benchmark" param="BENCHMARK_TOLERANCE_POSITION"/>
@@ -110,11 +111,11 @@
 
       <dl_settings name="Vassillis">
 	<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_setpoint" shortname="airspeed_setpoint" module="guidance/guidance_v" param="V_CTL_AUTO_AIRSPEED_SETPOINT"/>
-	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_downtime" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DOWNTIME"/>
- 	<dl_setting MAX="0.5" MIN="-0.5" STEP="0.01" VAR="v_ctl_auto_pitch_pgain_v" shortname="pitch_pgain" param="V_CTL_AUTO_PITCH_PGAIN_V"/>
-	<dl_setting MAX="10" MIN="-10" STEP="0.1" VAR="v_ctl_auto_pitch_igain_v" shortname="pitch_igain" param="V_CTL_AUTO_PITCH_IGAIN_V"/>
-	<dl_setting MAX="0.5" MIN="-0.5" STEP="0.005" VAR="v_ctl_auto_airspeed_pgain_v" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_PGAIN_V"/>
-	<dl_setting MAX="1" MIN="0" STEP="0.005" VAR="v_ctl_auto_airspeed_igain_v" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_IGAIN_V"/>
+	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_deadband" shortname="airspeed_deadband" param="V_CTL_AUTO_AIRSPEED_DEADBAND"/>
+ 	<dl_setting MAX="0.5" MIN="-0.5" STEP="0.01" VAR="v_ctl_auto_airspeed_pitch_pgain_v" shortname="pitch_pgain" param="V_CTL_AIRSPEED_AUTO_PITCH_PGAIN_V"/>
+	<dl_setting MAX="10" MIN="-10" STEP="0.1" VAR="v_ctl_auto_airspeed_pitch_igain_v" shortname="pitch_igain" param="V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_V"/>
+	<dl_setting MAX="0.5" MIN="-0.5" STEP="0.005" VAR="v_ctl_auto_airspeed_throttle_pgain_v" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_PGAIN_V"/>
+	<dl_setting MAX="1" MIN="0" STEP="0.005" VAR="v_ctl_auto_airspeed_throttle_igain_v" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_IGAIN_V"/>
 	<dl_setting MAX="20" MIN="0" STEP="0.01" VAR="v_ctl_auto_groundspeed_setpoint" shortname="gndsp_setpoint" param="V_CTL_AUTO_GROUNDSPEED_SETPOINT"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_pgain" shortname="gndsp_pgain" param="V_CTL_AUTO_GROUNDSPEED_PGAIN"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_igain" shortname="gndsp_igain" param="V_CTL_AUTO_GROUNDSPEED_IGAIN"/>
@@ -128,12 +129,12 @@
 	
       <dl_settings name="Pitch Climbrate">
 	<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_setpoint" shortname="airspeed_setpoint" module="guidance/guidance_v" param="V_CTL_AUTO_AIRSPEED_SETPOINT"/>
-	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_downtime" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DOWNTIME"/>
+	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_deadband" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DEADBAND"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.01" VAR="v_ctl_auto_airspeed_prethrottle_aspc" shortname="prethrottle" param="V_CTL_AUTO_AIRSPEED_PRETHROTTLE_ASPC"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_pitch_pgain_aspc" shortname="pitch_pgain" param="V_CTL_AUTO_PITCH_PGAIN_ASPC"/>
-	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_pitch_igain_aspc" shortname="pitch_igain" param="V_CTL_AUTO_PITCH_IGAIN_ASPC"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.01" VAR="v_ctl_auto_airspeed_pgain_aspc" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_PGAIN_ASPC"/>
-	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_igain_aspc" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_IGAIN_ASPC"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_pgain_aspc" shortname="pitch_pgain" param="V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASPC"/>
+	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_igain_aspc" shortname="pitch_igain" param="V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASPC"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.01" VAR="v_ctl_auto_airspeed_throttle_pgain_aspc" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_ASPC"/>
+	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_throttle_igain_aspc" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_ASPC"/>
 	<dl_setting MAX="20" MIN="0" STEP="0.01" VAR="v_ctl_auto_groundspeed_setpoint" shortname="gndsp_setpoint" param="V_CTL_AUTO_GROUNDSPEED_SETPOINT"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_pgain" shortname="gndsp_pgain" param="V_CTL_AUTO_GROUNDSPEED_PGAIN"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_igain" shortname="gndsp_igain" param="V_CTL_AUTO_GROUNDSPEED_IGAIN"/>
@@ -141,12 +142,12 @@
 
       <dl_settings name="Pitch Simple">
 	<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_setpoint" shortname="airspeed_setpoint" module="guidance/guidance_v" param="V_CTL_AUTO_AIRSPEED_SETPOINT"/>
-	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_downtime" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DOWNTIME"/>
+	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_deadband" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DEADBAND"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.01" VAR="v_ctl_auto_airspeed_prethrottle_asps" shortname="prethrottle" param="V_CTL_AUTO_AIRSPEED_PRETHROTTLE_ASPS"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_pitch_pgain_asps" shortname="pitch_pgain" param="V_CTL_AUTO_PITCH_PGAIN_ASPS"/>
-	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_pitch_igain_asps" shortname="pitch_igain" param="V_CTL_AUTO_PITCH_IGAIN_ASPS"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.01" VAR="v_ctl_auto_airspeed_pgain_asps" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_PGAIN_ASPS"/>
-	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_igain_asps" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_IGAIN_ASPS"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_pgain_asps" shortname="pitch_pgain" param="V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASPS"/>
+	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_igain_asps" shortname="pitch_igain" param="V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASPS"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.01" VAR="v_ctl_auto_airspeed_throttle_pgain_asps" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_ASPS"/>
+	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_throttle_igain_asps" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_ASPS"/>
 	<dl_setting MAX="20" MIN="0" STEP="0.01" VAR="v_ctl_auto_groundspeed_setpoint" shortname="gndsp_setpoint" param="V_CTL_AUTO_GROUNDSPEED_SETPOINT"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_pgain" shortname="gndsp_pgain" param="V_CTL_AUTO_GROUNDSPEED_PGAIN"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_igain" shortname="gndsp_igain" param="V_CTL_AUTO_GROUNDSPEED_IGAIN"/>
@@ -154,10 +155,10 @@
 	  
 	        <dl_settings name="Manual Power">
 	<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_setpoint" shortname="airspeed_setpoint" module="guidance/guidance_v" param="V_CTL_AUTO_AIRSPEED_SETPOINT"/>
-	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_downtime" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DOWNTIME"/>
+	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_deadband" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DEADBAND"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.01" VAR="v_ctl_auto_airspeed_throttlesetp_asmp" shortname="throttlesetp" param="V_CTL_AUTO_AIRSPEED_THROTTLESETP_ASMP"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_pitch_pgain_asmp" shortname="pitch_pgain" param="V_CTL_AUTO_PITCH_PGAIN_ASMP"/>
-	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_pitch_igain_asmp" shortname="pitch_igain" param="V_CTL_AUTO_PITCH_IGAIN_ASMP"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_pgain_asmp" shortname="pitch_pgain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_PITCH_PGAIN_ASMP"/>
+	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_igain_asmp" shortname="pitch_igain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_PITCH_IGAIN_ASMP"/>
 	<dl_setting MAX="20" MIN="0" STEP="0.01" VAR="v_ctl_auto_groundspeed_setpoint" shortname="gndsp_setpoint" param="V_CTL_AUTO_GROUNDSPEED_SETPOINT"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_pgain" shortname="gndsp_pgain" param="V_CTL_AUTO_GROUNDSPEED_PGAIN"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_igain" shortname="gndsp_igain" param="V_CTL_AUTO_GROUNDSPEED_IGAIN"/>
@@ -165,12 +166,12 @@
 	  
 	        <dl_settings name="Pitch Acceleration">
 	<dl_setting MAX="20" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_setpoint" shortname="airspeed_setpoint" module="guidance/guidance_v" param="V_CTL_AUTO_AIRSPEED_SETPOINT"/>
-	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_downtime" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DOWNTIME"/>
+	<dl_setting MAX="5" MIN="0" STEP="0.1" VAR="v_ctl_auto_airspeed_deadband" shortname="airspeed_downtime" param="V_CTL_AUTO_AIRSPEED_DEADBAND"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.01" VAR="v_ctl_auto_airspeed_prethrottle_aspa" shortname="prethrottle" param="V_CTL_AUTO_AIRSPEED_PRETHROTTLE_ASPA"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_pitch_pgain_aspa" shortname="pitch_pgain" param="V_CTL_AUTO_PITCH_PGAIN_ASPA"/>
-	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_pitch_igain_aspa" shortname="pitch_igain" param="V_CTL_AUTO_PITCH_IGAIN_ASPA"/>
-	<dl_setting MAX="0" MIN="-0.3" STEP="0.01" VAR="v_ctl_auto_airspeed_pgain_aspa" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_PGAIN_ASPA"/>
-	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_igain_aspc" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_IGAIN_ASPA"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_pgain_aspa" shortname="pitch_pgain" param="V_CTL_AUTO_AIRSPEED_PITCH_PGAIN_ASPA"/>
+	<dl_setting MAX="0.1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_pitch_igain_aspa" shortname="pitch_igain" param="V_CTL_AUTO_AIRSPEED_PITCH_IGAIN_ASPA"/>
+	<dl_setting MAX="0" MIN="-0.3" STEP="0.01" VAR="v_ctl_auto_airspeed_throttle_pgain_aspa" shortname="airspeed_pgain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_ASPA"/>
+	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_auto_airspeed_throttle_igain_aspc" shortname="airspeed_igain" param="V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_ASPA"/>
 	<dl_setting MAX="3" MIN="0" STEP="0.1" VAR="v_ctl_altitude_max_accel" shortname="max_accel" param="V_CTL_ALTITUDE_MAX_ACCEL"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_airspeed_acc_filter_value" shortname="acc_filter_value" param="V_CTL_AIRSPEED_ACC_FILTER_VALUE"/>
 	<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="v_ctl_accel_pgain" shortname="accel_pgain" param="V_CTL_ACCEL_PGAIN"/>
