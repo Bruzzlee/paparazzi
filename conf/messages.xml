@@ -515,7 +515,6 @@
 	
 	<message name="AMSYS_AIRSPEED" id="67">
 		<field name="asRaw" type="uint16"></field>
-		<field name="asPresureOffset" type="float" unit="Pa"></field>
 		<field name="asPresure" type="float" unit="Pa"></field>
 		<field name="asAirspeed" type="float" unit="m/s"></field>
 		<field name="asAirsFilt" type="float" unit="m/s"></field>

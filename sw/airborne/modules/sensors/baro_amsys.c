@@ -1,20 +1,7 @@
 /*
- * Driver for the EagleTree Systems Altitude Sensor
- * Has only been tested with V3 of the sensor hardware
+ * Driver for a Amsys Barometric Sensor I2C
+ * AMS 5812-0150-A
  *
- * Notes:
- * Connect directly to TWOG/Tiny I2C port. Multiple sensors can be chained together.
- * Sensor should be in the proprietary mode (default) and not in 3rd party mode.
- * Pitch gains may need to be updated.
- *
- *
- * Sensor module wire assignments:
- * Red wire: 5V
- * White wire: Ground
- * Yellow wire: SDA
- * Brown wire: SCL
- *
- * Copyright (C) 2009 Vassilis Varveropoulos
  * Copyright (C) 2010 The Paparazzi Team
  *
  * This file is part of paparazzi.
@@ -50,9 +37,6 @@
 #define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
 #endif
 
-
-
-
 #ifdef SITL
 #include "gps.h"
 #endif
@@ -65,10 +49,14 @@
 #define BARO_AMSYS_OFFSET_MIN 3277
 #define BARO_AMSYS_OFFSET_NBSAMPLES_INIT 40
 #define BARO_AMSYS_OFFSET_NBSAMPLES_AVRG 60
+
+#ifdef MEASURE_AMSYS_TEMPERATURE
 #define TEMPERATURE_AMSYS_OFFSET_MAX 29491
 #define TEMPERATURE_AMSYS_OFFSET_MIN 3277
 #define TEMPERATURE_AMSYS_MAX 110
 #define TEMPERATURE_AMSYS_MIN -25
+#endif
+
 //#define BARO_AMSYS_R 0.5
 //#define BARO_AMSYS_SIGMA2 0.1
 //#define BARO_ALT_CORRECTION 0.0
@@ -87,24 +75,14 @@ float baro_amsys_p;
 float baro_amsys_offset_altitude;
 float baro_amsys_abs_altitude;
 float ref_alt_init; //Altitude by initialising
-//float baro_amsys_moG_altitude;
 float baro_filter;
 float baro_old;
-bool_t baro_amsys_enabled;
+
 //float baro_amsys_r;
 //float baro_amsys_sigma2;
 
-// filtern der WErte
-#define BARO_ANZ 20
-float baro_values[BARO_ANZ];
-int8_t baro_head;
-//float baro_average;
-float baro_sum;
-//float alt_baro;
-
 
 struct i2c_transaction baro_amsys_i2c_trans;
-
 
 // Local variables
 bool_t baro_amsys_offset_init;
@@ -121,11 +99,11 @@ void baro_amsys_init( void ) {
 	baro_amsys_offset_tmp = 0;
 	baro_amsys_valid = TRUE;
 	baro_amsys_offset_init = FALSE;
-	baro_amsys_enabled = TRUE;
+// 	baro_amsys_enabled = TRUE;
 	baro_amsys_cnt = BARO_AMSYS_OFFSET_NBSAMPLES_INIT + BARO_AMSYS_OFFSET_NBSAMPLES_AVRG;
 //	baro_amsys_r = BARO_AMSYS_R;
 //	baro_amsys_sigma2 = BARO_AMSYS_SIGMA2;
-	baro_head=0;
+// 	baro_head=0;
 	ref_alt_init = 0;
 	baro_amsys_i2c_trans.status = I2CTransDone;
 }
@@ -133,8 +111,13 @@ void baro_amsys_init( void ) {
 void baro_amsys_read_periodic( void ) {
   // Initiate next read
 #ifndef SITL
-	if (baro_amsys_i2c_trans.status == I2CTransDone){			
-		I2CReceive(BARO_AMSYS_I2C_DEV, baro_amsys_i2c_trans, BARO_AMSYS_ADDR, 4);
+	if (baro_amsys_i2c_trans.status == I2CTransDone){
+#ifndef MEASURE_AMSYS_TEMPERATURE
+	I2CReceive(BARO_AMSYS_I2C_DEV, baro_amsys_i2c_trans, BARO_AMSYS_ADDR, 2);
+#else
+	I2CReceive(BARO_AMSYS_I2C_DEV, baro_amsys_i2c_trans, BARO_AMSYS_ADDR, 4);
+#endif
+		
 		}
 #else // SITL
 	pBaroRaw = 0;
@@ -148,9 +131,10 @@ void baro_amsys_read_event( void ) {
 	pBaroRaw = 0;
 	// Get raw altimeter from buffer	
 	pBaroRaw = (baro_amsys_i2c_trans.buf[0] << 8) | baro_amsys_i2c_trans.buf[1];
-
+#ifdef MEASURE_AMSYS_TEMPERATURE
 	tBaroRaw = (baro_amsys_i2c_trans.buf[2] << 8) | baro_amsys_i2c_trans.buf[3];
-  
+	baro_amsys_temp = (float)(tBaroRaw-TEMPERATURE_AMSYS_OFFSET_MIN)*TEMPERATURE_AMSYS_MAX/(float)(TEMPERATURE_AMSYS_OFFSET_MAX-TEMPERATURE_AMSYS_OFFSET_MIN)+(float)TEMPERATURE_AMSYS_MIN;
+#endif
 	// Check if this is valid altimeter
 	if (pBaroRaw == 0)
 		baro_amsys_valid = FALSE;
@@ -164,13 +148,11 @@ void baro_amsys_read_event( void ) {
 		//Cut RAW Min and Max
 		if (pBaroRaw < BARO_AMSYS_OFFSET_MIN)
 			pBaroRaw = BARO_AMSYS_OFFSET_MIN;
-        if (pBaroRaw > BARO_AMSYS_OFFSET_MAX)
+		if (pBaroRaw > BARO_AMSYS_OFFSET_MAX)
 			pBaroRaw = BARO_AMSYS_OFFSET_MAX;
+		
 		//Convert to pressure
 		baro_amsys_p = (float)(pBaroRaw-BARO_AMSYS_OFFSET_MIN)*BARO_AMSYS_MAX_PRESSURE/(float)(BARO_AMSYS_OFFSET_MAX-BARO_AMSYS_OFFSET_MIN);
-		baro_amsys_temp = (float)(tBaroRaw-TEMPERATURE_AMSYS_OFFSET_MIN)*TEMPERATURE_AMSYS_MAX/(float)(TEMPERATURE_AMSYS_OFFSET_MAX-TEMPERATURE_AMSYS_OFFSET_MIN)+(float)TEMPERATURE_AMSYS_MIN;
-		//baro_amsys_temp = (float)((tBaroRaw-3277)/(26214.0/110.0)-25);// Tmin=-25, Tmax=85
-		// Calculate offset average if not done already
 		if (!baro_amsys_offset_init) {
 			--baro_amsys_cnt;
 			// Check if averaging completed
@@ -179,7 +161,6 @@ void baro_amsys_read_event( void ) {
 				baro_amsys_offset = (float)(baro_amsys_offset_tmp / BARO_AMSYS_OFFSET_NBSAMPLES_AVRG);
 				ref_alt_init = GROUND_ALT;
 				baro_amsys_offset_init = TRUE;
-				//baro_amsys_p = (float)((baro_amsys_offset-3277)/(26214.0/1034.0));
 			
 				// hight over Sea level at init point
 				//baro_amsys_offset_altitude = 288.15 / 0.0065 * (1 - pow((baro_amsys_p)/1013.25 , 1/5.255));  
@@ -188,50 +169,30 @@ void baro_amsys_read_event( void ) {
 			else if (baro_amsys_cnt <= BARO_AMSYS_OFFSET_NBSAMPLES_AVRG)
 				baro_amsys_offset_tmp += baro_amsys_p;
 			
-			baro_amsys_abs_altitude = 0.0;
+			baro_amsys_altitude = 0.0;
 
 		}
-		// Convert raw to meter over Sea, temp [C] and pressure [mbar]
 		else {
-			// convert raw Sensordata to pressure and Temperature
-		
-			//Calculate Altitude over Ground
-			//baro_amsys_altitude = (baro_amsys_p-baro_amsys_offset)/(1.2041*9.81);
-			// internationale Höhenformel      p--> meter Sea
-			//baro_amsys_abs_altitude = 288.15 / 0.0065 * (1 - pow((baro_amsys_p-baro_amsys_offset)/1013.25 , 1/5.255));
-			// 288.15 = (273.15+baro_amsys_temp) --> avrg Temp in init is needed. --> is it necessary ????
-		
-			// avarrage filtering of altitude
-//			baro_head++;
-//			if (baro_head >= BARO_ANZ) {
-//				baro_head = 0;
-//			}
-//			baro_sum = baro_sum + baro_amsys_altitude - baro_values[baro_head]; 
-//			baro_values[baro_head] = baro_amsys_abs_altitude;
-//			baro_amsys_altitude = baro_sum / BARO_ANZ;
-			
+			// Lowpassfiltering and convert pressure to altitude
 			baro_amsys_altitude = baro_filter * baro_old + (1 - baro_filter) * (baro_amsys_offset-baro_amsys_p)/(1.2041*9.81);
 			baro_old = baro_amsys_altitude;
-
-			// Altitude Correction
-			//baro_amsys_offset_altitude = baro_amsys_offset_altitude + BARO_ALT_CORRECTION;
-			//baro_amsys_abs_altitude = baro_amsys_abs_altitude + BARO_ALT_CORRECTION;
-			// Meter over Ground
-			//baro_amsys_altitude = baro_amsys_abs_altitude - baro_amsys_offset_altitude;
-			baro_amsys_abs_altitude=baro_amsys_altitude+ref_alt_init;
+			
+			
 			//New value available
 			//EstimatorSetAlt(baro_amsys_abs_altitude);
-		
 		}
-		
-	} else {
+		baro_amsys_abs_altitude=baro_amsys_altitude+ref_alt_init;
+	} else /*{
 		baro_amsys_abs_altitude = 0.0;
-	}
-
-
+	}*/
+	
+	
 	// Transaction has been read
 	baro_amsys_i2c_trans.status = I2CTransDone;
-	
-	//DOWNLINK_SEND_ZHAWTEST(DefaultChannel, &pBaroRaw, &baro_amsys_p, &tBaroRaw, &baro_amsys_temp, &baro_amsys_offset_altitude, &baro_amsys_abs_altitude,&baro_amsys_altitude);    
+#ifdef SENSOR_SYNC_SEND
+	DOWNLINK_SEND_AMSYS_BARO(DefaultChannel, &pBaroRaw, &baro_amsys_p, &baro_amsys_offset, &ref_alt_init, &baro_amsys_abs_altitude, &baro_amsys_altitude, &baro_amsys_temp);
+#else
 	RunOnceEvery(10, DOWNLINK_SEND_AMSYS_BARO(DefaultChannel, &pBaroRaw, &baro_amsys_p, &baro_amsys_offset, &ref_alt_init, &baro_amsys_abs_altitude, &baro_amsys_altitude, &baro_amsys_temp));
+#endif
+	
 }
