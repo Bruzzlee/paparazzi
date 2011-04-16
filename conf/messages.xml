@@ -439,11 +439,26 @@
    <field name="altitude_offset" type="uint16"></field>
  </message>
 
+<<<<<<< HEAD
  <message name="SONAR_ADC" id="59">
    <field name="ADC" type="uint16"></field>
    <field name="RAW" type="float" unit="m"> </field>
    <field name="HIGH" type="float" unit="m"></field>
  </message>
+=======
+  <message name="GPS_LLA" id="59">
+    <field name="lat"        type="int32"  unit="cm" alt_unit="m"/>
+    <field name="lon"        type="int32"  unit="cm" alt_unit="m"/>
+    <field name="alt"        type="int32"  unit="cm" alt_unit="m"/>
+    <field name="course"     type="int16"  unit="decideg" alt_unit="deg"/>
+    <field name="speed"      type="uint16" unit="cm/s" alt_unit="m/s"/>
+    <field name="climb"      type="int16"  unit="cm/s" alt_unit="m/s"/>
+    <field name="week"       type="uint16" unit="weeks"/>
+    <field name="itow"       type="uint32" unit="ms"/>
+    <field name="mode"       type="uint8"  unit="byte_mask"/>
+    <field name="gps_nb_err" type="uint8"/>
+  </message>
+>>>>>>> 7ef265b0a82c1e85b1907a658e2b1c6c0b4fcd00
 
   <message name="H_CTL_A" id="60">
     <field name="roll_sum_err" type="float"/>
@@ -1368,7 +1383,17 @@
     <field name="data_b"  type="uint32"/>
   </message>
 
+<<<<<<< HEAD
  <!--178 is free -->
+=======
+  <message name="BOOZ_AHRS_BIAS" id="178">
+    <field name="bp"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
+    <field name="bq"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
+    <field name="br"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
+  </message>
+
+
+>>>>>>> 7ef265b0a82c1e85b1907a658e2b1c6c0b4fcd00
  <!--179 is free -->
 
   <message name="FMS_TIME" id="180">
@@ -1638,7 +1663,12 @@
  <!--216 is free -->
  <!--217 is free -->
  <!--218 is free -->
- <!--219 is free -->
+  <message name="WEATHER" id="219">
+    <field name="p_amb" type="float" unit="Pa" alt_unit="mBar" alt_unit_coef="0.01"/>
+    <field name="t_amb" type="float" unit="deg C"/>
+    <field name="windspeed" type="float" unit="m/s"/>
+    <field name="wind_from" type="float" unit="deg"/>
+  </message>
 
   <message name="IMU_TURNTABLE" id="220">
     <field name="omega" type="float" unit="rad/s" alt_unit="deg/s" alt_unit_coef="57.29578"/>
