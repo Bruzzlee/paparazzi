@@ -7,7 +7,7 @@
   <init fun="ArduIMU_init()"/>
   <periodic fun="ArduIMU_periodic()" freq="50" autorun="TRUE"/>
   <periodic fun="ArduIMU_periodic_gps()" freq="4" autorun="TRUE"/>
-  <event fun="ArduIMU_i2cEvent()"/>
+  <event fun="ardu_ins_event()"/>
   <makefile target="ap">
     <file name="ins_arduimu.c"/>
   </makefile>

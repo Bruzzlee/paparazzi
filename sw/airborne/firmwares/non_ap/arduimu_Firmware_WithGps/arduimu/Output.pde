@@ -18,7 +18,7 @@ void requestEvent(){
       pointer = (byte*) &I2C_Message_ar;
       Wire.send(pointer, 12);
       
-      /*
+      
       //Serial.println();
        Serial.print("Time ;");
       Serial.print(millis());
@@ -35,7 +35,7 @@ void requestEvent(){
       Serial.print(I2C_Message_ar[4]);
       Serial.print(";  ACCZ ;");
       Serial.println(I2C_Message_ar[5]);
-      */
+      
   }
  
  // ********GPS Data from PAPArazzi UBLOX**********************************************************************

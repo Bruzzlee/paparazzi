@@ -31,7 +31,7 @@
 		<define name="USE_AIRSPEED"/>
 		<!--define name="MEASURE_AIRSPEED" /-->
 		<!--define name="SONAR_SYNC_SEND"/-->
-		<define name="MEASURE_AMSYS_TEMPERATURE"/>
+		<!--define name="MEASURE_AMSYS_TEMPERATURE"/-->
 		
 
 		<subsystem name="radio_control" type="ppm"/>
@@ -56,25 +56,14 @@
 	</firmware>
 
 	<modules>
-		<load name="ins_arduimu.xml"/>
+		<load name="ins_arduimu_basic.xml"/>
 		<load name="sonar_adc.xml">
 			<configure name="ADC_SONAR" value="ADC_5"/>
 			<define name="SONAR_ADC_OFFSET" value="0"/>
 			<define name="SONAR_ADC_SCALE" value="0.0172"/>
 		</load>
-		<!--load name="airspeed_adc.xml">
-			<configure name="ADC_AIRSPEED" value="ADC_5"/>
-			<define name="AIRSPEED_QUADRATIC_SCALE" value="1.7469"/>
-			<!-flag name="AIRSPEED_SCALE" value="1"/->
-			<define name="AIRSPEED_BIAS" value="0"/>
-		</load-->
 
-		<!--load name="baro_adc.xml">
-			<define name="ADC_BARO" value="ADC_4"/>
-		</load-->
-	<!--**************************************************************-->
-		<!--load name="I2C_tool.xml"/-->
-		
+	<!--**************************************************************-->		
 		
 		<load name="airspeed_amsys.xml">  
 			<define name="AIRSPEED_SCALE" value="1."/>   
@@ -92,11 +81,6 @@
 			<define name="BENCHMARK_TOLERANCE_ALTITUDE" value="0.0"/> 
 			<define name="BENCHMARK_TOLERANCE_POSITION" value="0.0"/> 
 		</load> 
-
-	
-		<!--load name="HightOverHome.xml"/-->
-
-
 
 	<!--**************************************************************-->
 

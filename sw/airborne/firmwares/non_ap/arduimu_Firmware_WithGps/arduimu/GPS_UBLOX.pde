@@ -119,7 +119,7 @@ void parse_ubx_gps(){
             if (ground_speed > SPEEDFILT && gpsFix==0) gc_offset = ground_course - ToDeg(yaw);
             recPakOne=0x00;
             //messageNr= 0x05;  // kommt so nicht mehr in die Abfage !!!   
-#if 0           
+#if 0          
             // Serial.print("Time von Arduino ;");
                // Serial.print(millis());
                 Serial.print("MesageNr: ");
