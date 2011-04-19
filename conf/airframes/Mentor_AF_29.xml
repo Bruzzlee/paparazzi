@@ -142,10 +142,10 @@
 <!--******************************Bungee Takeoff**********************************************-->
 
    <section name="Takeoff" prefix="Takeoff_">
-  	<define name="Height" value="50" unit="m"/>		<!--Final height (over TakeOffDirection_WP) -->
+  	<!--define name="Height" value="50" unit="m"/-->		<!--Final height (over TakeOffDirection_WP) -->
   	<define name="Speed" value="16" unit="m/s"/>		<!--Final speed of Takeoff -->
-  	<define name="Distance" value="2" unit="m"/>		<!--Distance between UAV and ThrottleLine -->
-  	<define name="MinSpeed" value="3" unit="m/s"/>		<!--Speed to stop updating the LaunchLine and min Speed to launch throttle -->
+  	<define name="Distance" value="20" unit="m"/>		<!--Distance between UAV and ThrottleLine -->
+  	<define name="MinSpeed" value="5" unit="m/s"/>		<!--Speed to stop updating the LaunchLine and min Speed to launch throttle -->
    </section>
 
 <!--******************************************************************************************-->

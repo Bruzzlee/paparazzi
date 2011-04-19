@@ -27,6 +27,7 @@
 
 extern uint16_t adc_sonar_val;
 extern float sonar_offset;
+extern float sonar_dist;
 
 void sonar_adc_init( void );
 void sonar_adc_update( void );
