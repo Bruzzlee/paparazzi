@@ -1,7 +1,7 @@
 <gconf>
-  <entry name="left_pane_width" value="364" application="paparazzi center"/>
-  <entry name="height" value="972" application="paparazzi center"/>
-  <entry name="width" value="1672" application="paparazzi center"/>
+  <entry name="left_pane_width" value="387" application="paparazzi center"/>
+  <entry name="height" value="634" application="paparazzi center"/>
+  <entry name="width" value="1362" application="paparazzi center"/>
   <entry name="last target" value="ap" application="paparazzi center"/>
   <entry name="last session" value="Flight USB-serial@57600" application="paparazzi center"/>
   <entry name="last A/C" value="Mentor" application="paparazzi center"/>

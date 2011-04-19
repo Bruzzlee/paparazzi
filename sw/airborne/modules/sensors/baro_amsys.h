@@ -1,20 +1,7 @@
 /*
- * Driver for the EagleTree Systems Altitude Sensor
- * Has only been tested with V3 of the sensor hardware
+ * Driver for a Amsys Barometric Sensor I2C
+ * AMS 5812-0150-A
  *
- * Notes:
- * Connect directly to TWOG/Tiny I2C port. Multiple sensors can be chained together.
- * Sensor should be in the proprietary mode (default) and not in 3rd party mode.
- * Pitch gains may need to be updated.
- *
- *
- * Sensor module wire assignments:
- * Red wire: 5V
- * White wire: Ground
- * Yellow wire: SDA
- * Brown wire: SCL
- *
- * Copyright (C) 2009 Vassilis Varveropoulos
  * Copyright (C) 2010 The Paparazzi Team
  *
  * This file is part of paparazzi.
@@ -43,14 +30,14 @@
 
 #define BARO_AMSYS_DT 0.05
 
-extern uint16_t baro_amsys_adc;
-extern float baro_amsys_offset;
-extern bool_t baro_amsys_valid;
-extern bool_t baro_amsys_updated;
-extern bool_t baro_amsys_enabled;
+// extern uint16_t baro_amsys_adc;
+// extern float baro_amsys_offset;
+// extern bool_t baro_amsys_valid;
+// extern bool_t baro_amsys_updated;
+// extern bool_t baro_amsys_enabled;
 extern float baro_amsys_altitude;
-extern float baro_amsys_r;
-extern float baro_amsys_sigma2;
+// extern float baro_amsys_r;
+// extern float baro_amsys_sigma2;
 extern float baro_filter;
 
 extern struct i2c_transaction baro_amsys_i2c_trans;

@@ -510,12 +510,14 @@
 		<field name="SE_As" type="float"></field>
 		<field name="SE_Alt" type="float"></field>
 		<field name="SE_Pos" type="float"></field>
+		<field name="Err_As" type="float"></field>
+		<field name="Err_Alt" type="float"></field>
+		<field name="Err_Pos" type="float"></field>
 
  	</message>
 	
 	<message name="AMSYS_AIRSPEED" id="67">
 		<field name="asRaw" type="uint16"></field>
-		<field name="asPresureOffset" type="float" unit="Pa"></field>
 		<field name="asPresure" type="float" unit="Pa"></field>
 		<field name="asAirspeed" type="float" unit="m/s"></field>
 		<field name="asAirsFilt" type="float" unit="m/s"></field>
