@@ -47,18 +47,23 @@
       <go from="HOME" pitch="15" throttle="1.0" vmode="throttle" wp="CLIMB"/>
     </block-->
 
-<!--*********************************ZHAW Bungee Takeoff************************************-->
 
+<!--*********************************ZHAW Bungee Takeoff ohne Glide************************************-->
+   <!--block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+      <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
+      <call fun="ZHAWBungeeTakeoff(WP_TP)"/>
+   </block-->
+<!--**************************************************************************************************-->
+
+
+<!--*********************************ZHAW Bungee Takeoff mit Glide************************************-->
    <block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
-      <!--call fun="ZHAWBungeeTakeoff(WP_TP)"/-->
-
-			<!-- Für Glide Start-->
       <call fun="ZHAWBungeeTakeoff_glide(WP_TP)"/>
       <go from="TP" hmode="route" vmode="glide" wp="TOD"/>
    </block>
- 
-<!--*****************************************************************************************-->
+<!--**************************************************************************************************-->
+
 
 
     <block group="home" key="<Control>a" name="Standby" strip_button="Standby" strip_icon="home.png">

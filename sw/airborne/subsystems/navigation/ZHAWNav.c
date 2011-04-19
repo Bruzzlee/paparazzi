@@ -13,7 +13,6 @@ and intersects the position of the ThrottlePoint (which has a fixed distance fro
 height (defined in as Takeoff_Height in airframe file) above the bungee waypoint and speed (defined as Takeoff_Speed in the airframe file).
 
 <section name="Takeoff" prefix="Takeoff_">
-  <define name="Height" value="30" unit="m"/>
   <define name="Speed" value="15" unit="m/s"/>
   <define name="Distance" value="10" unit="m"/>
   <define name="MinSpeed" value="5" unit="m/s"/>
@@ -23,9 +22,6 @@ height (defined in as Takeoff_Height in airframe file) above the bungee waypoint
 #ifndef Takeoff_Distance
 #define Takeoff_Distance 10
 #endif
-//#ifndef Takeoff_Height
-//#define Takeoff_Height 30
-//#endif
 #ifndef Takeoff_Speed
 #define Takeoff_Speed 15
 #endif
