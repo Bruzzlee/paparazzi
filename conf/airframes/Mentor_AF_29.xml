@@ -131,7 +131,7 @@
 	<!--******************************Bungee Takeoff**********************************************-->
 
 	<section name="Takeoff" prefix="Takeoff_">
-		<!--define name="Height" value="50" unit="m"/-->		<!--Final height (over TakeOffDirection_WP) --> <!--Für ZHAWNav nicht benötigt-->
+		<!--define name="Height" value="50" unit="m"/-->	<!--Final height (over TakeOffDirection_WP) --> <!--Für ZHAWNav nicht benötigt-->
 		<define name="Speed" value="12" unit="m/s"/>		<!--Final speed of Takeoff -->
 		<define name="Distance" value="20" unit="m"/>		<!--Distance between UAV and ThrottleLine -->
 		<define name="MinSpeed" value="4" unit="m/s"/>		<!--Speed to stop updating the LaunchLine and min Speed to launch throttle -->
@@ -143,7 +143,7 @@
 	<!--******************************Landing**********************************************-->
 
 	<section name="Landing" prefix="Landing_">
-		<define name="AFHeight" value="50" unit="m"/>  		<!--Höhe über TD-Waypoint-->
+		<!--define name="AFHeight" value="20" unit="m"/-->  		<!--Höhe über TD-Waypoint-->
 		<define name="FinalHeight" value="5" unit="m"/>
 		<define name="FinalStageTime" value="5" unit="s"/>
 	</section>

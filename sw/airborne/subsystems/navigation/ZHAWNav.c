@@ -314,9 +314,6 @@ Landing Routine
 
  */
 
-#ifndef Landing_AFHeight
-#define Landing_AFHeight 50
-#endif
 #ifndef Landing_FinalHeight
 #define Landing_FinalHeight 5
 #endif
@@ -345,7 +342,6 @@ bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, float radius) // Ei
 	LandAppAlt = estimator_z;
 	FinalLandAltitude = Landing_FinalHeight;
 	FinalLandCount = 1;
-	waypoints[AFWaypoint].a = waypoints[TDWaypoint].a + Landing_AFHeight;
 
 	//Translate distance from AF to TD so that AF is (0/0) 
 	float x_0 = waypoints[TDWaypoint].x - waypoints[AFWaypoint].x;
@@ -356,7 +352,7 @@ bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, float radius) // Ei
 	float x_1 = x_0 / d;
 	float y_1 = y_0 / d;
 
-	//find the center of LandCircleQDR
+	//find the center of LandCircle
 	LandCircle.x = waypoints[AFWaypoint].x + y_1 * LandRadius;
 	LandCircle.y = waypoints[AFWaypoint].y - x_1 * LandRadius;
 
@@ -396,7 +392,7 @@ bool_t ZHAWSkidLanding(void)
 
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius); 
 
-		if(estimator_z < waypoints[AFWaypoint].a + 5)
+		if(estimator_z < waypoints[AFWaypoint].a + 5) //Drohne hat die Höhe des AF_Waypoints erreicht. 
 		{
 			CLandingStatus = LandingWait;
 			nav_init_stage();
@@ -404,12 +400,12 @@ bool_t ZHAWSkidLanding(void)
 
 	break;
 
-	case LandingWait: // Einen eventuell angefangenen Kreis noch fertig fliegen 
+	case LandingWait: // Höhe halten und weiter um CircleCircle kreisen  
 		NavVerticalAutoThrottleMode(0); /* No pitch */
   		NavVerticalAltitudeMode(waypoints[AFWaypoint].a, 0);
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius);
 
-	  	if(NavCircleCount() > 0.5 && NavQdrCloseTo(DegOfRad(ApproachQDR)))
+	  	if(NavCircleCount() > 0.5 && NavQdrCloseTo(DegOfRad(ApproachQDR)))  // Drohne nähert sich dem Winkel (bzw. Kurs) auf dem Sie fliegen muss um zu landen (45° fehlen)
 		{
 			CLandingStatus = Approach;
 			nav_init_stage();
@@ -420,13 +416,13 @@ bool_t ZHAWSkidLanding(void)
 
 
 
-	case Approach:
+	case Approach:				//Motor wird abgeschaltet und Drohne fliegt den Kreis fertig, bis sie auf Landekurs ist
 		kill_throttle = 1;
 		NavVerticalAutoThrottleMode(0); /* No pitch */
   		NavVerticalAltitudeMode(waypoints[AFWaypoint].a, 0); 	//Sollhöhe geben
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius);	
 
-	  	if(NavQdrCloseTo(DegOfRad(LandCircleQDR)))
+	  	if(NavQdrCloseTo(DegOfRad(LandCircleQDR)))  //Drohne hat den Landekurs erreicht
 		{
 			CLandingStatus = Final;
 			nav_init_stage();

@@ -857,9 +857,9 @@ Landing Routine
 
  */
 
-#ifndef Landing_AFHeight
-#define Landing_AFHeight 50
-#endif
+//#ifndef Landing_AFHeight
+//#define Landing_AFHeight 20
+//#endif
 #ifndef Landing_FinalHeight
 #define Landing_FinalHeight 5
 #endif
@@ -888,7 +888,7 @@ bool_t InitializeSkidLanding(uint8_t AFWP, uint8_t TDWP, float radius)
 	LandAppAlt = estimator_z;
 	FinalLandAltitude = Landing_FinalHeight;
 	FinalLandCount = 1;
-	waypoints[AFWaypoint].a = waypoints[TDWaypoint].a + Landing_AFHeight;
+	//waypoints[AFWaypoint].a = waypoints[TDWaypoint].a + Landing_AFHeight;
 
 	float x_0 = waypoints[TDWaypoint].x - waypoints[AFWaypoint].x;
 	float y_0 = waypoints[TDWaypoint].y - waypoints[AFWaypoint].y;
