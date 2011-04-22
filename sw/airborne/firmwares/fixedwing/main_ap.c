@@ -235,10 +235,15 @@ static inline void telecommand_task( void ) {
    */
   if (pprz_mode == PPRZ_MODE_AUTO1) {
     /** Roll is bounded between [-AUTO1_MAX_ROLL;AUTO1_MAX_ROLL] */
-    h_ctl_roll_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_ROLL], 0., -AUTO1_MAX_ROLL);
+    h_ctl_roll_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_ROLL], 0., -h_ctl_roll_max_setpoint);
 
+    
     /** Pitch is bounded between [-AUTO1_MAX_PITCH;AUTO1_MAX_PITCH] */
-    h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., AUTO1_MAX_PITCH);
+	if (fabs(h_ctl_pitch_min_setpoint) > h_ctl_pitch_max_setpoint)
+		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., h_ctl_pitch_min_setpoint);
+	else
+		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., h_ctl_pitch_max_setpoint);
+	    
   } /** Else asynchronously set by \a h_ctl_course_loop() */
 
   /** In AUTO1, throttle comes from RADIO_THROTTLE
@@ -341,7 +346,7 @@ static void navigation_task( void ) {
 #endif
 
     h_ctl_pitch_setpoint = nav_pitch;
-    Bound(h_ctl_pitch_setpoint, H_CTL_PITCH_MIN_SETPOINT, H_CTL_PITCH_MAX_SETPOINT);
+    Bound(h_ctl_pitch_setpoint, h_ctl_pitch_min_setpoint, h_ctl_pitch_max_setpoint);
     if (kill_throttle || (!estimator_flight_time && !launch))
       v_ctl_throttle_setpoint = 0;
   }

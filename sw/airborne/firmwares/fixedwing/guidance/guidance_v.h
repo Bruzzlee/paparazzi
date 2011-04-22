@@ -86,6 +86,9 @@ extern float agr_descent_nav_ratio;
 #endif
 
 /* "auto pitch" inner loop parameters */
+
+extern float h_ctl_pitch_min_setpoint;
+extern float h_ctl_pitch_max_setpoint;
 //extern float v_ctl_auto_pitch_pgain;
 //extern float v_ctl_auto_pitch_igain;
 extern float v_ctl_auto_pitch_sum_err;
