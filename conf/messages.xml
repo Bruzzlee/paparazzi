@@ -492,14 +492,22 @@
 
  <!-- 63 is free -->
 
-<!--	<message name="HIGHT_OVER_HOME" id="64">
-		<field name="start_hight" type="float" unit="m"/>
-		<field name="actual_hight" type="float" unit="m"/>
-		<field name="diff_hight" type="float" unit="m"/>
-		<field name="numOfCount" type="uint8" unit=""/>
+	<message name="ZHAWTAKEOFF" id="64">
+		<field name="above_line" type="uint8"/>
+		<field name="current_above_line" type="uint8"/>
+		<field name="currentSpeed" type="float" unit="m/s"/>
+		<field name="minSpeed" type="float" unit="m/s"/>
+		<field name="deltaX" type="float" unit="m"/>
+		<field name="deltaY" type="float" unit="m"/>
+		<field name="currentx" type="float" unit="m"/>
+		<field name="currenty" type="float" unit="m"/>
+		<field name="throttleB" type="float" unit="m"/>
+		<field name="throttleSlope" type="float" unit="m/m"/>
+		<field name="throttlePx_abs" type="float" unit="m"/>
+		<field name="throttlePy_abs" type="float" unit="m"/>
    	</message>
 	
-	<message name="ZHAWTEST" id="65">
+	<!--message name="ZHAWTEST" id="65">
    		<field name="pBaroRaw" type="uint16"></field>
    		<field name="pBaro" type="float"></field>
    		<field name="tempRaw" type="uint16"></field>

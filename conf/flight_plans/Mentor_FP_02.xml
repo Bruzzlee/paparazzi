@@ -6,6 +6,7 @@
 #include "datalink.h"
 #include "subsystems/navigation/OSAMNav.h"
 #include "subsystems/navigation/ZHAWNav.h"
+#include "modules/benchmark/flight_benchmark.h"
 </header>
   <waypoints>
     <waypoint name="HOME" x="0" y="0"/>
@@ -40,9 +41,19 @@
       <attitude roll="0" throttle="0" vmode="throttle"/>
     </block>
 
+
+    <block group="home" key="t" name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+      <exception cond="estimator_z > ground_alt+25" deroute="Standby"/>
+      <set value="0" var="kill_throttle"/>
+      <set value="0" var="estimator_flight_time"/>
+      <go from="HOME" pitch="15" throttle="1.0" vmode="throttle" wp="CLIMB"/>
+    </block>
+
+
+
 <!--*********************************ZHAW Bungee Takeoff ohne glide************************************-->
 
-   <block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+   <block name="BungeeTakeoff" strip_button="BungeeTakeoff (wp TOD)" strip_icon="bungee_launch.png">
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
       <call fun="ZHAWBungeeTakeoff(WP_TP)"/>
    </block>
@@ -65,6 +76,11 @@
     </block>
     <block group="base_pattern" name="Oval 1-2" strip_button="Oval (wp 1-2)" strip_icon="oval.png">
       <oval p1="Ov1" p2="Ov2" radius="nav_radius"/>
+    </block>
+    <block group="base_pattern" name="Oval Bench" strip_button="Oval Bench(wp 1-2)" strip_icon="oval.png">
+      <oval p1="Ov1" p2="Ov2" radius="nav_radius" until="nav_oval_count > 0"/>
+      <set value="1" var="benchm_reset"/>
+      <deroute block="Oval Bench" />
     </block>
     <block group="base_pattern" name="Line 1-2" strip_button="Line (wp 1-2)" strip_icon="line.png">
       <call fun="nav_line_init()"/>
