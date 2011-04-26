@@ -240,7 +240,7 @@ static inline void telecommand_task( void ) {
     
     /** Pitch is bounded between [-AUTO1_MAX_PITCH;AUTO1_MAX_PITCH] */
 	if (fabs(h_ctl_pitch_min_setpoint) > h_ctl_pitch_max_setpoint)
-		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., h_ctl_pitch_min_setpoint);
+		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., -h_ctl_pitch_min_setpoint);
 	else
 		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., h_ctl_pitch_max_setpoint);
 	    
