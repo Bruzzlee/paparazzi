@@ -3,6 +3,6 @@
   <entry name="height" value="972" application="paparazzi center"/>
   <entry name="width" value="1672" application="paparazzi center"/>
   <entry name="last target" value="ap" application="paparazzi center"/>
-  <entry name="last session" value="Flight USB-serial@57600" application="paparazzi center"/>
+  <entry name="last session" value="Flight USB-serial@9600" application="paparazzi center"/>
   <entry name="last A/C" value="Mentor" application="paparazzi center"/>
 </gconf>

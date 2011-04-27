@@ -31,7 +31,7 @@ height (defined in as Takeoff_Height in airframe file) above the bungee waypoint
 #define Takeoff_Distance 10
 #endif
 #ifndef Takeoff_Speed
-#define Takeoff_Speed 15
+#define Takeoff_Speed 12
 #endif
 #ifndef Takeoff_MinSpeed
 #define Takeoff_MinSpeed 2
@@ -117,7 +117,7 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP)
 
 
 	//Takeoff_Distance can only be positive
-	TDistance = 15.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	TDistance = 13.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 
 	//Record bungee alt (which should be the ground alt at that point)
 	BungeeAlt = (waypoints[_TP].a);
@@ -148,7 +148,7 @@ bool_t ZHAWBungeeTakeoff(uint8_t _TP)
 		//Follow Launch Line
 		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
 	  	NavVerticalAltitudeMode(TakeOff_Height, 0.);		//Vorgabe der Sollhöhe
-		nav_route_xy(initialx,initialy,(waypoints[TOD].x),(waypoints[TOD].y));	//Vorgabe der Route
+		//nav_route_xy(initialx,initialy,(waypoints[TOD].x),(waypoints[TOD].y));	//Vorgabe der Route
 		kill_throttle = 1;	//Motor ausgeschaltet
 
 
@@ -203,11 +203,11 @@ bool_t ZHAWBungeeTakeoff(uint8_t _TP)
 
 /*bool_t ZHAWBungeeTakeoff_glide(uint8_t _TP)
 {
-	//Translate the Current Position so that the THROTTLEPOINT is (0/0) (wie weit ist die Drohne noch vom TP weg?)
+//Translate the Current Position so that the THROTTLEPOINT is (0/0) (wie weit ist die Drohne noch vom TP weg?)
 	float Currentx = estimator_x - throttlePx;
 	float Currenty = estimator_y - throttlePy;
 
-	bool_t CurrentAboveLine;
+	bool_t CurrentAboveThrottleLine;
 
 	switch(CTakeoffStatus)
 	{
@@ -216,37 +216,28 @@ bool_t ZHAWBungeeTakeoff(uint8_t _TP)
 		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
 	  	NavVerticalAltitudeMode(TakeOff_Height, 0.);		//Vorgabe der Sollhöhe
 		nav_route_xy(initialx,initialy,(waypoints[TOD].x),(waypoints[TOD].y));	//Vorgabe der Route
-
 		kill_throttle = 1;	//Motor ausgeschaltet
 
+
 		//recalculate lines if the UAV is not in Auto2
-		if(pprz_mode < 2)	// nie neu berechnen
-		{
-			AboveLine=calculateTakeOffConditions();	
-		}
+		if(pprz_mode < 2)
+			AboveThrottleLine=calculateTakeOffConditions();	
+		
 
 
 		//Find out if the UAV is currently above the line
 		if(Currenty > (ThrottleSlope*Currentx) + 0)
-			CurrentAboveLine = TRUE;
+			CurrentAboveThrottleLine = TRUE;
 		else
-			CurrentAboveLine = FALSE;
+			CurrentAboveThrottleLine = FALSE;
+				
 
+		float stimmtSo = estimator_hspeed_mod; 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveThrottleLine, &CurrentAboveThrottleLine, &stimmtSo, &Takeoff_MinSpeed_local, &deltaTX, &deltaTY, &Currentx, &Currenty, &ThrottleB, &ThrottleSlope, &throttlePx, &throttlePy));
 
-
-		float stimmtSo = estimator_hspeed_mod;
-		RunOnceEvery(20, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveLine, &CurrentAboveLine, &stimmtSo, &Takeoff_MinSpeed_local, &deltaTX, &deltaTY, &Currentx, &Currenty, &ThrottleB, &ThrottleSlope, &throttlePx, &throttlePy));
-
-
-
-		//Find out if the UAV is currently above the line
-		if(Currenty > (ThrottleSlope*Currentx)+ThrottleB)
-			CurrentAboveLine = TRUE;
-		else
-			CurrentAboveLine = FALSE;
 
 		//Find out if UAV has crossed the line
-		if(AboveLine != CurrentAboveLine && estimator_hspeed_mod > Takeoff_MinSpeed)
+		if(AboveThrottleLine != CurrentAboveThrottleLine && estimator_hspeed_mod > Takeoff_MinSpeed_local)
 		{
 			CTakeoffStatus = Finished;
 			kill_throttle = 0;
@@ -262,6 +253,7 @@ bool_t ZHAWBungeeTakeoff(uint8_t _TP)
 		break;
 	}
 	return TRUE;
+
 }*/
 
 
