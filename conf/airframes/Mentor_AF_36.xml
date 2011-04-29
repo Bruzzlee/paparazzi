@@ -170,8 +170,8 @@
 		<define name="COURSE_PGAIN" value="-0.999000012875"/>
 		<define name="COURSE_DGAIN" value="0."/>
 		<define name="ROLL_MAX_SETPOINT" value="0.879999995232" unit="radians"/>
-		<define name="PITCH_MAX_SETPOINT" value="0.5" unit="radians"/>
-		<define name="PITCH_MIN_SETPOINT" value="-0.5" unit="radians"/>
+		<define name="PITCH_MAX_SETPOINT" value="0.207000002265" unit="radians"/>
+		<define name="PITCH_MIN_SETPOINT" value="-0.303999990225" unit="radians"/>
 		<define name="PITCH_PGAIN" value="-10548.5234375"/>
 		<define name="PITCH_DGAIN" value="0."/>
 		<define name="ELEVATOR_OF_ROLL" value="2146.11889648"/>
