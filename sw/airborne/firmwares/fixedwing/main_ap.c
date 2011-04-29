@@ -239,11 +239,15 @@ static inline void telecommand_task( void ) {
 
     
     /** Pitch is bounded between [-AUTO1_MAX_PITCH;AUTO1_MAX_PITCH] */
+    float man_pitch;
 	if (fabs(h_ctl_pitch_min_setpoint) > h_ctl_pitch_max_setpoint)
-		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., -h_ctl_pitch_min_setpoint);
+		man_pitch = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., -h_ctl_pitch_min_setpoint);
 	else
-		h_ctl_pitch_setpoint = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., h_ctl_pitch_max_setpoint);
-	    
+		man_pitch = FLOAT_OF_PPRZ(fbw_state->channels[RADIO_PITCH], 0., h_ctl_pitch_max_setpoint);
+	
+	Bound(man_pitch, h_ctl_pitch_min_setpoint, h_ctl_pitch_max_setpoint);
+	h_ctl_pitch_setpoint = man_pitch;
+	
   } /** Else asynchronously set by \a h_ctl_course_loop() */
 
   /** In AUTO1, throttle comes from RADIO_THROTTLE

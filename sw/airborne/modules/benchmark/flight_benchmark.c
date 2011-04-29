@@ -7,9 +7,9 @@
 //#include "sys_time.h"
 //#include "sys_time_hw.h"
 
-
-
 //bruzzlee
+
+
 #include "firmwares/fixedwing/guidance/guidance_v.h"
 #include "estimator.h"
 #include "messages.h"
@@ -17,6 +17,8 @@
 #include "mcu_periph/uart.h"
 #include "generated/airframe.h"
 #include "subsystems/nav.h"
+// #include "math/pprz_algebra_int.h"
+// #include "math/pprz_algebra_float.h"
 
 // For Downlink
 #ifndef DOWNLINK_DEVICE
@@ -80,8 +82,27 @@ void flight_benchmark_periodic( void ) {
 		
 	#ifdef BENCHMARK_POSITION
 	// 	err_temp = waypoints[target].x - estimator_x;
+		if (nav_in_segment){
+			float deltaX = nav_segment_x_2 - nav_segment_x_1;
+			float deltaY = nav_segment_y_2 - nav_segment_y_1;
+			float anglePath = atan2(deltaX,deltaY);
+			float deltaPlaneX = nav_segment_x_2 - estimator_x;
+			float deltaPlaneY = nav_segment_y_2 - estimator_y;
+			float anglePlane = atan2(deltaPlaneX,deltaPlaneY);
+			float angleDiff = fabs(anglePlane - anglePath);
+			Err_position = sin(angleDiff)*sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY);
+// 			
+		}
+		if (nav_in_circle){
+			float deltaPlaneX = nav_circle_x - estimator_x;
+			float deltaPlaneY = nav_circle_y - estimator_y;
+			Err_position = fabs(sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY)-nav_circle_radius);
+// 			nav_circle_x
+// 			nav_circle_radius
+// 			nav_circle_y
+		}
+		
 		if (nav_shift>TolerancePosition){
-			Err_position = nav_shift-TolerancePosition;
 			SquareSumErr_position += (Err_position * Err_position);
 		}
 	#endif
