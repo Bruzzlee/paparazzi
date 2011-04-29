@@ -5,7 +5,7 @@
 #include "subsystems/navigation/nav_line.h"
 #include "datalink.h"
 #include "subsystems/navigation/OSAMNav.h"
-#include "subsystems/navigation/ZHAWNav.h"
+#include "subsystems/navigation/ZHAWNav_Takeoff.h"
 #include "modules/benchmark/flight_benchmark.h"
 </header>
   <waypoints>
@@ -25,6 +25,7 @@
     <waypoint name="_BASELEG" x="168.8" y="-13.8"/>
     <waypoint alt="520.0" name="TOD" x="134.1" y="60.9"/>
     <waypoint alt="460.0" name="TP" x="-33.5" y="70.1"/>
+    <waypoint alt="460.0" name="NP" x="-80" y="70"/>
   </waypoints>
   <exceptions/>
   <blocks>
@@ -54,18 +55,20 @@
 <!--*********************************ZHAW Bungee Takeoff ohne glide************************************-->
 
    <block name="BungeeTakeoff" strip_button="BungeeTakeoff (wp TOD)" strip_icon="bungee_launch.png">
-      <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
-      <call fun="ZHAWBungeeTakeoff(WP_TP)"/>
+      <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP, WP_NP)"/>
+      <call fun="ZHAWBungeeTakeoff()"/>
    </block>
  
 <!--*****************************************************************************************-->
 
 <!--*********************************ZHAW Bungee Takeoff mit glide************************************-->
 
-   <!--block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+   <!--block name="BungeeTakeoff" strip_button="BungeeTakeoff (wp TOD)" strip_icon="bungee_launch.png">
+      <exception cond="estimator_z > WaypointAlt(WP_TOD)" deroute="Standby"/>
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
       <call fun="ZHAWBungeeTakeoff_glide(WP_TP)"/>
       <go from="TP" hmode="route" vmode="glide" wp="TOD"/>
+      <deroute block="Standby"/>
    </block-->
  
 <!--*****************************************************************************************-->
