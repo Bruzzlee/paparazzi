@@ -36,7 +36,7 @@
 
 		<subsystem name="radio_control" type="ppm"/>
 		<subsystem name="telemetry" type="transparent">
-			<configure name="MODEM_BAUD" value="B57600"/>
+			<configure name="MODEM_BAUD" value="B9600"/>
 		</subsystem>
 		<subsystem name="i2c">
 			<define name="I2C_TRANSACTION_QUEUE_LEN" value="16"/> 
