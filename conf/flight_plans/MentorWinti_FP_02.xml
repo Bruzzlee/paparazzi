@@ -1,30 +1,32 @@
 <!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
 
-<flight_plan alt="550" ground_alt="492" lat0="47.49569583" lon0="8.77067596" max_dist_from_home="800" name="Basic" security_height="25">
+<flight_plan alt="550" ground_alt="478" lat0="47.51237832" lon0="8.77956748" max_dist_from_home="800" name="Basic" security_height="25">
   <header>
 #include "subsystems/navigation/nav_line.h"
 #include "datalink.h"
 #include "subsystems/navigation/OSAMNav.h"
-#include "subsystems/navigation/ZHAWNav.h"
+#include "subsystems/navigation/ZHAWNav_Takeoff.h"
+#include "subsystems/navigation/ZHAWNav_Takeoff2.h"
 #include "modules/benchmark/flight_benchmark.h"
 </header>
   <waypoints>
     <waypoint name="HOME" x="0" y="0"/>
-    <waypoint name="STDBY" x="43.4" y="154.8"/>
+    <waypoint name="STDBY" x="-118.6" y="14.2"/>
     <waypoint name="1" x="-242.4" y="112.0"/>
-    <waypoint name="2" x="261.2" y="126.8"/>
-    <waypoint name="Ov1" x="-149.1" y="215.1"/>
-    <waypoint name="Ov2" x="238.6" y="207.6"/>
+    <waypoint name="2" x="231.0" y="116.2"/>
+    <waypoint name="Ov1" x="-185.7" y="-59.4"/>
+    <waypoint name="Ov2" x="-62.4" y="79.9"/>
     <waypoint name="8C" x="35.9" y="190.8"/>
     <waypoint name="8T" x="-148.5" y="158.9"/>
     <waypoint name="S1" x="-248.6" y="37.9"/>
     <waypoint name="S2" x="287.4" y="331.6"/>
     <waypoint name="CLIMB" x="-246.6" y="-94.3"/>
-    <waypoint alt="480.0" name="AF" x="177.4" y="45.1"/>
-    <waypoint alt="460.0" name="TD" x="28.8" y="57.0"/>
+    <waypoint alt="480.0" name="AF" x="-88.9" y="-50.1"/>
+    <waypoint alt="460.0" name="TD" x="-135.7" y="-85.5"/>
     <waypoint name="_BASELEG" x="168.8" y="-13.8"/>
-    <waypoint alt="520.0" name="TOD" x="134.1" y="60.9"/>
-    <waypoint alt="460.0" name="TP" x="-33.5" y="70.1"/>
+    <waypoint alt="520.0" name="TOD" x="48.7" y="95.6"/>
+    <waypoint alt="460.0" name="TP" x="-26.8" y="10.5"/>
+    <waypoint alt="460.0" name="NP" x="-44.4" y="-5.2"/>
   </waypoints>
   <exceptions/>
   <blocks>
@@ -49,26 +51,37 @@
       <go from="HOME" pitch="15" throttle="1.0" vmode="throttle" wp="CLIMB"/>
     </block>
 
+<!--*********************************ZHAW Bungee Takeoff Standart************************************-->
 
-
-<!--*********************************ZHAW Bungee Takeoff ohne glide************************************-->
-
-   <block name="BungeeTakeoff" strip_button="BungeeTakeoff (wp TOD)" strip_icon="bungee_launch.png">
+   <block name="BungeeTakeoffStandart" strip_button="BTO_Standart (wp TOD)" strip_icon="bungee_launch.png">
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
-      <call fun="ZHAWBungeeTakeoff(WP_TP)"/>
+      <call fun="ZHAWBungeeTakeoff()"/>
    </block>
  
 <!--*****************************************************************************************-->
 
 <!--*********************************ZHAW Bungee Takeoff mit glide************************************-->
 
-   <!--block name="Takeoff" strip_button="Takeoff (wp CLIMB)" strip_icon="takeoff.png">
+   <block name="BungeeTakeoffGlide" strip_button="BTO_Glide (wp TOD)" strip_icon="bungee_launch.png">
+      <exception cond="estimator_z > WaypointAlt(WP_TOD)+10" deroute="Standby"/>
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
-      <call fun="ZHAWBungeeTakeoff_glide(WP_TP)"/>
+      <call fun="ZHAWBungeeTakeoff_glide()"/>
       <go from="TP" hmode="route" vmode="glide" wp="TOD"/>
-   </block-->
+      <deroute block="Standby"/>
+   </block>
  
 <!--*****************************************************************************************-->
+
+<!--*********************************ZHAW Bungee Takeoff mit Nav Line************************************-->
+
+   <block name="BungeeTakeoffNavLine" strip_button="TO_NavLine (wp TOD)" strip_icon="bungee_launch.png">
+      <call fun="InitializeZHAWBungeeTakeoffNavLine(WP_TOD, WP_TP, WP_NP)"/>
+      <call fun="ZHAWBungeeTakeoffNavLine()"/>
+   </block>	
+ 
+<!--*****************************************************************************************-->
+
+
 
 
     <block group="home" key="<Control>a" name="Standby" strip_button="Standby" strip_icon="home.png">
@@ -80,7 +93,7 @@
     <block group="base_pattern" name="Oval Bench" strip_button="Oval Bench(wp 1-2)" strip_icon="oval.png">
       <oval p1="Ov1" p2="Ov2" radius="nav_radius" until="nav_oval_count > 0"/>
       <set value="1" var="benchm_reset"/>
-      <deroute block="Oval Bench" />
+      <deroute block="Oval Bench"/>
     </block>
     <block group="base_pattern" name="Line 1-2" strip_button="Line (wp 1-2)" strip_icon="line.png">
       <call fun="nav_line_init()"/>
@@ -100,9 +113,6 @@
       <path approaching_time="1" pitch="auto" throttle="0.4" wpts="S1, S2 STDBY"/>
       <deroute block="Standby"/>
     </block>
-
-<!--************************OSAM Landing***********************************************************-->
-
     <block group="land" name="Land Right AF-TD" strip_button="Land right (wp AF-TD)" strip_icon="land-right.png">
       <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
       <call fun="InitializeSkidLanding(WP_AF, WP_TD, nav_radius)"/>
@@ -113,7 +123,5 @@
       <call fun="InitializeSkidLanding(WP_AF, WP_TD, nav_radius)"/>
       <call fun="SkidLanding()"/>
     </block>
-<!--***********************************************************************************************-->
-
   </blocks>
 </flight_plan>

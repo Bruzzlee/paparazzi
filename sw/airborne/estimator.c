@@ -67,6 +67,11 @@ float estimator_hspeed_dir;
 float wind_east, wind_north;
 float estimator_airspeed;
 
+
+/* Sonar */
+uint8_t estimator_z_mode;
+float estimator_z_sonar;
+
 #define NORM_RAD_ANGLE2(x) { \
     while (x > 2 * M_PI) x -= 2 * M_PI; \
     while (x < 0 ) x += 2 * M_PI; \
@@ -200,9 +205,10 @@ void alt_kalman(float gps_z) {
 #ifdef DEBUG_ALT_KALMAN
   DOWNLINK_SEND_ALT_KALMAN(&(p[0][0]),&(p[0][1]),&(p[1][0]), &(p[1][1]));
 #endif
-}
 
+}
 #endif // ALT_KALMAN
+
 
 void estimator_update_state_gps( void ) {
   float gps_east = gps_utm_east / 100.;

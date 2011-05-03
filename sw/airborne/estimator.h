@@ -40,10 +40,25 @@
 #include "modules/sensors/baro_ets.h"
 #endif
 
+//langede0*********************
+//#ifdef USE_SONAR
+#include "modules/sonar/sonar_adc.h"
+//#endif
+
+// Estimator_Z Modes
+#define  GPS_HEIGHT	0
+#define  SONAR_HEIGHT	1
+extern uint8_t estimator_z_mode;
+
+
 /* position in meters */
 extern float estimator_x;
 extern float estimator_y;
 extern float estimator_z;
+
+#ifdef USE_SONAR
+  extern float estimator_z_sonar;
+#endif
 
 /* attitude in radians */
 extern float estimator_phi; /* + = right */
@@ -81,6 +96,7 @@ extern void alt_kalman_reset( void );
 extern void alt_kalman_init( void );
 extern void alt_kalman( float );
 #endif
+extern void alt_sonar( void );
 
 
 #define GetPosX() (estimator_x)
@@ -95,6 +111,23 @@ extern void alt_kalman( float );
 /* Kalman filter cannot be disabled in this mode (no z_dot) */
 #define EstimatorSetAlt(z) alt_kalman(z)
 #else /* USE_BARO_MS5534A */
+#ifdef USE_SONAR
+#define EstimatorSetAltSonar(z) { estimator_z_sonar = z; }
+#define EstimatorSetAlt(z) { \
+  if (!alt_kalman_enabled) { \
+    estimator_z = z; \
+  } else { \
+      switch(estimator_z_mode) { \
+      case GPS_HEIGHT: \
+	alt_kalman(z); \
+	break; \
+      case SONAR_HEIGHT: \
+	estimator_z = estimator_z_sonar; \
+	break; \
+      } \
+  } \
+} 
+#else /* !USE_SONAR */
 #define EstimatorSetAlt(z) { \
   if (!alt_kalman_enabled) { \
     estimator_z = z; \
@@ -102,6 +135,7 @@ extern void alt_kalman( float );
     alt_kalman(z); \
   } \
 }
+#endif 
 #endif /* ! USE_BARO_MS5534A */
 
 #define EstimatorSetSpeedPol(vhmod, vhdir, vz) { \
@@ -109,6 +143,7 @@ extern void alt_kalman( float );
   estimator_hspeed_dir = vhdir; \
   if (!alt_kalman_enabled) estimator_z_dot = vz; \
 }
+
 #else /* ALT_KALMAN */
 #define EstimatorSetPosXY(x, y) { estimator_x = x; estimator_y = y; }
 #define EstimatorSetAlt(z) { estimator_z = z; }
@@ -117,6 +152,8 @@ extern void alt_kalman( float );
   estimator_hspeed_dir = vhdir; \
   estimator_z_dot = vz; \
 }
+
+
 
 #endif
 

@@ -1,4 +1,4 @@
-#include "subsystems/navigation/ZHAWNav_Takeoff.h"
+#include "subsystems/navigation/ZHAWNav_Takeoff2.h"
 #include "firmwares/rotorcraft/autopilot.h"
 
 #include "mcu_periph/uart.h"
@@ -25,7 +25,7 @@ height (defined in as Takeoff_Height in airframe file) above the bungee waypoint
   <define name="MinSpeed" value="5" unit="m/s"/>
 </section>
  */
-
+/*
 #ifndef Takeoff_Distance
 #define Takeoff_Distance 10
 #endif
@@ -34,7 +34,7 @@ height (defined in as Takeoff_Height in airframe file) above the bungee waypoint
 #endif
 #ifndef Takeoff_MinSpeed
 #define Takeoff_MinSpeed 2
-#endif
+#endif*/
 
 enum TakeoffStatus { Launch, Stabilization, Climb, Finished };
 static enum TakeoffStatus CTakeoffStatus;
@@ -59,9 +59,12 @@ static float Takeoff_MinSpeed_local;
 static float deltaTY;
 static float deltaTX;
 
+float StartThrottle_X;
+float StartThrottle_Y;
+
 
 //Berechnet TrottlePoint, ThrottleLine und Seite auf der die Drohne steht (Seite ist der Rückgabewert)
-bool_t calculateTakeOffConditions( void )  // TOD ist (0/0)
+bool_t calculateTakeOffConditionsNavLine( void )  // TOD ist (0/0)
 {	
 
 	//Set InitPos
@@ -86,7 +89,7 @@ bool_t calculateTakeOffConditions( void )  // TOD ist (0/0)
 	else
 	{
 		throttlePx = - TDistance/sqrt(MLaunch*MLaunch+1);
-		navPx = NDistance/sqrt(MLaunch*MLaunch+1);
+		navPx = - NDistance/sqrt(MLaunch*MLaunch+1);
 	}
 
 	if(deltaTY < 0)
@@ -97,7 +100,7 @@ bool_t calculateTakeOffConditions( void )  // TOD ist (0/0)
 	else
 	{
 		throttlePy = - sqrt((TDistance*TDistance)-(throttlePx*throttlePx));
-		navPy = sqrt((NDistance*NDistance)-(navPx*navPx));
+		navPy = - sqrt((NDistance*NDistance)-(navPx*navPx));
 	}
 
 		
@@ -131,7 +134,7 @@ bool_t calculateTakeOffConditions( void )  // TOD ist (0/0)
 }
 
 
-bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP, uint8_t _NP)
+bool_t InitializeZHAWBungeeTakeoffNavLine(uint8_t TODWP, uint8_t _TP, uint8_t _NP)
 {
 	TOD = TODWP;
 	TP = _TP;
@@ -143,13 +146,13 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP, uint8_t _NP)
 
 	//Takeoff_Distance can only be positive
 	TDistance = 13.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
-	NDistance = 20.0;					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	NDistance = 30.0;					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 
 	//Record bungee alt (which should be the ground alt at that point)
 	BungeeAlt = (waypoints[_TP].a);
 
 
-	AboveLines=calculateTakeOffConditions();				//Auf welcher Seite ist dir Drohne
+	AboveLines=calculateTakeOffConditionsNavLine();				//Auf welcher Seite ist dir Drohne
 
 
 	//Enable Launch Status and turn kill throttle on
@@ -160,7 +163,7 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP, uint8_t _NP)
 }
 
 
-bool_t ZHAWBungeeTakeoff(void) 
+bool_t ZHAWBungeeTakeoffNavLine(void) 
 {
 	//Translate the Current Position so that the THROTTLEPOINT is (0/0) (wie weit ist die Drohne noch vom TP weg?)
 	float CurrentThrottlex = estimator_x - throttlePx;
@@ -169,9 +172,6 @@ bool_t ZHAWBungeeTakeoff(void)
 	//Translate the Current Position so that the NAVPOINT is (0/0) (wie weit ist die Drohne noch vom NP weg?)
 	float CurrentNavx = estimator_x - navPx;
 	float CurrentNavy = estimator_y - navPy;
-
-	float StartThrottle_X;
-	float StartThrottle_Y;
 
 	bool_t CurrentAboveThrottleLine;
 	bool_t CurrentAboveNavLine;
@@ -187,7 +187,7 @@ bool_t ZHAWBungeeTakeoff(void)
 
 		//recalculate lines if the UAV is not in Auto2
 		if(pprz_mode < 2)
-			AboveLines=calculateTakeOffConditions();	
+			AboveLines=calculateTakeOffConditionsNavLine();	
 		
 
 
@@ -202,18 +202,19 @@ bool_t ZHAWBungeeTakeoff(void)
 		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveLines, &CurrentAboveThrottleLine, &stimmtSo, &Takeoff_MinSpeed_local, &deltaTX, &deltaTY, &CurrentThrottlex, 			&CurrentThrottley, &ThrottleB, &ThrottleSlope, &throttlePx, &throttlePy));
 
 
-		//Find out if UAV has crossed the line
+		//Find out if UAV has crossed the Throttle Line
 		if(AboveLines != CurrentAboveThrottleLine && estimator_hspeed_mod > Takeoff_MinSpeed_local)
 		{
 			CTakeoffStatus = Stabilization;
 			kill_throttle = 0;
 			nav_init_stage();
-			NavVerticalAltitudeMode(estimator_z, 0.); 		//Höhe halten in Stabilisations-Zwischenschritt
+			NavVerticalAltitudeMode(estimator_z+10, 0.); 		//Höhe halten in Stabilisations-Zwischenschritt
 					
 		}
 		break;
 
 	case Stabilization:							//Höhe halten, nicht navigieren, Motor einschalten	
+		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH);
 		NavVerticalThrottleMode(9600*(1));		
 		kill_throttle = 0;
 

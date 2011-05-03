@@ -54,6 +54,9 @@ static float Takeoff_MinSpeed_local;
 static float deltaTY;
 static float deltaTX;
 
+float ThrottleX;
+float ThrottleY;
+
 
 //Berechnet TrottlePoint, ThrottleLine und Seite auf der die Drohne steht (Seite ist der Rückgabewert)
 bool_t calculateTakeOffConditions( void )  // TOD ist (0/0)
@@ -106,7 +109,7 @@ bool_t calculateTakeOffConditions( void )  // TOD ist (0/0)
 }
 
 
-bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP, uint8_t _NP)		//uint8_t _NP muss falls navLine nicht verwendet wird noch entfernt werden!!!!
+bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP)		//uint8_t _NP muss falls navLine nicht verwendet wird noch entfernt werden!!!!
 {
 	TOD = TODWP;
 	TP = _TP;
@@ -116,7 +119,7 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP, uint8_t _NP)		//u
 
 
 	//Takeoff_Distance can only be positive
-	TDistance = 13.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	TDistance = 9.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 
 	//Record bungee alt (which should be the ground alt at that point)
 	BungeeAlt = (waypoints[_TP].a);
@@ -139,8 +142,6 @@ bool_t ZHAWBungeeTakeoff(void)
 	float Currentx = estimator_x - throttlePx;
 	float Currenty = estimator_y - throttlePy;
 
-	float ThrottleX=0.0;
-	float ThrottleY=0.0;
 
 	bool_t CurrentAboveThrottleLine;
 

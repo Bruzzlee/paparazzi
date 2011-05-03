@@ -16,4 +16,5 @@ $(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/spiral.c
 $(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/poly_survey_adv.c
 
 $(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/ZHAWNav_Takeoff.c
+$(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/ZHAWNav_Takeoff2.c
 
