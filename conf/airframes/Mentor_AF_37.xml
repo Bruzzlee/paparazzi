@@ -204,7 +204,7 @@
 
 		<!-- auto airspeed -->
 		<define name="AUTO_AIRSPEED_SETPOINT" value="11.1499996185" unit="m/s"/>
-		<define name="AUTO_AIRSPEED_DEADBAND" value="42." unit="m/s"/>
+		<define name="AUTO_AIRSPEED_DEADBAND" value="0" unit="m/s"/>
 		<!--define name="AIRSPEED_MODE" value="AS_MODE_STANDARD"/-->
 
 			<!-- Vassillis -->

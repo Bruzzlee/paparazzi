@@ -381,6 +381,7 @@ inline static void v_ctl_climb_auto_throttle_loop(void) {
 				v_ctl_auto_throttle_sum_err += err;
 				BoundAbs(v_ctl_auto_throttle_sum_err, V_CTL_AUTO_THROTTLE_MAX_SUM_ERR);
 				nav_pitch += v_ctl_pitch_of_vz;
+				Bound(nav_pitch, h_ctl_pitch_min_setpoint, h_ctl_pitch_max_setpoint); //NEW
 #if defined AGR_CLIMB
 				break;
 		} /* switch submode */

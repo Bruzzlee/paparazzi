@@ -50,10 +50,6 @@
 				<dl_setting MAX="5000" MIN="0" STEP="100" VAR="h_ctl_aileron_of_throttle" shortname="aileron_of_throttle"/>
 			</dl_settings>
 
-			<dl_settings name="alt">
-				<dl_setting MAX="0" MIN="-0.2" STEP="0.01" VAR="v_ctl_altitude_pgain" shortname="alt_pgain" param="V_CTL_ALTITUDE_PGAIN"/>
-			</dl_settings>
-
 			<dl_settings name="nav">
 				<dl_setting MAX="-0.1" MIN="-3" STEP="0.05" VAR="h_ctl_course_pgain" shortname="course pgain" param="H_CTL_COURSE_PGAIN"/>
 				<dl_setting MAX="2" MIN="-2" STEP="0.1" VAR="h_ctl_course_dgain" shortname="course dgain" param="H_CTL_COURSE_DGAIN"/>
