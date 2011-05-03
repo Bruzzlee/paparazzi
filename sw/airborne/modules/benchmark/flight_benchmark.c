@@ -95,7 +95,7 @@ void flight_benchmark_periodic( void ) {
 			deltaPlaneY = nav_segment_y_2 - estimator_y;
 			float anglePlane = atan2(deltaPlaneX,deltaPlaneY);
 			float angleDiff = fabs(anglePlane - anglePath);
-			Err_position_segment = sin(angleDiff)*sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY);
+			Err_position_segment = fabs(sin(angleDiff)*sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY));
 // 		}
 		
 // 		if (nav_in_circle){
