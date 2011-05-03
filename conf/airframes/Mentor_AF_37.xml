@@ -61,6 +61,7 @@
 			<configure name="ADC_SONAR" value="ADC_5"/>
 			<define name="SONAR_ADC_OFFSET" value="0"/>
 			<define name="SONAR_ADC_SCALE" value="0.0172"/>
+			<define name="SONAR_ADC_FILTER" value="0.9"/> 
 		</load>
 
 	<!--**************************************************************-->		
@@ -247,6 +248,20 @@
 		<define name="AUTO_PITCH_MIN_PITCH" value="-0.6"/> <!-- vorher +-0.35-->
 	</section>
 
+	<section name="CHANGE PARAMS" prefix="NAV_">
+		<!-- Mesure Params -->
+		<define name="MEASURE_MAX_ROLL" value="0.3"/>
+		<define name="MEASURE_MAX_PITCH" value="0.2"/>
+		<define name="MEASURE_MIN_PITCH" value="-0.2"/>
+		<!-- Start Params -->
+		<define name="START_MAX_ROLL" value="0.2"/>
+		<define name="START_MAX_PITCH" value="0.3"/>
+		<define name="START_MIN_PITCH" value="-0.3"/>
+		<!-- Landing Params -->
+		<define name="LAND_MAX_ROLL" value="0.2"/>
+		<define name="LAND_MAX_PITCH" value="0.1"/>
+		<define name="LAND_MIN_PITCH" value="-0.2"/>
+	</section>
 
 
 	<section name="NAV">

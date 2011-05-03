@@ -82,27 +82,34 @@ void flight_benchmark_periodic( void ) {
 		
 	#ifdef BENCHMARK_POSITION
 	// 	err_temp = waypoints[target].x - estimator_x;
-		if (nav_in_segment){
+		float deltaPlaneX = 0;
+		float deltaPlaneY = 0;
+		float Err_position_segment = 0;
+		float Err_position_circle = 0;
+		
+// 		if (nav_in_segment){
 			float deltaX = nav_segment_x_2 - nav_segment_x_1;
 			float deltaY = nav_segment_y_2 - nav_segment_y_1;
 			float anglePath = atan2(deltaX,deltaY);
-			float deltaPlaneX = nav_segment_x_2 - estimator_x;
-			float deltaPlaneY = nav_segment_y_2 - estimator_y;
+			deltaPlaneX = nav_segment_x_2 - estimator_x;
+			deltaPlaneY = nav_segment_y_2 - estimator_y;
 			float anglePlane = atan2(deltaPlaneX,deltaPlaneY);
 			float angleDiff = fabs(anglePlane - anglePath);
-			Err_position = sin(angleDiff)*sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY);
-// 			
-		}
-		if (nav_in_circle){
-			float deltaPlaneX = nav_circle_x - estimator_x;
-			float deltaPlaneY = nav_circle_y - estimator_y;
-			Err_position = fabs(sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY)-nav_circle_radius);
-// 			nav_circle_x
-// 			nav_circle_radius
-// 			nav_circle_y
-		}
+			Err_position_segment = sin(angleDiff)*sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY);
+// 		}
 		
-		if (nav_shift>TolerancePosition){
+// 		if (nav_in_circle){
+			deltaPlaneX = nav_circle_x - estimator_x;
+			deltaPlaneY = nav_circle_y - estimator_y;
+			Err_position_circle = fabs(sqrt(deltaPlaneX*deltaPlaneX+deltaPlaneY*deltaPlaneY)-nav_circle_radius);
+// 		}
+		if (Err_position_circle < Err_position_segment){
+			Err_position = Err_position_circle;
+		}
+		else
+			Err_position = Err_position_segment;
+		
+		if (Err_position>TolerancePosition){
 			SquareSumErr_position += (Err_position * Err_position);
 		}
 	#endif

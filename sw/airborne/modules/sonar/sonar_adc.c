@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2010 The Paparazzi Team
+ * Copyright (C) 2011 Bruzzlee
  *
  * This file is part of paparazzi.
- *sonar
+ * sonar
  * paparazzi is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -35,6 +35,8 @@ float sonar_offset;
 float sonar_dist;
 float sonar_raw;
 float sonar_scale;
+float sonar_filter;
+float sonar_old;
 
 // Local variables
 //uint16_t sonar_adc_offset;
@@ -74,25 +76,27 @@ void sonar_adc_init( void ) {
 #ifndef SITL
   adc_buf_channel(ADC_CHANNEL_SONAR, &buf_sonar, ADC_CHANNEL_SONAR_NB_SAMPLES);
 #endif
-  //sonar_adc_offset = 0;
-  //sonar_adc_offset_tmp = 0;
-  //sonar_adc_offset_init = FALSE;
-// sonar_adc_cnt = SONAR_ADC_OFFSET_NBSAMPLES_INIT + SONAR_ADC_OFFSET_NBSAMPLES_AVRG;
 	sonar_offset = SONAR_ADC_OFFSET;
 	sonar_scale = SONAR_ADC_SCALE;
- //sonar_quadratic_scale=SONAR_QUADRATIC_SCALE;
+	sonar_filter = SONAR_ADC_FILTER;
 }
 
 void sonar_adc_update( void ) {
 #ifndef SITL
-  adc_sonar_val = buf_sonar.sum / buf_sonar.av_nb_sample;
+	adc_sonar_val = buf_sonar.sum / buf_sonar.av_nb_sample;
 	sonar_raw = sonar_scale * adc_sonar_val;
-	sonar_dist = sonar_raw - sonar_offset;
+// 	sonar_dist = sonar_raw - sonar_offset;
+	
+	// 	Lowpass filter
+	sonar_dist = sonar_filter * sonar_old + (1 - sonar_filter) * (sonar_raw - sonar_offset);
+	sonar_old = sonar_dist;	
 
 //DOWNLINK_SEND_SONAR_ADC(DefaultChannel, &adc_sonar_val, &sonar_raw, &sonar_dist)
 
-
-  //EstimatorSetZ(sonar-sonar_adc_offset);
+#ifdef USE_SONAR
+	EstimatorSetAltSonar(sonar_dist);
+#endif
+	
 #ifdef SONAR_SYNC_SEND
 	DOWNLINK_SEND_SONAR_ADC(DefaultChannel, &adc_sonar_val, &sonar_raw, &sonar_dist);
 #else

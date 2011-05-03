@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2010 The Paparazzi Team
+ * $Id$
+ *
+ * Copyright (C) 2011  Bruzzlee
  *
  * This file is part of paparazzi.
  *
@@ -19,18 +21,18 @@
  * Boston, MA 02111-1307, USA.
  *
  */
+/** \file parameter_changer.h
+ *  \brief Change parameter min/max of pitch and roll and airspeed-mode
+ *
+ */
 
-#ifndef SONAR_ADC_H
-#define SONAR_ADC_H
+extern bool_t set_max_roll(float max_roll);
+extern bool_t set_max_pitch(float max_pitch)
+extern bool_t set_min_pitch(float min_pitch)
 
-#include <inttypes.h>
+extern bool_t set_approach_params()
+extern bool_t set_measure_params()
+extern bool_t set_start_params()
+extern bool_t set_land_params()
 
-extern uint16_t adc_sonar_val;
-extern float sonar_offset;
-extern float sonar_dist;
-extern float sonar_filter;
 
-void sonar_adc_init( void );
-void sonar_adc_update( void );
-
-#endif /* AIRSPEED_ADC_H */
