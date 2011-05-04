@@ -168,8 +168,7 @@ bool_t ZHAWBungeeTakeoff(void)
 			CurrentAboveThrottleLine = FALSE;
 				
 
-		float stimmtSo = estimator_hspeed_mod; 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
-		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveThrottleLine, &CurrentAboveThrottleLine, &stimmtSo, &Takeoff_MinSpeed_local, &deltaTX, &deltaTY, &Currentx, &Currenty, 		&ThrottleB, &ThrottleSlope, &throttlePx, &throttlePy));
+		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveThrottleLine, &CurrentAboveThrottleLine));
 
 
 		//Find out if UAV has crossed the line
@@ -242,8 +241,7 @@ bool_t ZHAWBungeeTakeoff_glide(void)
 			CurrentAboveThrottleLine = FALSE;
 				
 
-		float stimmtSo = estimator_hspeed_mod; 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
-		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveThrottleLine, &CurrentAboveThrottleLine, &stimmtSo, &Takeoff_MinSpeed_local, &deltaTX, &deltaTY, &Currentx, &Currenty, 		&ThrottleB, &ThrottleSlope, &throttlePx, &throttlePy));
+		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveThrottleLine, &CurrentAboveThrottleLine));
 
 
 		//Find out if UAV has crossed the line

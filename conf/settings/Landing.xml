@@ -1,0 +1,9 @@
+<!DOCTYPE settings SYSTEM "settings.dtd">
+
+<settings>
+	<dl_settings>
+		<dl_settings NAME="Landing">
+			<dl_setting MAX="1" MIN="0" STEP="1" VAR="estimator_z_mode" shortname="GPS_Sonar_Switch" /> <!--module="subsystems/navigation"/ -->
+		</dl_settings>
+	</dl_settings>
+</settings>

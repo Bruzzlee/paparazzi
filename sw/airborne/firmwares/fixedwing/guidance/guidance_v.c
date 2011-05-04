@@ -120,7 +120,7 @@ inline static void v_ctl_climb_auto_throttle_loop(void);
 	float v_ctl_auto_airspeed_prethrottle_asps;
 	float v_ctl_auto_airspeed_pitch_pgain_asps;
 	float v_ctl_auto_airspeed_pitch_igain_asps;
-	#define V_CTL_AUTO_ALT_MAX_SUM_ERR 100
+	#define V_CTL_AUTO_ALT_MAX_SUM_ERR 200
 	//AirSpeed Manual Power
 	float v_ctl_auto_airspeed_throttlesetp_asmp;
 	float v_ctl_auto_airspeed_pitch_pgain_asmp;
@@ -381,7 +381,7 @@ inline static void v_ctl_climb_auto_throttle_loop(void) {
 				v_ctl_auto_throttle_sum_err += err;
 				BoundAbs(v_ctl_auto_throttle_sum_err, V_CTL_AUTO_THROTTLE_MAX_SUM_ERR);
 				nav_pitch += v_ctl_pitch_of_vz;
-				Bound(nav_pitch, h_ctl_pitch_min_setpoint, h_ctl_pitch_max_setpoint); //NEW
+				//Bound(nav_pitch, h_ctl_pitch_min_setpoint, h_ctl_pitch_max_setpoint); //NEW
 #if defined AGR_CLIMB
 				break;
 		} /* switch submode */

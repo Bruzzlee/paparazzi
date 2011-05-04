@@ -490,21 +490,17 @@
     <field name="gnd2"   type="float"/>
   </message>
 
- <!-- 63 is free -->
+ 	<message name="ZHAWLAND" id="63">
+		<field name="Land_Status" type="uint8"/>
+		<field name="estimator_z_mode" type="uint8"/>
+		<field name="AboveCP" type="uint8"/>
+		<field name="CurrentAboveCP" type="uint8"/>
+   	</message>
+
 
 	<message name="ZHAWTAKEOFF" id="64">
 		<field name="above_line" type="uint8"/>
 		<field name="current_above_line" type="uint8"/>
-		<field name="currentSpeed" type="float" unit="m/s"/>
-		<field name="minSpeed" type="float" unit="m/s"/>
-		<field name="deltaX" type="float" unit="m"/>
-		<field name="deltaY" type="float" unit="m"/>
-		<field name="currentx" type="float" unit="m"/>
-		<field name="currenty" type="float" unit="m"/>
-		<field name="throttleB" type="float" unit="m"/>
-		<field name="throttleSlope" type="float" unit="m/m"/>
-		<field name="throttlePx_abs" type="float" unit="m"/>
-		<field name="throttlePy_abs" type="float" unit="m"/>
    	</message>
 	
 	<!--message name="ZHAWTEST" id="65">

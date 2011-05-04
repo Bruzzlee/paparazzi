@@ -122,6 +122,7 @@ extern void alt_sonar( void );
 	alt_kalman(z); \
 	break; \
       case SONAR_HEIGHT: \
+	estimator_z_dot = estimator_z - estimator_z_sonar; \
 	estimator_z = estimator_z_sonar; \
 	break; \
       } \

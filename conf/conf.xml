@@ -65,8 +65,8 @@
    airframe="airframes/Mentor_AF_37.xml"
    radio="radios/Mentor_Ra_1.xml"
    telemetry="telemetry/default.xml"
-   flight_plan="flight_plans/MentorWinti_FP_02.xml"
-   settings=" settings/Mentor_Se_2.xml settings/airspeedSwitch_PitchVas.xml settings/amsys.xml settings/benchmark.xml settings/adc_sonar.xml"
+   flight_plan="flight_plans/Mentor_FP_03.xml"
+   settings=" settings/Mentor_Se_2.xml settings/airspeedSwitch_PitchVas.xml settings/amsys.xml settings/benchmark.xml settings/adc_sonar.xml settings/Landing.xml"
    gui_color="blue"
   />
   <aircraft

@@ -30,7 +30,7 @@ height (defined in as Takeoff_Height in airframe file) above the bungee waypoint
 #define Takeoff_Distance 10
 #endif
 #ifndef Takeoff_Speed
-#define Takeoff_Speed 12
+#define Takeoff_Speed 6
 #endif
 #ifndef Takeoff_MinSpeed
 #define Takeoff_MinSpeed 2
@@ -145,7 +145,7 @@ bool_t InitializeZHAWBungeeTakeoffNavLine(uint8_t TODWP, uint8_t _TP, uint8_t _N
 
 
 	//Takeoff_Distance can only be positive
-	TDistance = 13.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	TDistance = 8.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 	NDistance = 30.0;					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 
 	//Record bungee alt (which should be the ground alt at that point)
@@ -181,7 +181,7 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 	case Launch:
 		//Follow Launch Line
 		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
-	  	NavVerticalAltitudeMode(estimator_z + 10, 0.);		//Vorgabe der Sollhöhe
+	  	NavVerticalAltitudeMode(estimator_z + 20, 0.);		//Vorgabe der Sollhöhe
 		kill_throttle = 1;					//Motor ausgeschaltet
 
 
@@ -198,8 +198,7 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 			CurrentAboveThrottleLine = FALSE;
 				
 
-		float stimmtSo = estimator_hspeed_mod; 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
-		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveLines, &CurrentAboveThrottleLine, &stimmtSo, &Takeoff_MinSpeed_local, &deltaTX, &deltaTY, &CurrentThrottlex, 			&CurrentThrottley, &ThrottleB, &ThrottleSlope, &throttlePx, &throttlePy));
+		RunOnceEvery(10, DOWNLINK_SEND_ZHAWTAKEOFF(DefaultChannel, &AboveLines, &CurrentAboveThrottleLine));
 
 
 		//Find out if UAV has crossed the Throttle Line
@@ -240,7 +239,7 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 		nav_route_xy(StartThrottle_X,StartThrottle_Y,(waypoints[TOD].x),(waypoints[TOD].y));
 		NavVerticalAltitudeMode(TakeOff_Height, 0.);
 
-		if((estimator_z > TakeOff_Height-10) && (estimator_hspeed_mod > Takeoff_Speed))
+		if(estimator_z > (TakeOff_Height-10))
 		{
 			CTakeoffStatus = Finished;
 			return FALSE;

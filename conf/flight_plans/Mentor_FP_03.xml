@@ -1,6 +1,6 @@
 <!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
 
-<flight_plan alt="550" ground_alt="478" lat0="47.51237832" lon0="8.77956748" max_dist_from_home="800" name="Basic" security_height="25">
+<flight_plan alt="550" ground_alt="460" lat0="47.515217" lon0="8.975493" max_dist_from_home="800" name="Basic" security_height="25">
   <header>
 #include "subsystems/navigation/nav_line.h"
 #include "datalink.h"
@@ -50,9 +50,6 @@
       <set value="0" var="estimator_flight_time"/>
       <go from="HOME" pitch="15" throttle="1.0" vmode="throttle" wp="CLIMB"/>
     </block>
-
-<!--******************************************************************************************************-->
-
     <block name="BungeeTakeoffStandart" strip_button="BTO_Standart (wp TOD)" strip_icon="bungee_launch.png">
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
       <call fun="ZHAWBungeeTakeoff()"/>

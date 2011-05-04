@@ -17,4 +17,6 @@ $(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/poly_survey_adv.c
 
 $(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/ZHAWNav_Takeoff.c
 $(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/ZHAWNav_Takeoff2.c
+$(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/ZHAWNav_Landing.c
+$(TARGET).srcs += $(SRC_SUBSYSTEMS)/navigation/parameter_changer.c
 
