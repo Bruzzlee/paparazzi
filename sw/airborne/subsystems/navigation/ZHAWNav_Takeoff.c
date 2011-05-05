@@ -129,8 +129,6 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP)		//uint8_t _NP mu
 	AboveThrottleLine=calculateTakeOffConditions();				//Auf welcher Seite ist dir Drohne
 
 
-	NavVerticalAutoThrottleMode(0.175);
-
 	//Enable Launch Status and turn kill throttle on
 	CTakeoffStatus = Launch;
 	kill_throttle = 1; //MOTOR AUS
@@ -145,16 +143,14 @@ bool_t ZHAWBungeeTakeoff(void)
 	float Currentx = estimator_x - throttlePx;
 	float Currenty = estimator_y - throttlePy;
 
-
 	bool_t CurrentAboveThrottleLine;
 
 	switch(CTakeoffStatus)
 	{
 	case Launch:
-		//Follow Launch Line
-		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
-	  	NavVerticalAltitudeMode(TakeOff_Height, 0.);		//Vorgabe der Sollhöhe
-		//nav_route_xy(initialx,initialy,(waypoints[TOD].x),(waypoints[TOD].y));	//Vorgabe der Route
+		//UAV on the Hook
+		NavVerticalAutoThrottleMode(0.1);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
+	  	NavVerticalAltitudeMode(TakeOff_Height, 0.);			//Vorgabe der Sollhöhe
 		kill_throttle = 1;	//Motor ausgeschaltet
 
 
@@ -162,7 +158,6 @@ bool_t ZHAWBungeeTakeoff(void)
 		if(pprz_mode < 2)
 			AboveThrottleLine=calculateTakeOffConditions();	
 		
-
 
 		//Find out if the UAV is currently above the line
 		if(Currenty > (ThrottleSlope*Currentx) + 0)
@@ -181,19 +176,19 @@ bool_t ZHAWBungeeTakeoff(void)
 			kill_throttle = 0;
 			nav_init_stage();
 			ThrottleX = estimator_x;
-			ThrottleY = estimator_y;	
-			NavVerticalAutoThrottleMode(0);	
+			ThrottleY = estimator_y;		
 		}
 		break;
 
 	case Throttle:
 		//Follow Launch Line
-		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH); 	
+		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH); 
+		NavVerticalAltitudeMode(TakeOff_Height, 0.);	
 		NavVerticalThrottleMode(9600*(1));		
 		nav_route_xy(ThrottleX,ThrottleY,(waypoints[TOD].x),(waypoints[TOD].y));
 		kill_throttle = 0;
 
-		if((estimator_z > TakeOff_Height-10) && (estimator_hspeed_mod > Takeoff_Speed))
+		if(estimator_z > TakeOff_Height-10)
 		{
 			CTakeoffStatus = Finished;
 			return FALSE;
@@ -216,7 +211,7 @@ bool_t ZHAWBungeeTakeoff(void)
 
 bool_t ZHAWBungeeTakeoff_glide(void)
 {
-//Translate the Current Position so that the THROTTLEPOINT is (0/0) (wie weit ist die Drohne noch vom TP weg?)
+	//Translate the Current Position so that the THROTTLEPOINT is (0/0) (wie weit ist die Drohne noch vom TP weg?)
 	float Currentx = estimator_x - throttlePx;
 	float Currenty = estimator_y - throttlePy;
 
@@ -225,18 +220,15 @@ bool_t ZHAWBungeeTakeoff_glide(void)
 	switch(CTakeoffStatus)
 	{
 	case Launch:
-		//Follow Launch Line
-		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
-	  	NavVerticalAltitudeMode(TakeOff_Height, 0.);		//Vorgabe der Sollhöhe
-		//nav_route_xy(initialx,initialy,(waypoints[TOD].x),(waypoints[TOD].y));	//Vorgabe der Route
+		//UAV on the Hook
+		NavVerticalAutoThrottleMode(0.1);
+	  	NavVerticalAltitudeMode(TakeOff_Height, 0.);
 		kill_throttle = 1;	//Motor ausgeschaltet
-
 
 		//recalculate lines if the UAV is not in Auto2
 		if(pprz_mode < 2)
 			AboveThrottleLine=calculateTakeOffConditions();	
 		
-
 
 		//Find out if the UAV is currently above the line
 		if(Currenty > (ThrottleSlope*Currentx) + 0)
@@ -265,7 +257,6 @@ bool_t ZHAWBungeeTakeoff_glide(void)
 		break;
 	}
 	return TRUE;
-
 }
 
 

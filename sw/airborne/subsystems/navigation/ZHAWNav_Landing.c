@@ -96,7 +96,7 @@ bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float
 	TDDistance = 25;		//Strecke, auf der geflaret wird
 	FlareFactor = 0.5;		//Faktor mit dem die Sollhöhe beim Flare verkleinert wird
 	FinalLandCount = 4;		//Anzahl Flareschritte
-	Land_prePitch = 0.175		//Soll Pitch für Kill_Throttle schritt
+	Land_prePitch = 0.175;		//Soll Pitch für Kill_Throttle
 	//********************************
 	Flare_Increment=TDDistance/FinalLandCount;
 
@@ -261,8 +261,8 @@ bool_t ZHAWSkidLanding(void)
 
 	case Stall:
 		kill_throttle = 1;
+		NavVerticalAltitudeMode(SonarHeight, 0);
 		NavVerticalAutoThrottleMode(Land_prePitch); 
-  		NavVerticalAltitudeMode(SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
 	msgLandStatus=7;
@@ -273,13 +273,11 @@ bool_t ZHAWSkidLanding(void)
 	break;
 	}
 
-	RunOnceEvery(1, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint, &SonarHeight, &sonar_dist, &estimator_z, ));
+	RunOnceEvery(1, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint, &SonarHeight, &sonar_dist, &estimator_z));
 
 	//Failsave Height
-	if ((estimator_z < saveHeight) && (CLandingStatus != Flare) && (CLandingStatus != Stall))
+	if ((estimator_z < SaveHeight) && (CLandingStatus != Flare) && (CLandingStatus != Stall))
 	{
-		//Mach den Failsave und starte durch!!
-		//Möglicherweise muss nur false zurückgegeben werden und im Flightplan muss der Folgepunkt STBY sein!!
 		estimator_z_mode=GPS_HEIGHT;
 		set_max_pitch(0.3);
 		set_min_pitch(0.3);

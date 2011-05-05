@@ -180,8 +180,8 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 	{
 	case Launch:
 		//Follow Launch Line
-		NavVerticalAutoThrottleMode(0);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
-	  	NavVerticalAltitudeMode(estimator_z + 20, 0.);		//Vorgabe der Sollhöhe
+		NavVerticalAutoThrottleMode(0.1);				//Set the climb control to auto-throttle with the specified pitch pre-command (navigation.h) -> No Pitch
+	  	NavVerticalAltitudeMode(estimator_z + 20.0, 0.);	//Vorgabe der Sollhöhe
 		kill_throttle = 1;					//Motor ausgeschaltet
 
 
@@ -207,13 +207,12 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 			CTakeoffStatus = Stabilization;
 			kill_throttle = 0;
 			nav_init_stage();
-			NavVerticalAltitudeMode(estimator_z+10, 0.); 		//Höhe halten in Stabilisations-Zwischenschritt
-					
+			NavVerticalAltitudeMode(estimator_z + 5.0, 0); 		//Höhe halten in Stabilisations-Zwischenschritt		
 		}
 		break;
 
 	case Stabilization:							//Höhe halten, nicht navigieren, Motor einschalten	
-		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH);
+		NavVerticalAutoThrottleMode(0.1); 
 		NavVerticalThrottleMode(9600*(1));		
 		kill_throttle = 0;
 
@@ -236,8 +235,9 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 
 	case Climb:
 		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH);
-		nav_route_xy(StartThrottle_X,StartThrottle_Y,(waypoints[TOD].x),(waypoints[TOD].y));
 		NavVerticalAltitudeMode(TakeOff_Height, 0.);
+		NavVerticalThrottleMode(9600*(1));
+		nav_route_xy(StartThrottle_X,StartThrottle_Y,(waypoints[TOD].x),(waypoints[TOD].y));
 
 		if(estimator_z > (TakeOff_Height-10))
 		{

@@ -40,4 +40,6 @@ extern void set_measure_params( void );
 extern void set_start_params( void );
 extern void set_land_params( void );
 
+void send_params( void );
+
 #endif

@@ -26,22 +26,18 @@
  *
  */
 
-// #include <inttypes.h>
 #include "subsystems/navigation/parameter_changer.h"
 #include "firmwares/fixedwing/stabilization/stabilization_attitude.h"
 #include "firmwares/fixedwing/guidance/guidance_v.h"
-// #include "generated/airframe.h"
 
-// uint8_t acs_idx;
-// uint8_t the_acs_id[NB_ACS_ID];
-// struct ac_info_ the_acs[NB_ACS];
+#include "mcu_periph/uart.h"
+#include "messages.h"
+#include "downlink.h"
 
-// void traffic_info_init( void ) {
-//   the_acs_id[0] = 0;  // ground station
-//   the_acs_id[AC_ID] = 1;
-//   the_acs[the_acs_id[AC_ID]].ac_id = AC_ID;
-//   acs_idx = 2;
-// }$
+#ifndef DOWNLINK_DEVICE
+#define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
+#endif
+
 
 void set_max_roll(float max_roll)
 {
@@ -50,6 +46,7 @@ void set_max_roll(float max_roll)
 	}
 	else
 		h_ctl_roll_max_setpoint = H_CTL_ROLL_MAX_SETPOINT;
+	send_params();
 }
 
 void set_max_pitch(float max_pitch)
@@ -59,6 +56,7 @@ void set_max_pitch(float max_pitch)
 	}
 	else
 		h_ctl_pitch_max_setpoint = H_CTL_PITCH_MAX_SETPOINT;
+	send_params();
 }
 
 void set_min_pitch(float min_pitch)
@@ -68,6 +66,7 @@ void set_min_pitch(float min_pitch)
 	}
 	else
 		h_ctl_pitch_min_setpoint = H_CTL_PITCH_MIN_SETPOINT;
+	send_params();
 }
 
 void set_approach_params()
@@ -101,6 +100,12 @@ void set_land_params()
 	//set_max_pitch(NAV_LAND_MAX_PITCH);
 	//set_min_pitch(NAV_LAND_MIN_PITCH);
 }
+
+void send_params()
+{
+	DOWNLINK_SEND_ZHAWPARAMS(DefaultChannel, &h_ctl_roll_max_setpoint, &h_ctl_pitch_max_setpoint, &h_ctl_pitch_min_setpoint, &v_ctl_airspeed_mode);
+}
+
 
 
 // struct ac_info_ * get_ac_info(uint8_t id) {
