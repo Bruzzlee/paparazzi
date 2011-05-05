@@ -23,7 +23,7 @@
 
 
 		<!--define name="AGR_CLIMB"/-->
-		<define name="LOITER_TRIM"/>
+		<!--define name="LOITER_TRIM"/-->
 		<define name="ALT_KALMAN"/>
 		<define name="WIND_INFO"/>
 		<define name="WIND_INFO_RET"/>
@@ -169,6 +169,7 @@
 	<section name="HORIZONTAL CONTROL" prefix="H_CTL_">
 		<define name="ROLL_PGAIN" value="0."/>
 		<define name="COURSE_PGAIN" value="-0.999000012875"/>
+		<define name="COURSE_IGAIN" value="0."/>
 		<define name="COURSE_DGAIN" value="0."/>
 		<define name="ROLL_MAX_SETPOINT" value="0.947000026703" unit="radians"/>
 		<define name="PITCH_MAX_SETPOINT" value="0.296000003815" unit="radians"/>
@@ -193,7 +194,7 @@
 		<define name="AUTO_THROTTLE_NOMINAL_CRUISE_THROTTLE" value="0.711000025272"/>
 		<define name="AUTO_THROTTLE_MIN_CRUISE_THROTTLE" value=".3"/>
 		<define name="AUTO_THROTTLE_MAX_CRUISE_THROTTLE" value="0.9"/>
-		<define name="AUTO_THROTTLE_LOITER_TRIM" value="2000."/>
+		<define name="AUTO_THROTTLE_LOITER_TRIM" value="0."/>
 		<define name="AUTO_THROTTLE_DASH_TRIM" value="-1500"/>
 		<define name="AUTO_THROTTLE_CLIMB_THROTTLE_INCREMENT" value="0.15000000596" unit="%/(m/s)"/>
 		<define name="AUTO_THROTTLE_PGAIN" value="-0.0109999999404"/>
@@ -237,7 +238,11 @@
 		<define name="ALTITUDE_MAX_ACCEL" value="1." unit="m/s2"/>
 		<define name="AIRSPEED_ACC_FILTER_VALUE" value="0.0780000016093"/>
 		<define name="ACCEL_PGAIN" value="0.5"/>
-
+			<!-- "Airspeed" with fixed Pitch - FP -->
+		<define name="AUTO_AIRSPEED_THROTTLE_PGAIN_FP" value="-0.029"/>
+		<define name="AUTO_AIRSPEED_THROTTLE_IGAIN_FP" value="0.0240000002086"/>
+		<define name="AUTO_AIRSPEED_PRETHROTTLE_FP" value="0.507000029087"/>
+		<define name="AUTO_AIRSPEED_PITCHSETP_FP" value="0.1"/>
 
 		<!-- minimal groundspeed -->
 		<define name="AUTO_GROUNDSPEED_SETPOINT" value="0." unit="m/s"/>

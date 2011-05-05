@@ -135,6 +135,11 @@ inline static void v_ctl_climb_auto_throttle_loop(void);
 	float v_ctl_accel_pgain;
 	float v_ctl_altitude_max_accel;
 	float v_ctl_auto_acceleration_sum_err;
+	//"Airspeed" with fixed Pitch
+	float v_ctl_auto_airspeed_pitchsetp_fp;
+	float v_ctl_auto_airspeed_throttle_pgain_fp;
+	float v_ctl_auto_airspeed_throttle_igain_fp;
+	float v_ctl_auto_airspeed_prethrottle_fp;
 
 	float v_ctl_auto_airspeed_sum_err;
 	float v_ctl_auto_climb_limit;
@@ -226,6 +231,11 @@ void v_ctl_init(void) {
 		v_ctl_airspeed_acc_filter_value = V_CTL_AIRSPEED_ACC_FILTER_VALUE;
 		v_ctl_accel_pgain = V_CTL_ACCEL_PGAIN;
 		v_ctl_altitude_max_accel = V_CTL_ALTITUDE_MAX_ACCEL;
+		//"Airspeed" with fixed Pitch
+		v_ctl_auto_airspeed_pitchsetp_fp = V_CTL_AUTO_AIRSPEED_PITCHSETP_FP;
+		v_ctl_auto_airspeed_throttle_pgain_fp = V_CTL_AUTO_AIRSPEED_THROTTLE_PGAIN_FP;
+		v_ctl_auto_airspeed_throttle_igain_fp = V_CTL_AUTO_AIRSPEED_THROTTLE_IGAIN_FP;
+		v_ctl_auto_airspeed_prethrottle_fp = V_CTL_AUTO_AIRSPEED_PRETHROTTLE_FP;
 
 		v_ctl_auto_airspeed_sum_err = 0.;
 		v_ctl_auto_climb_limit = V_CTL_AUTO_CLIMB_LIMIT;
@@ -437,6 +447,11 @@ inline static void v_ctl_climb_auto_throttle_loop(void) {
 				BoundAbs(v_ctl_auto_alt_sum_err, V_CTL_AUTO_ALT_MAX_SUM_ERR);
 				controlled_throttle = v_ctl_auto_airspeed_prethrottle_aspa + v_ctl_auto_airspeed_throttle_pgain_aspa * (v_ctl_altitude_error + v_ctl_auto_airspeed_throttle_igain_aspa * v_ctl_auto_alt_sum_err);
 				break;
+			case AS_MODE_FIX_PITCH: //"Airspeed" with fixed Pitch - FP
+				v_ctl_auto_alt_sum_err += v_ctl_altitude_error;
+				BoundAbs(v_ctl_auto_alt_sum_err, V_CTL_AUTO_ALT_MAX_SUM_ERR);
+				controlled_throttle = v_ctl_auto_airspeed_prethrottle_fp + v_ctl_auto_airspeed_throttle_pgain_fp * (v_ctl_altitude_error + v_ctl_auto_airspeed_throttle_igain_fp * v_ctl_auto_alt_sum_err);
+				break;
 		}
 
 		// Ground speed control loop (input: groundspeed error, output: airspeed controlled)
@@ -500,6 +515,10 @@ inline static void v_ctl_climb_auto_throttle_loop(void) {
 				
 				v_ctl_pitch_of_vz = (err_acceleration + v_ctl_auto_acceleration_sum_err * v_ctl_auto_airspeed_pitch_igain_aspa) * v_ctl_auto_airspeed_pitch_pgain_aspa;
 				break;
+			case AS_MODE_FIX_PITCH: //"Airspeed" with fixed Pitch - FP
+				v_ctl_pitch_of_vz = v_ctl_auto_airspeed_pitchsetp_fp;
+				break;
+
 		}
 		
 		

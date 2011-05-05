@@ -43,6 +43,9 @@ float h_ctl_course_setpoint; /* rad, CW/north */
 float h_ctl_course_pre_bank;
 float h_ctl_course_pre_bank_correction;
 float h_ctl_course_pgain;
+float h_ctl_course_igain;
+float h_ctl_course_sum_err;
+#define H_CTL_COURSE_MAX_SUM_ERR 200
 float h_ctl_course_dgain;
 float h_ctl_roll_max_setpoint;
 
@@ -116,6 +119,7 @@ void h_ctl_init( void ) {
   h_ctl_course_pre_bank = 0.;
   h_ctl_course_pre_bank_correction = H_CTL_COURSE_PRE_BANK_CORRECTION;
   h_ctl_course_pgain = H_CTL_COURSE_PGAIN;
+  h_ctl_course_igain = H_CTL_COURSE_IGAIN;
   h_ctl_course_dgain = H_CTL_COURSE_DGAIN;
   h_ctl_roll_max_setpoint = H_CTL_ROLL_MAX_SETPOINT;
 
@@ -234,6 +238,8 @@ void h_ctl_course_loop ( void ) {
 
   float d_err = err - last_err;
   last_err = err;
+  h_ctl_course_sum_err += err;
+  BoundAbs(h_ctl_course_sum_err, H_CTL_COURSE_MAX_SUM_ERR);
 
   NormRadAngle(d_err);
 
@@ -262,7 +268,7 @@ void h_ctl_course_loop ( void ) {
   float speed_depend_nav = estimator_hspeed_mod/NOMINAL_AIRSPEED;
   Bound(speed_depend_nav, 0.66, 1.5);
 
-  float cmd = h_ctl_course_pgain * speed_depend_nav * (err + d_err * h_ctl_course_dgain);
+  float cmd = h_ctl_course_pgain * speed_depend_nav * (err + h_ctl_course_igain * h_ctl_course_sum_err + d_err * h_ctl_course_dgain);
 
 
 

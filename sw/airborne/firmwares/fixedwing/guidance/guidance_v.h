@@ -107,6 +107,7 @@ extern void v_ctl_climb_loop ( void );
 #define  AS_MODE_ASP_SIMPLE	3
 #define  AS_MODE_ASP_MANUAL	4
 #define  AS_MODE_ASP_ACCEL	5
+#define  AS_MODE_FIX_PITCH	6
 extern uint8_t v_ctl_airspeed_mode;
 
 #ifdef USE_AIRSPEED
@@ -150,6 +151,11 @@ extern float v_ctl_auto_airspeed_pitch_igain_aspa;
 extern float v_ctl_airspeed_acc_filter_value;
 extern float v_ctl_accel_pgain;
 extern float v_ctl_altitude_max_accel;
+//"Airspeed" with fixed Pitch
+extern float v_ctl_auto_airspeed_pitchsetp_fp;
+extern float v_ctl_auto_airspeed_throttle_pgain_fp;
+extern float v_ctl_auto_airspeed_throttle_igain_fp;
+extern float v_ctl_auto_airspeed_prethrottle_fp;
 #endif
 
 /** Computes throttle_slewed from throttle_setpoint */

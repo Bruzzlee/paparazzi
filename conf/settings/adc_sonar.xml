@@ -3,8 +3,8 @@
 <settings>
 	<dl_settings>
 		<dl_settings NAME="Sonar">
-			<dl_setting MAX="10" MIN="-10" STEP="1" VAR="sonar_offset" shortname="sonar_offset" module="modules/sonar/sonar_adc" param="SONAR_SCALE"/>
-			<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="sonar_filter" shortname="sonar_filter" module="modules/sonar/sonar_adc" param="SONAR_FILTER"/>
+			<dl_setting MAX="10" MIN="-10" STEP="1" VAR="sonar_offset" shortname="sonar_offset" module="modules/sonar/sonar_adc" param="SONAR_ADC_OFFSET"/>
+			<dl_setting MAX="1" MIN="0" STEP="0.001" VAR="sonar_filter" shortname="sonar_filter" module="modules/sonar/sonar_adc" param="SONAR_ADC_FILTER"/>
 		</dl_settings>
 	</dl_settings>
 </settings>
