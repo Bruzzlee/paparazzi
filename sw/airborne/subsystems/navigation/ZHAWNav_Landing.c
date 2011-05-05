@@ -29,27 +29,16 @@ Landing Routine
   </section>
 
  */
+/*
 
-#ifndef Landing_FinalHeight
-#define Landing_FinalHeight 5	
+#ifndef SonarHeight		//Höhe auf welcher auf Sonar umgeschaltet wird
+#define SonarHeight 6
 #endif
-
-#ifndef Landing_FinalStageTime
-#define Landing_FinalStageTime 5
-#endif
-
-#ifndef KillThrottleHeight	//Höhe, bei welcher der Motor abgeschaltet wird
-#define KillThrottleHeight 2
-#endif
-
-//#ifndef SonarHeight		//Höhe auf welcher auf Sonar umgeschaltet wird
-//#define SonarHeight 6
-//#endif
 
 #ifndef saveHeight		//Höhe bei der in Failsave gegangen werden soll
 #define saveHeight 4
 #endif
-
+*/
 
 
 enum LandingStatus { CircleDown, LandingWait, ApproachHeading, DeclineToSonar, Approach, Flare, Stall };
@@ -84,8 +73,10 @@ static uint8_t msgLandStatus;
 
 static float TDDistance;
 static uint8_t FinalLandCount;
-static float FinalLandAltitude;
 static float SonarHeight;
+static float SaveHeight;
+static float FlareFactor;
+static float Land_prePitch;
 
 //*******************
 
@@ -98,12 +89,14 @@ bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float
 	CLandingStatus = CircleDown;
 	LandRadius = radius;
 	LandAppAlt = estimator_z;
-	FinalLandAltitude = Landing_FinalHeight;
 
 	// für Airframe****************
-	FinalLandCount = 8;
-	TDDistance=15;
-	SonarHeight=6;
+	SaveHeight = 3;			//Höhe für Failsave
+	SonarHeight = 6;		//Höhe für Approach
+	TDDistance = 25;		//Strecke, auf der geflaret wird
+	FlareFactor = 0.5;		//Faktor mit dem die Sollhöhe beim Flare verkleinert wird
+	FinalLandCount = 4;		//Anzahl Flareschritte
+	Land_prePitch = 0.175		//Soll Pitch für Kill_Throttle schritt
 	//********************************
 	Flare_Increment=TDDistance/FinalLandCount;
 
@@ -195,8 +188,8 @@ bool_t ZHAWSkidLanding(void)
 			nav_init_stage();
 			AboveCheckPoint = CalculateCheckPoint();
 			
-			//set_max_roll(0.1);
-			//set_min_pitch(-0.2);
+			set_max_roll(0.1);
+			set_min_pitch(-0.2);
 		}
 	msgLandStatus=3;
 	break;
@@ -207,14 +200,14 @@ bool_t ZHAWSkidLanding(void)
   		NavVerticalAltitudeMode(waypoints[TDWaypoint].a+SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
-		if(estimator_z < (SonarHeight + 0.5))
+		if(sonar_dist < (SonarHeight + 0.5))
 		{
 			CLandingStatus = Approach;
 			estimator_z_mode = SONAR_HEIGHT;
 			nav_init_stage();
 
-			//set_max_pitch(0.1);
-			//set_min_pitch(-0.1);
+			set_max_pitch(0.1);
+			set_min_pitch(-0.1);
 			set_land_params();
 		}
 	msgLandStatus=4;
@@ -231,12 +224,12 @@ bool_t ZHAWSkidLanding(void)
 			CLandingStatus = Flare;
 			nav_init_stage();
 
-			//set_max_pitch(0.1);
-			//set_min_pitch(-0.1);
+			set_max_pitch(0.1);
+			set_min_pitch(-0.1);
 
 			TDDistance = TDDistance - Flare_Increment;
 			FlareStage = 1;
-			SonarHeight = SonarHeight * 0.6;
+			SonarHeight = SonarHeight * FlareFactor;
 			AboveCheckPoint = CalculateCheckPoint();
 		}
 	msgLandStatus=5;
@@ -252,7 +245,7 @@ bool_t ZHAWSkidLanding(void)
 		{
 			TDDistance=TDDistance - Flare_Increment;
 			FlareStage++;
-			SonarHeight = SonarHeight * 0.6;
+			SonarHeight = SonarHeight * FlareFactor;
 			AboveCheckPoint = CalculateCheckPoint();
 		}
 
@@ -268,7 +261,7 @@ bool_t ZHAWSkidLanding(void)
 
 	case Stall:
 		kill_throttle = 1;
-		NavVerticalAutoThrottleMode(0); // No pitch
+		NavVerticalAutoThrottleMode(Land_prePitch); 
   		NavVerticalAltitudeMode(SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
@@ -280,20 +273,29 @@ bool_t ZHAWSkidLanding(void)
 	break;
 	}
 
-	RunOnceEvery(5, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint));
+	RunOnceEvery(1, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint, &SonarHeight, &sonar_dist, &estimator_z, ));
 
-	//Failsave
+	//Failsave Height
 	if ((estimator_z < saveHeight) && (CLandingStatus != Flare) && (CLandingStatus != Stall))
 	{
 		//Mach den Failsave und starte durch!!
 		//Möglicherweise muss nur false zurückgegeben werden und im Flightplan muss der Folgepunkt STBY sein!!
 		estimator_z_mode=GPS_HEIGHT;
-		//set_max_pitch(0.3);
-		//set_min_pitch(0.3);
-		//set_max_roll(0.5);
+		set_max_pitch(0.3);
+		set_min_pitch(0.3);
+		set_max_roll(0.5);
 		return FALSE;
 	}
 
+	//Failsave CheckPoint
+	if ((CLandingStatus == DeclineToSonar) && ( UAVcrossedCheckPoint() == 1 ))
+	{
+		estimator_z_mode=GPS_HEIGHT;
+		set_max_pitch(0.3);
+		set_min_pitch(0.3);
+		set_max_roll(0.5);
+		return FALSE;
+	}
 
 	return TRUE;
 }

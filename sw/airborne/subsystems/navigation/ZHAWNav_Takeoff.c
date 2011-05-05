@@ -115,11 +115,12 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP)		//uint8_t _NP mu
 	TP = _TP;
 	TakeOff_Height = (waypoints[TOD].a);
 
+	
+	//** Für Airframe **********************************
 	Takeoff_MinSpeed_local=3.0;   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
-
-
-	//Takeoff_Distance can only be positive
+					//Takeoff_Distance can only be positive
 	TDistance = 9.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	//**************************************************
 
 	//Record bungee alt (which should be the ground alt at that point)
 	BungeeAlt = (waypoints[_TP].a);
@@ -127,6 +128,8 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP)		//uint8_t _NP mu
 
 	AboveThrottleLine=calculateTakeOffConditions();				//Auf welcher Seite ist dir Drohne
 
+
+	NavVerticalAutoThrottleMode(0.175);
 
 	//Enable Launch Status and turn kill throttle on
 	CTakeoffStatus = Launch;
@@ -178,7 +181,8 @@ bool_t ZHAWBungeeTakeoff(void)
 			kill_throttle = 0;
 			nav_init_stage();
 			ThrottleX = estimator_x;
-			ThrottleY = estimator_y;		
+			ThrottleY = estimator_y;	
+			NavVerticalAutoThrottleMode(0);	
 		}
 		break;
 

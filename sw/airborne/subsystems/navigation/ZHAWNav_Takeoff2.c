@@ -145,7 +145,7 @@ bool_t InitializeZHAWBungeeTakeoffNavLine(uint8_t TODWP, uint8_t _TP, uint8_t _N
 
 
 	//Takeoff_Distance can only be positive
-	TDistance = 8.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	TDistance = 9.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 	NDistance = 30.0;					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 
 	//Record bungee alt (which should be the ground alt at that point)

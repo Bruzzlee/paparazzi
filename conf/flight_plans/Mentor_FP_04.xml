@@ -13,12 +13,14 @@
   <waypoints>
     <waypoint name="HOME" x="0" y="0"/>
     <waypoint name="STDBY" x="-2.0" y="97.6"/>
-    <waypoint name="1" x="85.7" y="-178.7"/>
-    <waypoint name="2" x="123.7" y="-177.2"/>
-    <waypoint name="3" x="133.7" y="-177.2"/>
-    <waypoint name="4" x="143.7" y="-177.2"/>
-    <waypoint name="5" x="153.7" y="-177.2"/>
-    <waypoint name="6" x="163.7" y="-177.2"/>
+
+    <waypoint name="1" x="-235.3" y="12.5" Height="50"/>
+    <waypoint name="2" x="-185.9" y="12.1" Height="50"/>
+    <waypoint name="3" x="-43.9" y="19.0" Height="5"/>
+    <waypoint name="4" x="17.5" y="22.7" Height="5"/>
+    <waypoint name="5" x="149.3" y="36.6" Height="50"/>
+    <waypoint name="6" x="209.4" y="38.5" Height="50"/>
+    <waypoint name="FSP" x="209.4" y="38.5" Height="50"/>
     <waypoint name="Ov1" x="-147.1" y="157.1"/>
     <waypoint name="Ov2" x="132.3" y="180.1"/>
     <waypoint name="8C" x="-13.0" y="113.9"/>
@@ -104,11 +106,28 @@
       <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
       <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius)"/>
       <call fun="ZHAWSkidLanding()"/>
+      <go from="AF" hmode="route" vmode="glide" wp="FSP"/>
+      <deroute block="Standby"/>
     </block>
     <block group="land" name="Land Left AF-TD" strip_button="Land left (wp AF-TD)" strip_icon="land-left.png">
       <set value="-DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
       <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius)"/>
       <call fun="ZHAWSkidLanding()"/>
+      <go from="AF" hmode="route" vmode="glide" wp="FSP"/>
+      <deroute block="Standby"/>
     </block>
+
+    <block name="Lowpass" strip_button="Lowpass" strip_icon="path.png" group="extra_pattern">
+      <go from="STDBY" hmode="route" vmode="glide" wp="1"/>
+      <go from="1" hmode="route" vmode="glide" wp="2"/>
+      <go from="2" hmode="route" vmode="glide" wp="3"/>
+      <go from="3" hmode="route" vmode="glide" wp="4"/>
+      <go from="4" hmode="route" vmode="glide" wp="5"/>
+      <go from="5" hmode="route" vmode="glide" wp="6"/>
+      <deroute block="Standby"/>
+    </block>
+
+
+    
   </blocks>
 </flight_plan>

@@ -62,10 +62,10 @@
   <aircraft
    name="Mentor"
    ac_id="2"
-   airframe="airframes/Mentor_AF_37.xml"
+   airframe="airframes/Mentor_AF_41.xml"
    radio="radios/Mentor_Ra_1.xml"
    telemetry="telemetry/default.xml"
-   flight_plan="flight_plans/Mentor_FP_03.xml"
+   flight_plan="flight_plans/Mentor_FP_04.xml"
    settings=" settings/Mentor_Se_2.xml settings/airspeedSwitch_PitchVas.xml settings/amsys.xml settings/benchmark.xml settings/adc_sonar.xml settings/Landing.xml"
    gui_color="blue"
   />
