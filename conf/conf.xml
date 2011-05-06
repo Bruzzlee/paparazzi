@@ -66,7 +66,7 @@
    radio="radios/Mentor_Ra_1.xml"
    telemetry="telemetry/default.xml"
    flight_plan="flight_plans/Mentor_FP_04.xml"
-   settings=" settings/Mentor_Se_2.xml settings/airspeedSwitch_PitchVas.xml settings/amsys.xml settings/benchmark.xml settings/adc_sonar.xml settings/Landing.xml"
+   settings=" settings/Mentor_Se_2.xml settings/amsys.xml settings/benchmark.xml settings/adc_sonar.xml settings/Landing.xml settings/airspeedSwitch_PitchVas.xml"
    gui_color="blue"
   />
   <aircraft

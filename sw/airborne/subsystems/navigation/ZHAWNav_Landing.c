@@ -61,6 +61,7 @@ static float DeltaFx;
 static float DeltaFy;
 static float CheckPx;
 static float CheckPy;
+static uint8_t fixedpitch;
 
 static uint8_t FlareStage;
 static float Flare_Increment;
@@ -80,13 +81,14 @@ static float Land_prePitch;
 
 //*******************
 
-bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float radius)
+bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float radius, uint8_t _fixedpitch)
 {
 	AFWaypoint = AFWP;
 	TDWaypoint = TDWP;
 	CPWaypoint = CPWP;
+	fixedpitch = _fixedpitch;
 	
-	CLandingStatus = CircleDown;
+	CLandingStatus = DeclineToSonar;			//CircleDown;
 	LandRadius = radius;
 	LandAppAlt = estimator_z;
 
@@ -101,8 +103,13 @@ bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float
 	Flare_Increment=TDDistance/FinalLandCount;
 
 
-	set_approach_params(); // Parameter für Landung setzten (Airspeed, max_roll, ...)
-
+	set_approach_params();  // Parameter für Landung setzten (Airspeed, max_roll, ...)
+	
+	if ( fixedpitch == 1 )
+		set_as_mode(6);
+	else	
+		set_as_mode(3);		// Airspeed Pitch Simple
+		
 	//Translate distance from AF to TD so that AF is (0/0) 
 	float x_0 = waypoints[TDWaypoint].x - waypoints[AFWaypoint].x;
 	float y_0 = waypoints[TDWaypoint].y - waypoints[AFWaypoint].y;
@@ -140,7 +147,8 @@ bool_t ZHAWSkidLanding(void)
 	switch(CLandingStatus)
 	{
 	case CircleDown: // Kreisen bis die Höhe, die im AFWaypoint vorgegeben ist erreicht ist (um den Wegpunkt der in InitializeSkidLanding berechnet wurde)
-		NavVerticalAutoThrottleMode(0); // No pitch
+		if ( fixedpitch != 1 )		
+			NavVerticalAutoThrottleMode(0); // No pitch
 		
 		if(NavCircleCount() < .1)
 		{
@@ -161,7 +169,8 @@ bool_t ZHAWSkidLanding(void)
 	break;
 
 	case LandingWait: // Höhe halten und weiter um CircleCircle kreisen  
-		NavVerticalAutoThrottleMode(0); // No pitch
+		if ( fixedpitch != 1 )
+			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(waypoints[AFWaypoint].a, 0);
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius);
 
@@ -178,7 +187,8 @@ bool_t ZHAWSkidLanding(void)
 
 
 	case ApproachHeading:				//Drohne fliegt den Kreis fertig, bis sie auf Landekurs ist
-		NavVerticalAutoThrottleMode(0); // No pitch
+		if ( fixedpitch != 1 )
+			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(waypoints[AFWaypoint].a, 0); 	//Sollhöhe geben
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius);	
 
@@ -187,16 +197,19 @@ bool_t ZHAWSkidLanding(void)
 			CLandingStatus = DeclineToSonar;
 			nav_init_stage();
 			AboveCheckPoint = CalculateCheckPoint();
-			
-			set_max_roll(0.1);
-			set_min_pitch(-0.2);
+			if ( fixedpitch != 1 )
+			{
+				set_max_roll(0.1);
+				set_min_pitch(-0.2);
+			}
 		}
 	msgLandStatus=3;
 	break;
 
 
 	case DeclineToSonar: // Sinken, bis Sonar sich meldet
-		NavVerticalAutoThrottleMode(0); // No pitch
+		if ( fixedpitch != 1 )
+			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(waypoints[TDWaypoint].a+SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
@@ -206,15 +219,18 @@ bool_t ZHAWSkidLanding(void)
 			estimator_z_mode = SONAR_HEIGHT;
 			nav_init_stage();
 
-			set_max_pitch(0.1);
-			set_min_pitch(-0.1);
-			set_land_params();
+			if ( fixedpitch != 1 )
+			{
+				set_land_params();
+				set_as_mode(1);
+			}
 		}
 	msgLandStatus=4;
 	break;	
 
 	case Approach: //Sonar Höhe (ca. 6m) halten, bis zum FlarePoint, wo die Landung begonnen werden kann. 
-		NavVerticalAutoThrottleMode(0); // No pitch
+		if ( fixedpitch != 1 )
+			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(SonarHeight, 0); //Sonarhöhe ÜBER BODEN!!!!
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 		
@@ -224,8 +240,11 @@ bool_t ZHAWSkidLanding(void)
 			CLandingStatus = Flare;
 			nav_init_stage();
 
-			set_max_pitch(0.1);
-			set_min_pitch(-0.1);
+			if ( fixedpitch != 1 )
+			{
+				set_max_pitch(0.1);
+				set_min_pitch(-0.1);
+			}
 
 			TDDistance = TDDistance - Flare_Increment;
 			FlareStage = 1;
@@ -236,7 +255,8 @@ bool_t ZHAWSkidLanding(void)
 	break;
 
 	case Flare:
-		NavVerticalAutoThrottleMode(0); // No pitch
+		if ( fixedpitch != 1 )
+			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
@@ -255,15 +275,19 @@ bool_t ZHAWSkidLanding(void)
 			CLandingStatus = Stall;
 			kill_throttle = 1;
 			nav_init_stage();
-		}
+			if ( fixedpitch != 1 )
+				set_max_pitch(99);		
+}
 	msgLandStatus=6;
 	break;
 
 	case Stall:
 		kill_throttle = 1;
 		NavVerticalAltitudeMode(SonarHeight, 0);
-		NavVerticalAutoThrottleMode(Land_prePitch); 
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
+
+		if (fixedpitch != 1)
+			NavVerticalAutoThrottleMode(Land_prePitch); 
 
 	msgLandStatus=7;
 	break;
@@ -273,15 +297,15 @@ bool_t ZHAWSkidLanding(void)
 	break;
 	}
 
-	RunOnceEvery(1, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint, &SonarHeight, &sonar_dist, &estimator_z));
+	RunOnceEvery(5, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint, &SonarHeight, &estimator_z_sonar, &estimator_z));
 
 	//Failsave Height
 	if ((estimator_z < SaveHeight) && (CLandingStatus != Flare) && (CLandingStatus != Stall))
 	{
 		estimator_z_mode=GPS_HEIGHT;
-		set_max_pitch(0.3);
-		set_min_pitch(0.3);
-		set_max_roll(0.5);
+		set_max_pitch(99);
+		set_min_pitch(99);
+		set_max_roll(99);
 		return FALSE;
 	}
 
@@ -289,9 +313,9 @@ bool_t ZHAWSkidLanding(void)
 	if ((CLandingStatus == DeclineToSonar) && ( UAVcrossedCheckPoint() == 1 ))
 	{
 		estimator_z_mode=GPS_HEIGHT;
-		set_max_pitch(0.3);
-		set_min_pitch(0.3);
-		set_max_roll(0.5);
+		set_max_pitch(99);
+		set_min_pitch(99);
+		set_max_roll(99);
 		return FALSE;
 	}
 

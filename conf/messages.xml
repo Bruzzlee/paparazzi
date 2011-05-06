@@ -495,7 +495,7 @@
 		<field name="estimator_z_mode" type="uint8"/>
 		<field name="AboveCP" type="uint8"/>
 		<field name="CurrentAboveCP" type="uint8"/>
-		<field name="SonarSoll" type="uint8" unit="m"/>
+		<field name="SonarSoll" type="float" unit="m"/>
 		<field name="SonarHoehe" type="float" unit="m"/>
 		<field name="Estimator_Z" type="float" unit="m"/>
    	</message>
@@ -507,9 +507,9 @@
    	</message>
 
 	<message name="ZHAWPARAMS" id="65">
-		<field name="max_roll" type="uint8"/>
-		<field name="max_pitch" type="uint8"/>
-		<field name="min_pitch" type="uint8"/>
+		<field name="max_roll" type="float"/>
+		<field name="max_pitch" type="float"/>
+		<field name="min_pitch" type="float"/>
 		<field name="AS_Mode" type="uint8"/>
    	</message>
 

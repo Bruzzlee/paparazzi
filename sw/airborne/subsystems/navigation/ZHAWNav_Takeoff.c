@@ -176,14 +176,18 @@ bool_t ZHAWBungeeTakeoff(void)
 			kill_throttle = 0;
 			nav_init_stage();
 			ThrottleX = estimator_x;
-			ThrottleY = estimator_y;		
+			ThrottleY = estimator_y;
+
+			NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH); 
+			NavVerticalAltitudeMode(TakeOff_Height, 0.);	
+			NavVerticalThrottleMode(9600*(1));		
 		}
 		break;
 
 	case Throttle:
 		//Follow Launch Line
-		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH); 
-		NavVerticalAltitudeMode(TakeOff_Height, 0.);	
+		//NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH); 
+		//NavVerticalAltitudeMode(TakeOff_Height, 0.);	
 		NavVerticalThrottleMode(9600*(1));		
 		nav_route_xy(ThrottleX,ThrottleY,(waypoints[TOD].x),(waypoints[TOD].y));
 		kill_throttle = 0;

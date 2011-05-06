@@ -29,6 +29,7 @@
 		<define name="WIND_INFO_RET"/>
 		<define name="USE_I2C0"/>
 		<define name="USE_AIRSPEED"/>
+		<define name="USE_SONAR"/>
 		<!--define name="MEASURE_AIRSPEED" /-->
 		<!--define name="SONAR_SYNC_SEND"/-->
 		<!--define name="MEASURE_AMSYS_TEMPERATURE"/-->

@@ -208,11 +208,12 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 			kill_throttle = 0;
 			nav_init_stage();
 			NavVerticalAltitudeMode(estimator_z + 5.0, 0); 		//Höhe halten in Stabilisations-Zwischenschritt		
+			NavVerticalAutoThrottleMode(0.1);
 		}
 		break;
 
 	case Stabilization:							//Höhe halten, nicht navigieren, Motor einschalten	
-		NavVerticalAutoThrottleMode(0.1); 
+		//NavVerticalAutoThrottleMode(0.1); 
 		NavVerticalThrottleMode(9600*(1));		
 		kill_throttle = 0;
 
@@ -231,11 +232,15 @@ bool_t ZHAWBungeeTakeoffNavLine(void)
 			nav_init_stage();
 			StartThrottle_X=estimator_x;
 			StartThrottle_Y=estimator_y;
+			
+			NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH);
+			NavVerticalAltitudeMode(TakeOff_Height, 0.);
+			NavVerticalThrottleMode(9600*(1));
 		}
 
 	case Climb:
-		NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH);
-		NavVerticalAltitudeMode(TakeOff_Height, 0.);
+		//NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH);
+		//NavVerticalAltitudeMode(TakeOff_Height, 0.);
 		NavVerticalThrottleMode(9600*(1));
 		nav_route_xy(StartThrottle_X,StartThrottle_Y,(waypoints[TOD].x),(waypoints[TOD].y));
 

@@ -38,6 +38,19 @@
 #define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
 #endif
 
+bool_t set_as_mode(uint8_t as_mode_set)
+{
+	//AS_MODE_STANDARD		0
+	//AS_MODE_VASSILLIS		1
+	//AS_MODE_ASP_CLIMBRATE		2
+	//AS_MODE_ASP_SIMPLE		3
+	//AS_MODE_ASP_MANUAL		4
+	//AS_MODE_ASP_ACCEL		5
+	//AS_MODE_FIX_PITCH		6
+	v_ctl_airspeed_mode = as_mode_set;
+	
+	return FALSE;
+}
 
 void set_max_roll(float max_roll)
 {
@@ -71,7 +84,7 @@ void set_min_pitch(float min_pitch)
 
 void set_approach_params()
 {
-	v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
+	//v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
 		set_max_roll(99.0);
 		set_max_pitch(99.0); 
 		set_min_pitch(99.0);
@@ -79,7 +92,7 @@ void set_approach_params()
 
 void set_measure_params()
 {
-	v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
+	//v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
 	set_max_roll(NAV_MEASURE_MAX_ROLL);
 	set_max_pitch(NAV_MEASURE_MAX_PITCH);
 	set_min_pitch(NAV_MEASURE_MIN_PITCH);
@@ -87,7 +100,7 @@ void set_measure_params()
 
 void set_start_params()
 {
-	v_ctl_airspeed_mode = AS_MODE_STANDARD;
+	//v_ctl_airspeed_mode = AS_MODE_STANDARD;
 	set_max_roll(NAV_START_MAX_ROLL);
 	set_max_pitch(NAV_START_MAX_PITCH);
 	set_min_pitch(NAV_START_MIN_PITCH);
@@ -95,7 +108,7 @@ void set_start_params()
 
 void set_land_params()
 {
-	v_ctl_airspeed_mode = AS_MODE_VASSILLIS;
+	//v_ctl_airspeed_mode = AS_MODE_VASSILLIS;
 	set_max_roll(NAV_LAND_MAX_ROLL);
 	//set_max_pitch(NAV_LAND_MAX_PITCH);
 	//set_min_pitch(NAV_LAND_MIN_PITCH);
@@ -105,9 +118,3 @@ void send_params()
 {
 	DOWNLINK_SEND_ZHAWPARAMS(DefaultChannel, &h_ctl_roll_max_setpoint, &h_ctl_pitch_max_setpoint, &h_ctl_pitch_min_setpoint, &v_ctl_airspeed_mode);
 }
-
-
-
-// struct ac_info_ * get_ac_info(uint8_t id) {
-//   return &the_acs[the_acs_id[id]];
-// }

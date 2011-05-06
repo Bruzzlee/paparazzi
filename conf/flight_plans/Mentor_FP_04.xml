@@ -9,6 +9,8 @@
 #include "subsystems/navigation/ZHAWNav_Takeoff2.h"
 #include "subsystems/navigation/ZHAWNav_Landing.h"
 #include "modules/benchmark/flight_benchmark.h"
+#include "subsystems/navigation/parameter_changer.h"
+#include "std.h"
 </header>
   <waypoints>
     <waypoint name="HOME" x="0" y="0"/>
@@ -100,21 +102,48 @@
       <path approaching_time="1" pitch="auto" throttle="0.4" wpts="S1, S2 STDBY"/>
       <deroute block="Standby"/>
     </block>
-    <block group="land" name="Land Right AF-TD" strip_button="Land right (wp AF-TD)" strip_icon="land-right.png">
+    <block group="land" name="Sonar Land Right AF-TD" strip_button="Land right (wp AF-TD)" strip_icon="land-right.png">
       <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
-      <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius)"/>
+      <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius, 0)"/>
       <call fun="ZHAWSkidLanding()"/>
       <go from="AF" hmode="route" vmode="glide" wp="FSP"/>
       <deroute block="Standby"/>
     </block>
-    <block group="land" name="Land Left AF-TD" strip_button="Land left (wp AF-TD)" strip_icon="land-left.png">
+    <block group="land" name="Sonar Land Left AF-TD" strip_button="Land left (wp AF-TD)" strip_icon="land-left.png">
       <set value="-DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
-      <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius)"/>
+      <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius, 0)"/>
       <call fun="ZHAWSkidLanding()"/>
       <go from="AF" hmode="route" vmode="glide" wp="FSP"/>
       <deroute block="Standby"/>
     </block>
+
+    <block group="land" name="PixedPitch Land Right AF-TD" strip_button="FixedPitch Land right (wp AF-TD)" strip_icon="land-right.png">
+      <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
+      <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius, 1)"/>
+      <call fun="ZHAWSkidLanding()"/>
+      <go from="AF" hmode="route" vmode="glide" wp="FSP"/>
+      <deroute block="Standby"/>
+    </block>
+    <block group="land" name="FixedPitch Sonar Land Left AF-TD" strip_button="FixedPitch Land left (wp AF-TD)" strip_icon="land-left.png">
+      <set value="-DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
+      <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius, 1)"/>
+      <call fun="ZHAWSkidLanding()"/>
+      <go from="AF" hmode="route" vmode="glide" wp="FSP"/>
+      <deroute block="Standby"/>
+    </block>
+
     <block group="extra_pattern" name="Lowpass" strip_button="Lowpass" strip_icon="path.png">
+      <go from="STDBY" hmode="route" vmode="glide" wp="1"/>
+      <go from="1" hmode="route" vmode="glide" wp="2"/>
+      <go from="2" hmode="route" vmode="glide" wp="3"/>
+      <go from="3" hmode="route" vmode="glide" wp="4"/>
+      <go from="4" hmode="route" vmode="glide" wp="5"/>
+      <go from="5" hmode="route" vmode="glide" wp="6"/>
+      <deroute block="Standby"/>
+    </block>
+
+    <block group="extra_pattern" name="Sawtooth FixedPitch" strip_button="Sawtooth FP" strip_icon="path.png">
+      <call fun="set_as_mode(1)"/>
       <go from="STDBY" hmode="route" vmode="glide" wp="1"/>
       <go from="1" hmode="route" vmode="glide" wp="2"/>
       <go from="2" hmode="route" vmode="glide" wp="3"/>

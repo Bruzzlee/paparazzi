@@ -114,18 +114,18 @@ extern void alt_sonar( void );
 #ifdef USE_SONAR
 #define EstimatorSetAltSonar(z) { estimator_z_sonar = z; }
 #define EstimatorSetAlt(z) { \
-  if (!alt_kalman_enabled) { \
-    estimator_z = z; \
-  } else { \
-      switch(estimator_z_mode) { \
+  switch(estimator_z_mode) { \
       case GPS_HEIGHT: \
-	alt_kalman(z); \
+ 	if (!alt_kalman_enabled) { \
+ 	   	estimator_z = z; \
+	} else { \
+		alt_kalman(z); \
+	} \
 	break; \
       case SONAR_HEIGHT: \
 	estimator_z_dot = estimator_z - estimator_z_sonar; \
 	estimator_z = estimator_z_sonar; \
 	break; \
-      } \
   } \
 } 
 #else /* !USE_SONAR */

@@ -29,7 +29,11 @@
 #ifndef PARAMETER_CHANGER_H
 #define PARAMETER_CHANGER_H
 
+#include "std.h"
+
 //#include "subsystems/navigation/parameter_changer.c"
+
+extern bool_t set_as_mode(uint8_t as_mode_set);
 
 extern void set_max_roll( float max_roll );
 extern void set_max_pitch(float max_pitch);
