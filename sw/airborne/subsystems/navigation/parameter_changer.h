@@ -43,6 +43,7 @@ extern void set_approach_params( void );
 extern void set_measure_params( void );
 extern void set_start_params( void );
 extern void set_land_params( void );
+extern void set_fixed_pitch_pitch(float fixedpitch);
 
 void send_params( void );
 

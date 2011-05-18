@@ -4,7 +4,7 @@
 	<dl_settings>
 		<dl_settings NAME="Speed">
 			<dl_settings NAME="MainParams">
-				<dl_setting MAX="5" MIN="0" STEP="1" VAR="v_ctl_airspeed_mode" values="STANDARD|VASSILLIS|ASP_CLIMBRATE|ASP_SIMPLE|ASP_MANUAL|ASP_ACCEL" shortname="as_mode" module="guidance/guidance_v"/>
+				<dl_setting MAX="5" MIN="0" STEP="1" VAR="v_ctl_airspeed_mode" values="STANDARD|VASSILLIS|ASP_CLIMBRATE|ASP_SIMPLE|ASP_MANUAL|ASP_ACCEL|ASP_FIXED_PITCH" shortname="as_mode" module="guidance/guidance_v"/>
 				<dl_setting MAX="20" MIN="0" STEP="0.01" VAR="v_ctl_auto_groundspeed_setpoint" shortname="gndsp_setpoint" param="V_CTL_AUTO_GROUNDSPEED_SETPOINT"/>
 				<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_pgain" shortname="gndsp_pgain" param="V_CTL_AUTO_GROUNDSPEED_PGAIN"/>
 				<dl_setting MAX="1" MIN="0" STEP="0.025" VAR="v_ctl_auto_groundspeed_igain" shortname="gndsp_igain" param="V_CTL_AUTO_GROUNDSPEED_IGAIN"/>

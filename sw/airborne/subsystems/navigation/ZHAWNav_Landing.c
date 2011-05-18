@@ -1,3 +1,34 @@
+/*
+ * $Id$
+ *
+ * Copyright (C) 2011  langede0
+ *
+ * This file is part of paparazzi.
+ *
+ * paparazzi is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * paparazzi is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with paparazzi; see the file COPYING.  If not, write to
+ * the Free Software Foundation, 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ */
+/** \file ZHAWNav_Landing.c
+ *  \brief Advanced landing with ultrasonic sensor
+ *
+ */
+
+
+
+
 #include "subsystems/navigation/ZHAWNav_Landing.h"
 #include "firmwares/rotorcraft/autopilot.h"
 #include "modules/sonar/sonar_adc.h"
@@ -17,98 +48,83 @@
 #endif
 
 
-/************** ZHAW SkidLanding **********************************************/
+/************** ZHAW Landing fixed Pitch**********************************************/
 /*
 Landing Routine
 
 
-  <section name="Landing" prefix="Landing_">
-    <define name="AFHeight" value="50" unit="m"/>
-    <define name="FinalHeight" value="5" unit="m"/>
-    <define name="FinalStageTime" value="5" unit="s"/>
+  <section name="ZHAWLanding" prefix="Landing_">
+    <define name="SaveHeight" value="3" unit="m"/>
+    <define name="SonarHeight" value="6" unit="m"/>
+    <define name="TDDistance" value="50" unit="s"/>
+    <define name="FlareFactor" value="5"/>
   </section>
 
  */
-/*
 
-#ifndef SonarHeight		//Höhe auf welcher auf Sonar umgeschaltet wird
-#define SonarHeight 6
+#ifndef Landing_SaveHeight		//Height for Failsave
+#define Landing_SaveHeight 3
 #endif
 
-#ifndef saveHeight		//Höhe bei der in Failsave gegangen werden soll
-#define saveHeight 4
+#ifndef Landing_SonarHeight		//Height to Switch to Sonar
+#define Landing_SonarHeight 6
 #endif
-*/
+
+#ifndef Landing_TDDistance		//Flare Disatnce
+#define Landing_TDDistance 50
+#endif
+
+#ifndef Landing_FlareFactor		//Faktor mit dem die Sollhöhe beim Flare verkleinert wird
+#define Landing_FlareFactor 0.5
+#endif
+
 
 
 enum LandingStatus { CircleDown, LandingWait, ApproachHeading, DeclineToSonar, Approach, Flare, Stall };
 static enum LandingStatus CLandingStatus;
+static struct Point2D LandCircle;
 static uint8_t AFWaypoint;
 static uint8_t TDWaypoint;
 static uint8_t CPWaypoint;
+static uint8_t msgLandStatus;
 static float LandRadius;
-static struct Point2D LandCircle;
 static float LandAppAlt;
 static float LandCircleQDR;
 static float ApproachQDR;
-static bool_t AboveCheckPoint;
-static bool_t CurrentAboveCheckPoint;
-
-static float FlarePx;
-static float FlarePy;
 static float LandSlope;
 static float DeltaFx;
 static float DeltaFy;
 static float CheckPx;
 static float CheckPy;
-static uint8_t fixedpitch;
-
-static uint8_t FlareStage;
-static float Flare_Increment;
-
-static uint8_t msgLandStatus; 
-
-
-
-// Variablen für AIRFRAME
-
 static float TDDistance;
-static uint8_t FinalLandCount;
 static float SonarHeight;
-static float SaveHeight;
-static float FlareFactor;
-static float Land_prePitch;
+static bool_t AboveCheckPoint;
+static bool_t CurrentAboveCheckPoint;
 
-//*******************
 
-bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float radius, uint8_t _fixedpitch)
+bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float radius)
 {
 	AFWaypoint = AFWP;
 	TDWaypoint = TDWP;
 	CPWaypoint = CPWP;
-	fixedpitch = _fixedpitch;
 	
-	CLandingStatus = DeclineToSonar;			//CircleDown;
+	CLandingStatus = CircleDown;
 	LandRadius = radius;
 	LandAppAlt = estimator_z;
+	TDDistance = fabs(Landing_TDDistance); 		//TDDistance can only be positive
+	SonarHeight = fabs(Landing_SonarHeight);	//SonarHeight can only be positive
 
+	/* 
 	// für Airframe****************
 	SaveHeight = 3;			//Höhe für Failsave
 	SonarHeight = 6;		//Höhe für Approach
-	TDDistance = 25;		//Strecke, auf der geflaret wird
+	TDDistance = 50;		//Strecke, auf der geflaret wird
 	FlareFactor = 0.5;		//Faktor mit dem die Sollhöhe beim Flare verkleinert wird
-	FinalLandCount = 4;		//Anzahl Flareschritte
-	Land_prePitch = 0.175;		//Soll Pitch für Kill_Throttle
-	//********************************
-	Flare_Increment=TDDistance/FinalLandCount;
-
+	// ******************************** 
+	*/
 
 	set_approach_params();  // Parameter für Landung setzten (Airspeed, max_roll, ...)
-	
-	if ( fixedpitch == 1 )
-		set_as_mode(6);
-	else	
-		set_as_mode(3);		// Airspeed Pitch Simple
+	set_as_mode(3);		// Airspeed Pitch Simple
 		
 	//Translate distance from AF to TD so that AF is (0/0) 
 	float x_0 = waypoints[TDWaypoint].x - waypoints[AFWaypoint].x;
@@ -147,8 +163,6 @@ bool_t ZHAWSkidLanding(void)
 	switch(CLandingStatus)
 	{
 	case CircleDown: // Kreisen bis die Höhe, die im AFWaypoint vorgegeben ist erreicht ist (um den Wegpunkt der in InitializeSkidLanding berechnet wurde)
-		if ( fixedpitch != 1 )		
-			NavVerticalAutoThrottleMode(0); // No pitch
 		
 		if(NavCircleCount() < .1)
 		{
@@ -169,8 +183,6 @@ bool_t ZHAWSkidLanding(void)
 	break;
 
 	case LandingWait: // Höhe halten und weiter um CircleCircle kreisen  
-		if ( fixedpitch != 1 )
-			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(waypoints[AFWaypoint].a, 0);
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius);
 
@@ -182,13 +194,8 @@ bool_t ZHAWSkidLanding(void)
 	msgLandStatus=2;
 	break;
 
-//********************** bis hier wie OSAMNav *********************************************
-
-
 
 	case ApproachHeading:				//Drohne fliegt den Kreis fertig, bis sie auf Landekurs ist
-		if ( fixedpitch != 1 )
-			NavVerticalAutoThrottleMode(0); // No pitch
   		NavVerticalAltitudeMode(waypoints[AFWaypoint].a, 0); 	//Sollhöhe geben
 		nav_circle_XY(LandCircle.x, LandCircle.y, LandRadius);	
 
@@ -196,42 +203,27 @@ bool_t ZHAWSkidLanding(void)
 		{
 			CLandingStatus = DeclineToSonar;
 			nav_init_stage();
-			AboveCheckPoint = CalculateCheckPoint();
-			if ( fixedpitch != 1 )
-			{
-				set_max_roll(0.1);
-				set_min_pitch(-0.2);
-			}
 		}
 	msgLandStatus=3;
 	break;
 
 
 	case DeclineToSonar: // Sinken, bis Sonar sich meldet
-		if ( fixedpitch != 1 )
-			NavVerticalAutoThrottleMode(0); // No pitch
-  		NavVerticalAltitudeMode(waypoints[TDWaypoint].a+SonarHeight, 0);
+  		NavVerticalAltitudeMode(waypoints[TDWaypoint].a+Landing_SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
-		if(sonar_dist < (SonarHeight + 0.5))
+		if(sonar_dist < (Landing_SonarHeight + 0.5))
 		{
 			CLandingStatus = Approach;
 			estimator_z_mode = SONAR_HEIGHT;
 			nav_init_stage();
-
-			if ( fixedpitch != 1 )
-			{
-				set_land_params();
-				set_as_mode(1);
-			}
+			AboveCheckPoint = CalculateCheckPoint();
 		}
 	msgLandStatus=4;
 	break;	
 
 	case Approach: //Sonar Höhe (ca. 6m) halten, bis zum FlarePoint, wo die Landung begonnen werden kann. 
-		if ( fixedpitch != 1 )
-			NavVerticalAutoThrottleMode(0); // No pitch
-  		NavVerticalAltitudeMode(SonarHeight, 0); //Sonarhöhe ÜBER BODEN!!!!
+  		NavVerticalAltitudeMode(Landing_SonarHeight, 0); //Sonarhöhe ÜBER BODEN!!!!
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 		
 		//find ouf if the UAV has crossed the CheckPoint first time
@@ -239,55 +231,34 @@ bool_t ZHAWSkidLanding(void)
 		{
 			CLandingStatus = Flare;
 			nav_init_stage();
-
-			if ( fixedpitch != 1 )
-			{
-				set_max_pitch(0.1);
-				set_min_pitch(-0.1);
-			}
-
-			TDDistance = TDDistance - Flare_Increment;
-			FlareStage = 1;
-			SonarHeight = SonarHeight * FlareFactor;
-			AboveCheckPoint = CalculateCheckPoint();
+			SonarHeight = SonarHeight * Landing_FlareFactor;
+			kill_throttle = 1;
+			set_fixed_pitch_pitch(0.2);
 		}
 	msgLandStatus=5;
 	break;
 
 	case Flare:
-		if ( fixedpitch != 1 )
-			NavVerticalAutoThrottleMode(0); // No pitch
-  		NavVerticalAltitudeMode(SonarHeight, 0);
+  		NavVerticalAltitudeMode(Landing_SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
 
-		if (UAVcrossedCheckPoint() == 1)		//Neuberechnung des CheckPoints wenn überschritten
+		if (estimator_z < 0.5 && estimator_z > 0.25)
 		{
-			TDDistance=TDDistance - Flare_Increment;
-			FlareStage++;
-			SonarHeight = SonarHeight * FlareFactor;
-			AboveCheckPoint = CalculateCheckPoint();
+			set_fixed_pitch_pitch(0.2);	
+		}
+		if (estimator_z < 0.25)
+		{
+			set_fixed_pitch_pitch(0.3);	
 		}
 
-
-		if(FlareStage == FinalLandCount)
-		{
-			CLandingStatus = Stall;
-			kill_throttle = 1;
-			nav_init_stage();
-			if ( fixedpitch != 1 )
-				set_max_pitch(99);		
-}
 	msgLandStatus=6;
 	break;
 
 	case Stall:
 		kill_throttle = 1;
-		NavVerticalAltitudeMode(SonarHeight, 0);
+		NavVerticalAltitudeMode(Landing_SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
-
-		if (fixedpitch != 1)
-			NavVerticalAutoThrottleMode(Land_prePitch); 
 
 	msgLandStatus=7;
 	break;
@@ -300,7 +271,7 @@ bool_t ZHAWSkidLanding(void)
 	RunOnceEvery(5, DOWNLINK_SEND_ZHAWLAND(DefaultChannel, &msgLandStatus, &estimator_z_mode, &AboveCheckPoint, &CurrentAboveCheckPoint, &SonarHeight, &estimator_z_sonar, &estimator_z));
 
 	//Failsave Height
-	if ((estimator_z < SaveHeight) && (CLandingStatus != Flare) && (CLandingStatus != Stall))
+	if ((estimator_z < Landing_SaveHeight) && (CLandingStatus != Flare) && (CLandingStatus != Stall))
 	{
 		estimator_z_mode=GPS_HEIGHT;
 		set_max_pitch(99);
@@ -322,7 +293,7 @@ bool_t ZHAWSkidLanding(void)
 	return TRUE;
 }
 
-bool_t CalculateCheckPoint(void) //TD ist (0/0)
+bool_t CalculateCheckPoint(void) //TD is (0/0)
 {
 
 	//Compute DeltaFx and DeltaFy between AF an TD with TD=(0/0)
@@ -344,8 +315,8 @@ bool_t CalculateCheckPoint(void) //TD ist (0/0)
 		CheckPy = - sqrt((TDDistance*TDDistance)-(CheckPx*CheckPx));
 
 	//Find TouchDownLine
-	LandSlope = tan(atan2(DeltaFy,DeltaFx)+(3.14/2));			//-1/MLaunch; //90° Drehung der Kurve
-	float TouchDownB = (CheckPy - (LandSlope*CheckPx));  				//y-Offset
+	LandSlope = tan(atan2(DeltaFy,DeltaFx)+(3.14/2));			
+	float TouchDownB = (CheckPy - (LandSlope*CheckPx));
 
 	//Translate CheckPoint to absolut
 	CheckPx= CheckPx + (waypoints[TDWaypoint].x);
@@ -366,8 +337,8 @@ bool_t CalculateCheckPoint(void) //TD ist (0/0)
 bool_t UAVcrossedCheckPoint (void)
 {
 	//Translate the Current Position so that the FLAREPOINT is (0/0) (wie weit ist die Drohne noch vom FP weg?)
-	float Currentx = estimator_x - FlarePx;
-	float Currenty = estimator_y - FlarePy;
+	float Currentx = estimator_x - CheckPx;
+	float Currenty = estimator_y - CheckPy;
 
 
 	//Find out if the UAV is currently above the line

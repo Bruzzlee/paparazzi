@@ -114,6 +114,11 @@ void set_land_params()
 	//set_min_pitch(NAV_LAND_MIN_PITCH);
 }
 
+void set_fixed_pitch_pitch(float fixedpitch)
+{
+	v_ctl_auto_airspeed_pitchsetp_fp=fixedpitch;
+}
+
 void send_params()
 {
 	DOWNLINK_SEND_ZHAWPARAMS(DefaultChannel, &h_ctl_roll_max_setpoint, &h_ctl_pitch_max_setpoint, &h_ctl_pitch_min_setpoint, &v_ctl_airspeed_mode);
