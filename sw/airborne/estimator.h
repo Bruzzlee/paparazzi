@@ -41,9 +41,9 @@
 #endif
 
 //langede0*********************
-//#ifdef USE_SONAR
+#ifdef USE_SONAR
 #include "modules/sonar/sonar_adc.h"
-//#endif
+#endif
 
 // Estimator_Z Modes
 #define  GPS_HEIGHT	0
@@ -83,6 +83,9 @@ extern float estimator_hspeed_dir;
 /* Wind and airspeed estimation sent by the GCS */
 extern float wind_east, wind_north; /* m/s */
 extern float estimator_airspeed; /* m/s */
+
+/* Angle of Attack estimation */
+extern float estimator_AOA; /* radians */
 
 
 void estimator_init( void );
@@ -159,6 +162,8 @@ extern void alt_sonar( void );
 #endif
 
 #define EstimatorSetAirspeed(airspeed) { estimator_airspeed = airspeed; }
+#define EstimatorSetAOA(AOA) { estimator_AOA = AOA; }
+
 
 #define EstimatorSetAtt(phi, psi, theta) { estimator_phi = phi; estimator_psi = psi; estimator_theta = theta; }
 #define EstimatorSetPhiPsi(phi, psi) { estimator_phi = phi; estimator_psi = psi; }

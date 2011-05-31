@@ -66,6 +66,7 @@ float estimator_hspeed_dir;
 /* wind */
 float wind_east, wind_north;
 float estimator_airspeed;
+float estimator_AOA;
 
 
 /* Sonar */
@@ -104,6 +105,10 @@ void estimator_init( void ) {
 
 #ifdef USE_AIRSPEED
   EstimatorSetAirspeed( 0. );
+#endif
+
+#ifdef USE_AOA
+  EstimatorSetAOA( 0. );
 #endif
 
   estimator_flight_time = 0;
