@@ -48,6 +48,7 @@ float h_ctl_course_sum_err;
 #define H_CTL_COURSE_MAX_SUM_ERR 200
 float h_ctl_course_dgain;
 float h_ctl_roll_max_setpoint;
+uint8_t h_ctl_pitch_mode;
 
 /* roll and pitch disabling */
 bool_t h_ctl_disabled;
@@ -414,21 +415,31 @@ inline static float loiter(void) {
 
 
 inline static void h_ctl_pitch_loop( void ) {
-  static float last_err;
-  /* sanity check */
-  if (h_ctl_elevator_of_roll <0.)
-    h_ctl_elevator_of_roll = 0.;
+	static float last_err;
+	/* sanity check */
+	if (h_ctl_elevator_of_roll <0.)
+		h_ctl_elevator_of_roll = 0.;
 
-  h_ctl_pitch_loop_setpoint =
-    h_ctl_pitch_setpoint
-    - h_ctl_elevator_of_roll / h_ctl_pitch_pgain * fabs(estimator_phi);
+	h_ctl_pitch_loop_setpoint =  h_ctl_pitch_setpoint - h_ctl_elevator_of_roll / h_ctl_pitch_pgain * fabs(estimator_phi);
 
-  float err = estimator_theta - h_ctl_pitch_loop_setpoint;
-  float d_err = err - last_err;
-  last_err = err;
-  float cmd = h_ctl_pitch_pgain * (err + h_ctl_pitch_dgain * d_err);
+	float err = 0.;
+	switch (h_ctl_pitch_mode){
+		case H_CTL_PITCH_MODE_THETA:
+			err = estimator_theta - h_ctl_pitch_loop_setpoint;
+		break;
+		case H_CTL_PITCH_MODE_AOA:
+			err = estimator_AOA - h_ctl_pitch_loop_setpoint;
+		break;
+		default:
+			err = estimator_theta - h_ctl_pitch_loop_setpoint;
+		break;
+	}
+		
+	float d_err = err - last_err;
+	last_err = err;
+	float cmd = h_ctl_pitch_pgain * (err + h_ctl_pitch_dgain * d_err);
 #ifdef LOITER_TRIM
-  cmd += loiter();
+	cmd += loiter();
 #endif
-  h_ctl_elevator_setpoint = TRIM_PPRZ(cmd);
+	h_ctl_elevator_setpoint = TRIM_PPRZ(cmd);
 }

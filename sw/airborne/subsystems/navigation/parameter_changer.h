@@ -35,15 +35,15 @@
 
 extern bool_t set_as_mode(uint8_t as_mode_set);
 
-extern void set_max_roll( float max_roll );
-extern void set_max_pitch(float max_pitch);
-extern void set_min_pitch(float min_pitch);
+extern bool_t set_max_roll( float max_roll );
+extern bool_t set_max_pitch(float max_pitch);
+extern bool_t set_min_pitch(float min_pitch);
 
-extern void set_approach_params( void );
-extern void set_measure_params( void );
-extern void set_start_params( void );
-extern void set_land_params( void );
-extern void set_fixed_pitch_pitch(float fixedpitch);
+extern bool_t set_approach_params( void );
+extern bool_t set_measure_params( void );
+extern bool_t set_start_params( void );
+extern bool_t set_land_params( void );
+extern bool_t set_fixed_pitch_pitch(float fixedpitch);
 
 void send_params( void );
 

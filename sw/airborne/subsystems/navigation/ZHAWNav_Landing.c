@@ -101,7 +101,6 @@ static float SonarHeight;
 static bool_t AboveCheckPoint;
 static bool_t CurrentAboveCheckPoint;
 
-
 bool_t InitializeZHAWSkidLanding(uint8_t AFWP, uint8_t TDWP, uint8_t CPWP, float radius)
 {
 	AFWaypoint = AFWP;
@@ -163,7 +162,6 @@ bool_t ZHAWSkidLanding(void)
 	switch(CLandingStatus)
 	{
 	case CircleDown: // Kreisen bis die Höhe, die im AFWaypoint vorgegeben ist erreicht ist (um den Wegpunkt der in InitializeSkidLanding berechnet wurde)
-		
 		if(NavCircleCount() < .1)
 		{
 	  		NavVerticalAltitudeMode(LandAppAlt, 0);  
@@ -203,6 +201,7 @@ bool_t ZHAWSkidLanding(void)
 		{
 			CLandingStatus = DeclineToSonar;
 			nav_init_stage();
+			set_land_params();
 		}
 	msgLandStatus=3;
 	break;
@@ -231,7 +230,7 @@ bool_t ZHAWSkidLanding(void)
 		{
 			CLandingStatus = Flare;
 			nav_init_stage();
-			SonarHeight = SonarHeight * Landing_FlareFactor;
+// 			SonarHeight = SonarHeight * Landing_FlareFactor;
 			kill_throttle = 1;
 			set_fixed_pitch_pitch(0.2);
 		}
@@ -239,17 +238,14 @@ bool_t ZHAWSkidLanding(void)
 	break;
 
 	case Flare:
-  		NavVerticalAltitudeMode(Landing_SonarHeight, 0);
+//   		NavVerticalAltitudeMode(Landing_SonarHeight, 0);
 		nav_route_xy(waypoints[AFWaypoint].x,waypoints[AFWaypoint].y,waypoints[TDWaypoint].x,waypoints[TDWaypoint].y);
 
 
-		if (estimator_z < 0.5 && estimator_z > 0.25)
+		if (estimator_z < 0.6)
 		{
-			set_fixed_pitch_pitch(0.2);	
-		}
-		if (estimator_z < 0.25)
-		{
-			set_fixed_pitch_pitch(0.3);	
+			float flare_pitch = 1/estimator_z*Landing_FLARE_FACTOR;
+			set_fixed_pitch_pitch(flare_pitch);	
 		}
 
 	msgLandStatus=6;

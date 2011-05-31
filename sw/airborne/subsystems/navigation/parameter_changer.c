@@ -29,6 +29,7 @@
 #include "subsystems/navigation/parameter_changer.h"
 #include "firmwares/fixedwing/stabilization/stabilization_attitude.h"
 #include "firmwares/fixedwing/guidance/guidance_v.h"
+#include "estimator.h"
 
 #include "mcu_periph/uart.h"
 #include "messages.h"
@@ -52,7 +53,7 @@ bool_t set_as_mode(uint8_t as_mode_set)
 	return FALSE;
 }
 
-void set_max_roll(float max_roll)
+bool_t set_max_roll(float max_roll)
 {
 	if(max_roll<10.0){
 		h_ctl_roll_max_setpoint = max_roll;
@@ -60,9 +61,11 @@ void set_max_roll(float max_roll)
 	else
 		h_ctl_roll_max_setpoint = H_CTL_ROLL_MAX_SETPOINT;
 	send_params();
+	
+	return FALSE;
 }
 
-void set_max_pitch(float max_pitch)
+bool_t set_max_pitch(float max_pitch)
 {
 	if(max_pitch<10.0){
 		h_ctl_pitch_max_setpoint = max_pitch;
@@ -70,9 +73,11 @@ void set_max_pitch(float max_pitch)
 	else
 		h_ctl_pitch_max_setpoint = H_CTL_PITCH_MAX_SETPOINT;
 	send_params();
+	
+	return FALSE;
 }
 
-void set_min_pitch(float min_pitch)
+bool_t set_min_pitch(float min_pitch)
 {
 	if(min_pitch<10.0){
 		h_ctl_pitch_min_setpoint = min_pitch;
@@ -80,46 +85,70 @@ void set_min_pitch(float min_pitch)
 	else
 		h_ctl_pitch_min_setpoint = H_CTL_PITCH_MIN_SETPOINT;
 	send_params();
+	
+	return FALSE;
 }
 
-void set_approach_params()
+bool_t set_approach_params()
 {
-	//v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
-		set_max_roll(99.0);
-		set_max_pitch(99.0); 
-		set_min_pitch(99.0);
+	estimator_z_mode=GPS_HEIGHT;
+	v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
+	h_ctl_pitch_mode = H_CTL_PITCH_MODE_THETA;
+// 		set_max_roll(99.0);
+// 		set_max_pitch(99.0); 
+// 		set_min_pitch(99.0);
+	send_params();
+	
+	return FALSE;
 }
 
-void set_measure_params()
+bool_t set_measure_params()
 {
-	//v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
-	set_max_roll(NAV_MEASURE_MAX_ROLL);
-	set_max_pitch(NAV_MEASURE_MAX_PITCH);
-	set_min_pitch(NAV_MEASURE_MIN_PITCH);
+	estimator_z_mode=GPS_HEIGHT;
+	v_ctl_airspeed_mode = AS_MODE_ASP_SIMPLE;
+	h_ctl_pitch_mode = H_CTL_PITCH_MODE_THETA;
+// 	set_max_roll(NAV_MEASURE_MAX_ROLL);
+// 	set_max_pitch(NAV_MEASURE_MAX_PITCH);
+// 	set_min_pitch(NAV_MEASURE_MIN_PITCH);
+	send_params();
+	
+	return FALSE;
 }
 
-void set_start_params()
+bool_t set_start_params()
 {
-	//v_ctl_airspeed_mode = AS_MODE_STANDARD;
-	set_max_roll(NAV_START_MAX_ROLL);
-	set_max_pitch(NAV_START_MAX_PITCH);
-	set_min_pitch(NAV_START_MIN_PITCH);
+	estimator_z_mode=GPS_HEIGHT;
+	v_ctl_airspeed_mode = AS_MODE_FIX_PITCH;
+	h_ctl_pitch_mode = H_CTL_PITCH_MODE_AOA;
+// 	set_max_roll(NAV_START_MAX_ROLL);
+// 	set_max_pitch(NAV_START_MAX_PITCH);
+// 	set_min_pitch(NAV_START_MIN_PITCH);
+	send_params();
+	
+	return FALSE;
 }
 
-void set_land_params()
+bool_t set_land_params()
 {
-	//v_ctl_airspeed_mode = AS_MODE_VASSILLIS;
+	v_ctl_airspeed_mode = AS_MODE_FIX_PITCH;
+// 	h_ctl_pitch_mode = H_CTL_PITCH_MODE_AOA;
+	h_ctl_pitch_mode = H_CTL_PITCH_MODE_THETA;
 	set_max_roll(NAV_LAND_MAX_ROLL);
 	//set_max_pitch(NAV_LAND_MAX_PITCH);
 	//set_min_pitch(NAV_LAND_MIN_PITCH);
+	send_params();
+	
+	return FALSE;
 }
 
-void set_fixed_pitch_pitch(float fixedpitch)
+bool_t set_fixed_pitch_pitch(float fixedpitch)
 {
 	v_ctl_auto_airspeed_pitchsetp_fp=fixedpitch;
+	
+	return FALSE;
 }
 
 void send_params()
 {
-	DOWNLINK_SEND_ZHAWPARAMS(DefaultChannel, &h_ctl_roll_max_setpoint, &h_ctl_pitch_max_setpoint, &h_ctl_pitch_min_setpoint, &v_ctl_airspeed_mode);
+	DOWNLINK_SEND_ZHAWPARAMS(DefaultChannel, &h_ctl_roll_max_setpoint, &h_ctl_pitch_max_setpoint, &h_ctl_pitch_min_setpoint, &v_ctl_airspeed_mode, &h_ctl_pitch_mode, &v_ctl_auto_airspeed_pitchsetp_fp);
 }

@@ -1,11 +1,14 @@
 <!DOCTYPE airframe SYSTEM "airframe.dtd">
 
-<!-- Twinjet Multiplex (http://www.multiplex-rc.de/)
-     Twog v1 board (http://paparazzi.enac.fr/wiki/Twog_v1)
-     PerkinElmer TPS334 IR Sensors
-     Aligned infrared sensor
-     XBee modem with AT firmware
-     LEA 5H GPS
+<!-- 	D.Lange & Bruzzlee
+	Mentor
+	Tiny V1.12
+	AMSYS Sensors
+	Ardu IMU
+	AOA Sensor
+	Sonar
+	Benchmark
+	XBEE Pro2
 -->
 
 <airframe name="Mentor">
@@ -153,7 +156,7 @@
     		<define name="SaveHeight" value="3" unit="m"/>
     		<define name="SonarHeight" value="6" unit="m"/>
     		<define name="TDDistance" value="50" unit="m"/>
-    		<define name="FlareFactor" value="0.5"/>
+		<define name="FLARE_FACTOR" value="0.12"/> <!--0.6m - 0.2 and 0.3 - 0.4-->
   	</section>
 
 	<!--******************************************************************************************-->
@@ -271,8 +274,8 @@
 		<define name="START_MAX_PITCH" value="0.3"/>
 		<define name="START_MIN_PITCH" value="-0.3"/>
 		<!-- Landing Params -->
-		<define name="LAND_MAX_ROLL" value="0.2"/>
-		<define name="LAND_MAX_PITCH" value="0.1"/>
+		<define name="LAND_MAX_ROLL" value="0.5"/>
+		<define name="LAND_MAX_PITCH" value="0.2"/>
 		<define name="LAND_MIN_PITCH" value="-0.2"/>
 	</section>
 

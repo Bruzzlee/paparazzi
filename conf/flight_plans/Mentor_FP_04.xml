@@ -58,11 +58,13 @@
       <go from="HOME" pitch="15" throttle="1.0" vmode="throttle" wp="CLIMB"/>
     </block>
     <block name="BungeeTakeoffStandart" strip_button="BTO_Standart (wp TOD)" strip_icon="bungee_launch.png">
+      <call fun="set_start_params()"/>
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
       <call fun="ZHAWBungeeTakeoff()"/>
       <deroute block="Standby"/>
     </block>
     <block name="BungeeTakeoffGlide" strip_button="BTO_Glide (wp TOD)" strip_icon="bungee_launch.png">
+      <call fun="set_start_params()"/>
       <call fun="InitializeZHAWBungeeTakeoff(WP_TOD, WP_TP)"/>
       <call fun="ZHAWBungeeTakeoff_glide()"/>
       <go from="TP" hmode="route" vmode="glide" wp="TOD"/>
@@ -104,6 +106,7 @@
     </block>
 
     <block group="land" name="PixedPitch Land Right AF-TD" strip_button="FixedPitch Land right (wp AF-TD)" strip_icon="land-right.png">
+      <call fun="set_approach_params()"/>
       <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
       <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius)"/>
       <call fun="ZHAWSkidLanding()"/>

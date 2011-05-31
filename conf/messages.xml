@@ -511,6 +511,8 @@
 		<field name="max_pitch" type="float"/>
 		<field name="min_pitch" type="float"/>
 		<field name="AS_Mode" type="uint8"/>
+		<field name="PITCH_Mode" type="uint8"/>
+		<field name="PitchSetp" type="float"/>
    	</message>
 
 	<!--message name="ZHAWTEST" id="65">
