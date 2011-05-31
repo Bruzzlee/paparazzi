@@ -1,8 +1,9 @@
 <gconf>
   <entry name="left_pane_width" value="426" application="paparazzi center"/>
-  <entry name="height" value="972" application="paparazzi center"/>
-  <entry name="width" value="1672" application="paparazzi center"/>
+  <entry name="height" value="820" application="paparazzi center"/>
+  <entry name="width" value="1428" application="paparazzi center"/>
   <entry name="last target" value="ap" application="paparazzi center"/>
   <entry name="last session" value="Flight USB-serial@9600" application="paparazzi center"/>
   <entry name="last A/C" value="Mentor" application="paparazzi center"/>
+  <entry name="to_export" value="AMSYS_AIRSPEED:asAirspeed" application="log plotter"/>
 </gconf>

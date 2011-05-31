@@ -538,20 +538,24 @@
 		<field name="asTemp" type="float" unit="°C"></field>
 	</message>
  
-  <message name="AMSYS_BARO" id="68">
-   		<field name="pBaroRaw" type="uint16"></field>
-   		<field name="pBaro" type="float" unit="Pa"> </field>
+	<message name="AMSYS_BARO" id="68">
+		<field name="pBaroRaw" type="uint16"></field>
+		<field name="pBaro" type="float" unit="Pa"> </field>
 		<field name="pHomePressure" type="float" unit="Pa"></field>
-   		<!--field name="tempRaw" type="uint16"></field-->
-   		<field name="AltOffset" type="float" unit="m"></field>
-   		<field name="aktuell" type="float" unit="m"></field>
-   		<field name="Over_Ground" type="float" unit="m"></field>
+		<!--field name="tempRaw" type="uint16"></field-->
+		<field name="AltOffset" type="float" unit="m"></field>
+		<field name="aktuell" type="float" unit="m"></field>
+		<field name="Over_Ground" type="float" unit="m"></field>
 		<field name="tempBaro" type="float" unit="°C"></field>
- 	</message>
+	</message>
 
-
- <!-- 69 is free -->
+	<message name="AOA_adc" id="69">
+		<field name="adcVal" type="uint16"></field>
+		<field name="AOA" type="float" unit="rad"></field>
+	</message>
+	
  <!-- 70 is free -->
+ 
 	<message name="AS_GUIDANCE" id="71">
 		<field name="AS_Mode" type="uint8"></field>
 		<field name="AS_Setp_Ctr" type="float"></field>

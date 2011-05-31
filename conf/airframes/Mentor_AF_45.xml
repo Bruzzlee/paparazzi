@@ -83,6 +83,11 @@
 			<define name="BENCHMARK_TOLERANCE_ALTITUDE" value="0."/> 
 			<define name="BENCHMARK_TOLERANCE_POSITION" value="0."/> 
 		</load> 
+		<load name="AOA_adc.xml">  
+			<configure name="ADC_AOA" value="ADC_6"/>
+			<define name="AOA_OFFSET" value="0.0"/>   
+			<define name="AOA_FILTER" value="0.0"/>   
+		</load> 
 
 	<!--**************************************************************-->
 
