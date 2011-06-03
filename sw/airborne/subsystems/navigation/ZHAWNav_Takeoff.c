@@ -55,16 +55,17 @@ height (defined in as Takeoff_Height in airframe file) above the bungee waypoint
 </section>
  */
 
-#ifndef Takeoff_Distance
-#define Takeoff_Distance 10
+#ifndef TAKEOFF_DISTANCE
+#define TAKEOFF_DISTANCE 10
 #endif
-#ifndef Takeoff_Speed
-#define Takeoff_Speed 12
+#ifndef TAKEOFF_SPEED
+#define TAKEOFF_SPEED 12
 #endif
-#ifndef Takeoff_MinSpeed
-#define Takeoff_MinSpeed 2
+/*
+#ifndef TAKEOFF_MINSPEED
+#define TAKEOFF_MINSPEED 2
 #endif
-
+*/
 enum TakeoffStatus { Launch, Throttle, Finished };
 static enum TakeoffStatus CTakeoffStatus;
 static float throttlePx;
@@ -146,9 +147,9 @@ bool_t InitializeZHAWBungeeTakeoff(uint8_t TODWP, uint8_t _TP)		//uint8_t _NP mu
 
 	
 	//** Für Airframe **********************************
-	Takeoff_MinSpeed_local=3.0;   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
-					//Takeoff_Distance can only be positive
-	TDistance = 9.0; 		//fabs(Takeoff_Distance);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
+	Takeoff_MinSpeed_local=3.0;   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test = TAKEOFF_MINSPEED
+					//TAKEOFF_DISTANCE can only be positive
+	TDistance = 9.0; 		//fabs(TAKEOFF_DISTANCE);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! für den Test
 	//**************************************************
 
 	//Record bungee alt (which should be the ground alt at that point)
@@ -215,8 +216,6 @@ bool_t ZHAWBungeeTakeoff(void)
 
 	case Throttle:
 		//Follow Launch Line
-		//NavVerticalAutoThrottleMode(AGR_CLIMB_PITCH); 
-		//NavVerticalAltitudeMode(TakeOff_Height, 0.);	
 		NavVerticalThrottleMode(9600*(1));		
 		nav_route_xy(ThrottleX,ThrottleY,(waypoints[TOD].x),(waypoints[TOD].y));
 		kill_throttle = 0;

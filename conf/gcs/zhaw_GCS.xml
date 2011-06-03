@@ -56,6 +56,15 @@
           <property name="size" value="15."/>
           <property name="color" value="red"/>
         </papget>
+
+	<papget type="message_field" display="text" x="500" y="50">
+          <property name="scale" value="1."/>
+          <property name="field" value="AOA_adc:AOA"/>
+          <property name="format" value="AoA %.3f rad"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+
         <papget type="message_field" display="text" x="700" y="20">
           <property name="scale" value="1."/>
           <property name="field" value="ESTIMATOR:z_dot"/>
@@ -70,6 +79,9 @@
           <property name="size" value="15."/>
           <property name="color" value="red"/>
         </papget>
+
+
+
         <!--papget type="message_field" display="text" x="900" y="1050">
           <property name="scale" value="1."/>
           <property name="field" value="HIGHT_OVER_HOME:diff_hight"/>

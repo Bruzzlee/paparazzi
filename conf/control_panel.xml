@@ -83,6 +83,7 @@
 		 <arg flag="-speech"/>
 	</program>
 	<program name="Messages"/>
+	<program name="Real-time Plotter"/>
     </session>
 
    <session name="Flight USB-serial@57600">

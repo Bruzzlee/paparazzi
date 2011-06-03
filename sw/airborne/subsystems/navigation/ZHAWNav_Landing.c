@@ -71,7 +71,7 @@ Landing Routine
 #endif
 
 #ifndef Landing_TDDistance		//Flare Disatnce
-#define Landing_TDDistance 50
+#define Landing_TDDistance 40
 #endif
 
 #ifndef Landing_FlareFactor		//Faktor mit dem die Sollhöhe beim Flare verkleinert wird
