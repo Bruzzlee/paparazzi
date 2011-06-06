@@ -437,6 +437,13 @@ let rec print_stage = fun index_of_waypoints x ->
     let r = parsed_attrib  x "radius" in
     let _vmode = output_vmode x center "" in
     lprintf "Eight(%s, %s, %s);\n" center turn_about r;
+    begin
+      try
+        let c = parsed_attrib x "until" in
+        lprintf "if (%s) NextStageAndBreak();\n" c
+      with
+        ExtXml.Error _ -> ()
+    end;
     lprintf "break;\n"
     | "oval" ->
     stage ();
@@ -751,8 +758,8 @@ let () =
       Xml2h.define "NAV_UTM_ZONE0" (sprintf "%d" utm0.utm_zone);
       Xml2h.define "NAV_LAT0" (sprintf "%d /* 1e7deg */" (convert_angle wgs84.posn_lat));
       Xml2h.define "NAV_LON0" (sprintf "%d /* 1e7deg */" (convert_angle wgs84.posn_long));
-      Xml2h.define "NAV_ALT0" (sprintf "%.0f /* cm from msl */" (100. *. !ground_alt));
-      Xml2h.define "NAV_HMSL0" (sprintf "%.0f /* cm, msl from ellipsoid (EGM96) */" (100. *. Egm96.of_wgs84 wgs84));
+      Xml2h.define "NAV_ALT0" (sprintf "%.0f /* mm above msl */" (1000. *. !ground_alt));
+      Xml2h.define "NAV_MSL0" (sprintf "%.0f /* mm, EGM96 geoid-height (msl) over ellipsoid */" (1000. *. Egm96.of_wgs84 wgs84));
 
       Xml2h.define "QFU" (sprintf "%.1f" qfu);
 

@@ -90,9 +90,33 @@
       <call fun="nav_line_init()"/>
       <call fun="nav_line(WP_1, WP_2, nav_radius)"/>
     </block>
-    <block group="extra_pattern" key="F8" name="Figure 8 around wp 1" strip_button="Figure 8 (wp 1-2)" strip_icon="eight.png">
-      <eight center="8C" radius="nav_radius" turn_around="8T"/>
+	<block key="F8" name="Figure 8 8T to 8C" strip_button="Figure 8 (wp 1-2)" strip_icon="eight.png" group="base_pattern">
+		<circle radius="nav_radius" wp="CLIMB" alt="ground_alt+200" until="ground_alt+195 > estimator_z"/>
+		<eight center="8C" radius="nav_radius" turn_around="8T" alt="ground_alt+200" until="nav_eight_count > 0"/>
+		<eight center="8C" radius="nav_radius" turn_around="8T" alt="ground_alt+150" until="nav_eight_count > 0"/>
+		<eight center="8C" radius="nav_radius" turn_around="8T" alt="ground_alt+100" until="nav_eight_count > 0"/>
+		<deroute block="Standby"/>
+	</block>
+	
+	    <block name="Funnel" strip_button="Funnel" strip_icon="home.png" group="base_pattern">
+      <circle radius="nav_radius" wp="CIRCLE" alt="ground_alt+300" until="estimator_z > ground_alt+295"/>
+      <circle radius="nav_radius+200" wp="CIRCLE" alt="ground_alt+300" until="NavCircleCount() > 0"/>
+      <circle radius="nav_radius" wp="CIRCLE" alt="ground_alt+250" until="ground_alt+255 > estimator_z"/>
+      <circle radius="nav_radius+180" wp="CIRCLE" alt="ground_alt+250" until="NavCircleCount() > 0"/>
+      <circle radius="nav_radius" wp="CIRCLE" alt="ground_alt+200" until="ground_alt+205 > estimator_z"/>
+      <circle radius="nav_radius+160" wp="CIRCLE" alt="ground_alt+200" until="NavCircleCount() > 0"/>
+      <circle radius="nav_radius" wp="CIRCLE" alt="ground_alt+150" until="ground_alt+155 > estimator_z"/>
+      <circle radius="nav_radius+140" wp="CIRCLE" alt="ground_alt+150" until="NavCircleCount() > 0"/>
+      <circle radius="nav_radius" wp="CIRCLE" alt="ground_alt+100" until="ground_alt+105 > estimator_z"/>
+      <circle radius="nav_radius+120" wp="CIRCLE" alt="ground_alt+100" until="NavCircleCount() > 0"/>
+      <deroute block="Standby"/>
     </block>
+    
+    
+    
+    <!--block group="extra_pattern" key="F8" name="Figure 8 around wp 1" strip_button="Figure 8 (wp 1-2)" strip_icon="eight.png">
+      <eight center="8C" radius="nav_radius" turn_around="8T"/>
+    </block-->
     <block group="extra_pattern" name="Survey S1-S2" strip_button="Survey (wp S1-S2)" strip_icon="survey.png">
       <survey_rectangle grid="150" wp1="S1" wp2="S2"/>
     </block>
@@ -105,7 +129,7 @@
       <deroute block="Standby"/>
     </block>
 
-    <block group="land" name="PixedPitch Land Right AF-TD" strip_button="FixedPitch Land right (wp AF-TD)" strip_icon="land-right.png">
+    <block group="land" name="FixedPitch Land Right AF-TD" strip_button="FixedPitch Land right (wp AF-TD)" strip_icon="land-right.png">
       <call fun="set_approach_params()"/>
       <set value="DEFAULT_CIRCLE_RADIUS" var="nav_radius"/>
       <call fun="InitializeZHAWSkidLanding(WP_AF, WP_TD, WP_CP, nav_radius)"/>

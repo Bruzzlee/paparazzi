@@ -456,10 +456,12 @@ void nav_without_gps(void) {
 
 
 enum eight_status { R1T, RT2, C2, R2T, RT1, C1 };
+uint8_t nav_eight_count;
 
 static enum eight_status eight_status;
 void nav_eight_init( void ) {
   eight_status = C1;
+  nav_eight_count = 0;
 }
 
 /** Navigation along a figure 8. The cross center is defined by the waypoint
@@ -475,17 +477,20 @@ void nav_eight(uint8_t target, uint8_t c1, float radius) {
   float alt = waypoints[target].a;
   waypoints[c1].a = alt;
 
+
   float target_c1_x = waypoints[c1].x - waypoints[target].x;
   float target_c1_y = waypoints[c1].y - waypoints[target].y;
   float d = sqrt(target_c1_x*target_c1_x+target_c1_y*target_c1_y);
   d = Max(d, 1.); /* To prevent a division by zero */
 
+//     float aShift = M_PI/2-acos(aradius/(d/2));
+    
   /* Unit vector from target to c1 */
   float u_x = target_c1_x / d;
   float u_y = target_c1_y / d;
 
-  /* Move [c1] closer if needed */
-  if (d > 2 * aradius) {
+  /* Move [c1] away if too close */
+  if (d < 2 * aradius) {
     d = 2*aradius;
     waypoints[c1].x = waypoints[target].x + d*u_x;
     waypoints[c1].y = waypoints[target].y + d*u_y;
@@ -493,12 +498,12 @@ void nav_eight(uint8_t target, uint8_t c1, float radius) {
 
   /* The other center */
   struct point c2 = {
-    waypoints[target].x - d*u_x,
-    waypoints[target].y - d*u_y,
+    waypoints[target].x,
+    waypoints[target].y,
     alt };
 
   struct point c1_in = {
-    waypoints[c1].x + radius * -u_y,
+    waypoints[c1].x + radius *  -u_y,
     waypoints[c1].y + radius * u_x,
     alt };
   struct point c1_out = {
@@ -564,6 +569,7 @@ void nav_eight(uint8_t target, uint8_t c1, float radius) {
     nav_route_xy(c2_out.x, c2_out.y, c1_in.x, c1_in.y);
     if (nav_approaching_xy(c1_in.x, c1_in.y, c2_out.x, c2_out.y, CARROT)) {
       eight_status = C1;
+      nav_eight_count ++;
       InitStage();
     }
     return;

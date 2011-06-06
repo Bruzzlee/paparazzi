@@ -123,13 +123,22 @@
 	</rc_commands>
 
 	<section name="MIXER">
-		<!--define name="AILEVON_AILERON_RATE" value="0.75"/>
-		<define name="AILEVON_ELEVATOR_RATE" value="1.00"/-->
+		<define name="AILEVON_AILERON_RATE" value="0.45"/>
+		<define name="AILEVON_ELEVATOR_RATE" value="0.8"/>
 	</section>
 
+  <!--command_laws>
+    <let var="aileron"  value="@ROLL  * AILEVON_AILERON_RATE"/>
+    <let var="elevator" value="@PITCH * AILEVON_ELEVATOR_RATE"/>
+    <set servo="MOTOR"           value="@THROTTLE"/>
+    <set servo="AILEVON_LEFT"  value="$elevator + $aileron"/>
+    <set servo="AILEVON_RIGHT" value="$elevator - $aileron"/>
+  </command_laws-->
+  
 	<command_laws>
+		<let var="elevator" value="@THROTTLE * 0.25"/>
 		<set servo="AILERON_LEFT" value="@ROLL"/>
-		<set servo="ELEVATOR" value="@PITCH"/>
+		<set servo="ELEVATOR" value="@PITCH + $elevator"/>
 		<set servo="MOTOR" value="@THROTTLE"/>
 		<set servo="RUDDER" value="@YAW"/>
 		<set servo="AILERON_RIGHT" value="@ROLL"/>

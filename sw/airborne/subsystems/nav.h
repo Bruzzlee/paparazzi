@@ -77,6 +77,7 @@ extern void fly_to_xy(float x, float y);
 
 extern void nav_eight_init( void );
 extern void nav_eight(uint8_t, uint8_t, float);
+extern uint8_t nav_eight_count;
 #define Eight(a, b, c) nav_eight((a), (b), (c))
 
 extern void nav_oval_init( void );
