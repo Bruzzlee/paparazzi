@@ -1,0 +1,93 @@
+<layout width="1600" height="1125">
+  <columns>
+    <rows SIZE="500">
+      <widget NAME="strips" SIZE="270"/>
+      <widget NAME="aircraft" SIZE="570"/>
+      <widget NAME="alarms"/>
+    </rows>
+    <rows>
+      <widget NAME="map2d">
+        <!--papget type="message_field" display="text" x="10" y="1050">
+          <property name="scale" value="1"/>
+          <property name="field" value="MOTOR_POWER:motorTotEnergieCons"/>
+          <property name="format" value="Mot: %.0f mAh"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+		<papget type="message_field" display="text" x="200" y="1050">
+          <property name="scale" value="1."/>
+          <property name="field" value="MOTOR_POWER:motorVoltage"/>
+          <property name="format" value="Mot: %.2f V"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+		 <papget type="message_field" display="text" x="350" y="1050">
+          <property name="scale" value="1."/>
+          <property name="field" value="MOTOR_POWER:motorCurrent"/>
+          <property name="format" value="Mot %.2f A"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+        <papget type="message_field" display="text" x="500" y="1050">
+          <property name="scale" value="1."/>
+          <property name="field" value="MOTOR_POWER:motorPower"/>
+          <property name="format" value="Mot: %.2f W"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget-->
+		<papget type="message_field" display="text" x="100" y="20">
+          <property name="scale" value="1."/>
+          <property name="field" value="AMSYS_BARO:Over_Ground"/>
+          <property name="format" value="High %.2f m"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+		<papget type="message_field" display="text" x="300" y="20">
+          <property name="scale" value="1."/>
+          <property name="field" value="AMSYS_BARO:aktuell"/>
+          <property name="format" value="baro_alt %.2f m"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+		 <papget type="message_field" display="text" x="500" y="20">
+          <property name="scale" value="1."/>
+          <property name="field" value="AIRSPEED:airspeed"/>
+          <property name="format" value="airspeed %.2f m/s"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+        <papget type="message_field" display="text" x="700" y="20">
+          <property name="scale" value="1."/>
+          <property name="field" value="ESTIMATOR:z_dot"/>
+          <property name="format" value="climb %.2f m/s"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+		<papget type="message_field" display="text" x="900" y="20">
+          <property name="scale" value="1."/>
+          <property name="field" value="SONAR_ADC:HIGH"/>
+          <property name="format" value="sonar %.2f m"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget>
+        <!--papget type="message_field" display="text" x="900" y="1050">
+          <property name="scale" value="1."/>
+          <property name="field" value="HIGHT_OVER_HOME:diff_hight"/>
+          <property name="format" value="mOGround %.2f m"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget-->
+		<!-----------------     nur für errechneten Baterieverbrauch MAJA   make und GCS neu starten nicht vergessen-----------------------------------   -->
+		<!--papget type="message_field" display="text" x="900" y="1000">
+          <property name="scale" value="1"/>
+          <property name="field" value="BAT:energy"/>
+          <property name="format" value="MajaBat: %.0fmAh"/>
+          <property name="size" value="15."/>
+          <property name="color" value="red"/>
+        </papget-->
+		<!---------------------------------------------------------------- -----------------------------------   -->
+       
+      </widget>
+    </rows>
+  </columns>
+</layout>
