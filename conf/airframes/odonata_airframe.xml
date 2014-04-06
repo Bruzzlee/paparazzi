@@ -46,6 +46,10 @@
         <target name="test_baro"			board="lisa_m_1.0"/>
     </firmware>
     
+    <modules main_freq="512">
+        <load name="send_imu_mag_current.xml"/>
+    </modules>
+
     
     <servos driver="Pwm">
         <servo name="FRONT" no="0" min="1000" neutral="1100" max="1900"/>
@@ -111,16 +115,48 @@
         <define name="ACCEL_XZ_SENS" value="0.0" integer="16"/>
         <define name="ACCEL_YZ_SENS" value="0.0" integer="16"/-->
   
-<define name="MAG_X_NEUTRAL" value="-90"/>
+
+<!--define name="MAG_X_NEUTRAL" value="-88"/>
+<define name="MAG_Y_NEUTRAL" value="102"/>
+<define name="MAG_Z_NEUTRAL" value="121"/>
+<define name="MAG_X_SENS" value="3.92678053001" integer="16"/>
+<define name="MAG_Y_SENS" value="3.8880290197" integer="16"/>
+<define name="MAG_Z_SENS" value="4.39672066161" integer="16"/-->
+
+
+
+<!--define name="MAG_X_NEUTRAL" value="-85"/>
+<define name="MAG_Y_NEUTRAL" value="101"/>
+<define name="MAG_Z_NEUTRAL" value="119"/>
+<define name="MAG_X_SENS" value="3.84049278211" integer="16"/>
+<define name="MAG_Y_SENS" value="3.9336370202" integer="16"/>
+<define name="MAG_Z_SENS" value="4.39106296473" integer="16"/-->
+
+
+
+<define name="MAG_X_NEUTRAL" value="-86"/>
+<define name="MAG_Y_NEUTRAL" value="97"/>
+<define name="MAG_Z_NEUTRAL" value="118"/>
+<define name="MAG_X_SENS" value="3.87312124485" integer="16"/>
+<define name="MAG_Y_SENS" value="3.87403131201" integer="16"/>
+<define name="MAG_Z_SENS" value="4.38017435132" integer="16"/>
+
+<define name= "MAG_X_CURRENT_COEF" value="0.0418344511423"/>
+<define name= "MAG_Y_CURRENT_COEF" value="-0.0152744786074"/>
+<define name= "MAG_Z_CURRENT_COEF" value="-0.0302080656723"/>
+
+
+
+<!--define name="MAG_X_NEUTRAL" value="-90"/>
 <define name="MAG_Y_NEUTRAL" value="83"/>
 <define name="MAG_Z_NEUTRAL" value="117"/>
 <define name="MAG_X_SENS" value="4.01685864115" integer="16"/>
 <define name="MAG_Y_SENS" value="4.05331475628" integer="16"/>
-<define name="MAG_Z_SENS" value="4.47450320483" integer="16"/>
+<define name="MAG_Z_SENS" value="4.47450320483" integer="16"/-->
 
 
 
-<!-- goood  define name="MAG_X_NEUTRAL" value="-89"/>
+<!--define name="MAG_X_NEUTRAL" value="-89"/>
 <define name="MAG_Y_NEUTRAL" value="109"/>
 <define name="MAG_Z_NEUTRAL" value="68"/>
 <define name="MAG_X_SENS" value="3.7291713676" integer="16"/>
@@ -179,6 +215,7 @@
     </section>
     
     <section name="BAT">
+        <define name="MILLIAMP_AT_FULL_THROTTLE" value="1500" unit="mA" />
         <define name="CATASTROPHIC_BAT_LEVEL" value="9.3" unit="V"/>
     </section>
     
@@ -297,8 +334,9 @@
     </section>
     
     <!--modules main_freq="512">
-        <!--load name="vehicle_interface_overo_link.xml"/->
+        <load name="vehicle_interface_overo_link.xml"/->
         <load name="gps_ubx_ucenter.xml"/>
+        <load name="send_imu_mag_current.xml"/>
     </modules-->
     
     

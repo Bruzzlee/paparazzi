@@ -1,8 +1,8 @@
-<layout width="1600" height="1125">
+<layout width="1440" height="900">
   <columns>
-    <rows SIZE="500">
-      <widget NAME="strips" SIZE="270"/>
-      <widget NAME="aircraft" SIZE="570"/>
+    <rows SIZE="600">
+      <widget NAME="strips" SIZE="230"/>
+      <widget NAME="aircraft" SIZE="470"/>
       <widget NAME="alarms"/>
     </rows>
     <rows>
@@ -35,41 +35,7 @@
           <property name="size" value="15."/>
           <property name="color" value="red"/>
         </papget-->
-		<papget type="message_field" display="text" x="100" y="20">
-          <property name="scale" value="1."/>
-          <property name="field" value="AMSYS_BARO:Over_Ground"/>
-          <property name="format" value="High %.2f m"/>
-          <property name="size" value="15."/>
-          <property name="color" value="red"/>
-        </papget>
-		<papget type="message_field" display="text" x="300" y="20">
-          <property name="scale" value="1."/>
-          <property name="field" value="AMSYS_BARO:aktuell"/>
-          <property name="format" value="baro_alt %.2f m"/>
-          <property name="size" value="15."/>
-          <property name="color" value="red"/>
-        </papget>
-		 <papget type="message_field" display="text" x="500" y="20">
-          <property name="scale" value="1."/>
-          <property name="field" value="AIRSPEED:airspeed"/>
-          <property name="format" value="airspeed %.2f m/s"/>
-          <property name="size" value="15."/>
-          <property name="color" value="red"/>
-        </papget>
-        <papget type="message_field" display="text" x="700" y="20">
-          <property name="scale" value="1."/>
-          <property name="field" value="ESTIMATOR:z_dot"/>
-          <property name="format" value="climb %.2f m/s"/>
-          <property name="size" value="15."/>
-          <property name="color" value="red"/>
-        </papget>
-		<papget type="message_field" display="text" x="900" y="20">
-          <property name="scale" value="1."/>
-          <property name="field" value="SONAR_ADC:HIGH"/>
-          <property name="format" value="sonar %.2f m"/>
-          <property name="size" value="15."/>
-          <property name="color" value="red"/>
-        </papget>
+
         <!--papget type="message_field" display="text" x="900" y="1050">
           <property name="scale" value="1."/>
           <property name="field" value="HIGHT_OVER_HOME:diff_hight"/>
