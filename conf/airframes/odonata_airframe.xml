@@ -141,9 +141,21 @@
 <define name="MAG_Y_SENS" value="3.87403131201" integer="16"/>
 <define name="MAG_Z_SENS" value="4.38017435132" integer="16"/>
 
-<define name="MAG_X_CURRENT_COEF" value="0.0418344511423"/>
+<define name= "MAG_X_CURRENT_COEF" value="-0.00115186609882"/>
+<define name= "MAG_Y_CURRENT_COEF" value="0.000160307145259"/>
+<define name= "MAG_Z_CURRENT_COEF" value="-0.00242332207151"/>
+
+<!--define name="MAG_X_CURRENT_COEF" value="0.0418344511423"/>
 <define name="MAG_Y_CURRENT_COEF" value="-0.0152744786074"/>
-<define name="MAG_Z_CURRENT_COEF" value="-0.0302080656723"/>
+<define name="MAG_Z_CURRENT_COEF" value="-0.0302080656723"/-->
+
+<!--define name= "MAG_X_CURRENT_COEF" value="0.00107936129905"/>
+<define name= "MAG_Y_CURRENT_COEF" value="0.00157565904243"/>
+<define name= "MAG_Z_CURRENT_COEF" value="-0.000484313219672"/-->
+
+<!--define name= "MAG_X_CURRENT_COEF" value="0.000459853209752"/>
+<define name= "MAG_Y_CURRENT_COEF" value="0.000456687374172"/>
+<define name= "MAG_Z_CURRENT_COEF" value="-0.00164857179857"/-->
 
 
 
@@ -215,7 +227,7 @@
     </section>
     
     <section name="BAT">
-        <define name="MILLIAMP_AT_FULL_THROTTLE" value="1500" unit="mA"/>
+        <define name="MILLIAMP_AT_FULL_THROTTLE" value="25000" unit="mA"/>
         <define name="CATASTROPHIC_BAT_LEVEL" value="9.3" unit="V"/>
     </section>
     

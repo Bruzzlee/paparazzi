@@ -84,12 +84,13 @@
       <message name="STAB_ATTITUDE_REF" period=".03"/>
     </mode>
 
-    <mode name="vert_loop" key_press="v">
+    <mode name="v_loop" key_press="v">
       <message name="ROTORCRAFT_STATUS" period="1.2"/>
       <message name="DL_VALUE"          period="0.5"/>
       <message name="ALIVE"             period="0.9"/>
       <message name="VFF"               period=".05"/>
-      <message name="VERT_LOOP"         period=".05"/>
+      <message name="VERT_LOOP"         period=".1"/>
+      <message name="TUNE_VERT"         period=".1"/>
       <message name="INS"               period=".05"/>
       <message name="INS_REF"           period="5.1"/>
     </mode>
@@ -121,6 +122,17 @@
       <message name="DL_VALUE"                    period="0.5"/>
 <!--      <message name="STAB_ATTITUDE_HS_ROLL" period="0.02"/> -->
     </mode>
+
+    <mode name="tune_z">
+      <message name="ROTORCRAFT_STATUS"           period="1.2"/>
+      <message name="ALIVE"                       period="0.9"/>
+      <message name="DL_VALUE"                    period="0.5"/>
+      <message name="VERT_LOOP"                   period=".1"/>
+      <!--message name="VFF"               period=".05"/-->
+      <message name="TUNE_VERT"         period=".1"/>
+      <!--message name="INS"               period=".05"/-->
+    </mode>
+
 
     <mode name="tune_hover">
       <message name="DL_VALUE"          period="1.1"/>
